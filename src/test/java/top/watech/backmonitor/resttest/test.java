@@ -24,7 +24,7 @@ public class test {
         private RestTemplate restTemplate;
 
         //无参get请求
-        @Test public void get(){
+      @Test public void get(){
             String url="https://www.baidu.com/";
             System.out.println( restTemplate.getForEntity(url, String.class).getBody());
             System.out.println( restTemplate.getForEntity(url, String.class).getStatusCode());
