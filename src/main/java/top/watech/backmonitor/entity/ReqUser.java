@@ -1,21 +1,11 @@
 package top.watech.backmonitor.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
-
 /**
- * Created by wuao.tp on 2018/7/18.
+ * 用于接收登陆账户信息
  */
-@Entity
-//@Table(name = "user")  //省略则类名小写为表名。
-public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ReqUser {
     private Integer id;
-    @Column(name = "username",length = 50,nullable = false)
     private String username;
-    @JsonIgnore
     private String pwd;
 
     public Integer getId() {
