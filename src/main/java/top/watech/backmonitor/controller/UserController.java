@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
+
+import java.util.List;
 
 /**
  * Created by fhm on 2018/7/19.
