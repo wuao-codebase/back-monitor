@@ -1,7 +1,7 @@
 package top.watech.backmonitor.entity;
 
 /**
- * Created by wuao.tp on 2018/7/20.
+ * 状态枚举类
  */
 public enum RespCode {
 

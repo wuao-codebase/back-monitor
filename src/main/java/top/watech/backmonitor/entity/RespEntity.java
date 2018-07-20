@@ -1,7 +1,7 @@
 package top.watech.backmonitor.entity;
 
 /**
- * Created by wuao.tp on 2018/7/20.
+ * 请求数据返回格式
  */
 public class RespEntity {
     private int code;
