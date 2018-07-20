@@ -13,7 +13,7 @@ import top.watech.backmonitor.repository.StudRepository;
  * Created by wuao.tp on 2018/7/9.
  */
 @RestController
-public class StudentController {
+public class StudentController{
     @Autowired
     StudRepository studRepository;
 
@@ -44,7 +44,10 @@ public class StudentController {
         if (student1!=null){
            return new RespEntity(RespCode.SUCCESS,student1);
        }else {
-           return new RespEntity(RespCode.LOGINWAR,student1);
+            RespCode respCode=RespCode.WARN;
+            respCode.setMsg("用户或密码错误");
+            respCode.setCode(-1);
+            return new RespEntity(respCode,student1);
        }
 
     }
