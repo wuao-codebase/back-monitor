@@ -55,4 +55,18 @@ public class test {
         System.out.println(responseEntity);
     }
 
+    @Test
+    public void testVCM(){
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.TEXT_HTML);
+        requestHeaders.add(HttpHeaders.AUTHORIZATION, "Bearer eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJjbi13aXNlcGFhcyIsImlhdCI6MTUzMjA3Nzc3MiwiZXhwIjoxNTMyMDgxMzcyLCJ1c2VySWQiOiJlYmUzYTU2YS0wZGVhLTRkNzctYmYxNS03NTMzZDVjMDNjNDciLCJjcmVhdGlvblRpbWUiOjE1MjU0MDA0ODkwMDAsImxhc3RNb2RpZmllZFRpbWUiOjE1MjU0MDA3MDQwMDAsInVzZXJuYW1lIjoicGF0YWNpb3RAYWxpeXVuLmNvbSIsImZpcnN0TmFtZSI6IlVzZXIiLCJsYXN0TmFtZSI6IkFub255bW91cyIsImNvbnRhY3RQaG9uZSI6Iis4NjEzNTcyMDY5NzM0IiwibW9iaWxlUGhvbmUiOiIrODYxMzU3MjA2OTczNCIsInJvbGUiOiJzcnBVc2VyIiwiZ3JvdXBzIjpbImhhaWxvbmcuZGFuZ0BhZHZhbnRlY2guY29tLmNuIl0sImNmU2NvcGVzIjpbeyJndWlkIjpudWxsLCJzc29fcm9sZSI6InNycFVzZXIiLCJzcGFjZXMiOltdfV0sInNjb3BlcyI6WyJWQ00tMTUyNTM5OTg1OTY4NC5hZG1pbiIsIlJNTS0xNTI1Mzk5NjU2Njg1LlN5c3RlbUFkbWluIiwiUk1NLTE1Mjc2NjI1MzAwOTYuU3lzdGVtQWRtaW4iLCJkYXNoYm9hcmQtMTUyNjQ0MjA1MTU0MC5BZG1pbiIsIlNhbXBsZVNSUC0xNTI4ODYyNzgzOTA1LmFkbWluIl0sInN0YXR1cyI6ImFjdGl2ZSIsIm9yaWdpbiI6IlNTTyIsInN5c3RlbSI6ZmFsc2UsInJlZnJlc2hUb2tlbiI6Ijg2OGMwMTg4LTk0Y2UtNDQxOS04ZjNmLWQzMmYwZTBlNDVhNiJ9._cTp1e1GEVxRZNLiE68i0_qNJDDgEiDi6SbyyKtW9KrrRiOvYtAc2bKcG5h4mTR9zlnQSP5gbUu1q1etlqjkxw");
+        Map<String, String> requestBody = new HashMap<String, String>();
+        requestBody.put("enterprise_id","3");
+        //HttpEntity
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(requestBody, requestHeaders);
+        //post
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity("https://api-vcm-acniotsense-patac.wise-paas.com.cn/vcm/vcm", String.class, requestEntity);
+        System.out.println(responseEntity);
+    }
+
 }
