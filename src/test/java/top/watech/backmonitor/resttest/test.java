@@ -1,11 +1,14 @@
 package top.watech.backmonitor.resttest;
 
-import com.alibaba.fastjson.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.BackMonitorApplication;
@@ -39,20 +42,17 @@ public class test {
     }
 
     @Test
-    public void testSSO(String username,String password){
-        String url = "http://portal-sso.wise-paas.com.cn/v1.3/auth/native";//请求地址
-        String param ="?username=" + username + "&password=" + password;
-        JSONObject json;
-        json = JSONObject.parseObject(param);
-        try{
-            Map<String,Object> map=new HashMap<>();
-            map.put("username","pataciot@aliyun.com");
-            map.put("password","P@ssw0rd");
-            String  str = restTemplate.postForObject(url+json,null, String.class,map);//所得结果为调整成String类型
-        }catch(Exception e){
-            System.out.println("登录失败");
-            e.printStackTrace();
-        }
+    public void testSSO(){
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, String> requestBody = new HashMap<String, String>();
+        requestBody.put("username","pataciot@aliyun.com");
+        requestBody.put("password", "P@ssw0rd");
+        //HttpEntity
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<Map<String, String>>(requestBody, requestHeaders);
+        //post
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity("http://portal-sso.wise-paas.com.cn/v1.3/auth/native", requestEntity, String.class);
+        System.out.println(responseEntity);
     }
 
 }
