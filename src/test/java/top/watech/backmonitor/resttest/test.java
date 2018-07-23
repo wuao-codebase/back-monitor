@@ -12,8 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.BackMonitorApplication;
+import top.watech.backmonitor.entity.User;
+import top.watech.backmonitor.service.UserService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +27,10 @@ import java.util.Map;
 @SpringBootTest(classes = BackMonitorApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
 public class test {
+
+    /*
+     *  API Test
+     */
 
         @Autowired
         private RestTemplate restTemplate;
@@ -69,4 +77,25 @@ public class test {
         System.out.println(responseEntity);
     }
 
+
+    /*
+     *  Page Test
+     */
+
+    private UserService userService ;
+    @Test
+    public void testSaveAll(){
+        List<User> users = new ArrayList<>();
+
+        for (int i = 'a' ; i<'z' ; i ++){
+            User user = new User();
+            user.setUserId(i+1);
+            user.setUsername((char)i + "" + (char)i);
+            user.setUserpwd("111111");
+
+            users.add(user);
+        }
+        userService.saveUsers(users);
+
+    }
 }

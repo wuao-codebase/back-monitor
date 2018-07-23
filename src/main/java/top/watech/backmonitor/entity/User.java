@@ -31,6 +31,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column()
     public long getUserId() {
         return userId;
     }
@@ -49,6 +50,7 @@ public class User {
     }
 
     @Column(name = "userpwd")
+    @JsonIgnore
     public String getUserpwd() {
         return userpwd;
     }
