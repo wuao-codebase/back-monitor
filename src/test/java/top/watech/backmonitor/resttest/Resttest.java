@@ -21,7 +21,7 @@ import java.util.Map;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BackMonitorApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EnableAutoConfiguration
-public class test {
+public class Resttest {
 
         @Autowired
         private RestTemplate restTemplate;
