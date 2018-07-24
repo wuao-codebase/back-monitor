@@ -13,49 +13,54 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
 
-    private long userId;
-    private String username;
-    private String userpwd;
-
+    private Long userId;
+    private String userName;
     @JsonIgnore
-    private Set<Weibo> weibos;
+    private String userPwd;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = {CascadeType.REMOVE},mappedBy = "user")
-    public Set<Weibo> getWeibos() {
-        return weibos;
-    }
-
-    public void setWeibos(Set<Weibo> weibos) {
-        this.weibos = weibos;
-    }
+    private String phone;
+    private Integer role;
 
     @Id
+    @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column()
-    public long getUserId() {
+    public Long getUserId() {
         return userId;
     }
-
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
-
-    @Column(name="username")
-    public String getUsername() {
-        return username;
+    @Column(name = "user_name")
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    @Column(name = "userpwd")
-    @JsonIgnore
-    public String getUserpwd() {
-        return userpwd;
+    @Column(name = "user_pwd")
+    public String getUserPwd() {
+        return userPwd;
     }
 
-    public void setUserpwd(String userpwd) {
-        this.userpwd = userpwd;
+    public void setUserPwd(String userPwd) {
+        this.userPwd = userPwd;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 }

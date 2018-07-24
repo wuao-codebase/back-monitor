@@ -21,8 +21,8 @@ public class UserService {
         userRepository.saveAll(users);
     }
 
-    @Transactional
-    public void updateUsers(Long userId,String username){
-        userRepository.updateUserUsername(userId,username);
-    }
+//    @Transactional
+//    public void updateUsers(Long userId,String username){
+//        userRepository.updateUserUsername(userId,username);
+//    }
 }
