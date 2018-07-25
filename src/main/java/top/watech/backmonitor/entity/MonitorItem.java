@@ -15,9 +15,12 @@ public class MonitorItem {
     private String url;
 
     private String requestBody;     //请求体
-    private String asserts;         //断言
+    private String asserts;         //断言(预期返回结果)
+    private String remark;  //备注
 
-    private Long srpId;             //外键
+
+
+    private SRP srp;             //外键
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,13 +85,22 @@ public class MonitorItem {
         this.asserts = asserts;
     }
 
-    //加不加@ManyToOne(fetch = FetchType.EAGER)？
-    @JoinColumn(name = "srp_id")
-    public Long getSrpId() {
-        return srpId;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setSrpId(Long srpId) {
-        this.srpId = srpId;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
+
+    @JoinColumn(name = "srp_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    public SRP getSrp() {
+        return srp;
+    }
+
+    public void setSrp(SRP srp) {
+        this.srp = srp;
+    }
+
 }

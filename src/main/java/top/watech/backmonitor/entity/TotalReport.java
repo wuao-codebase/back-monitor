@@ -1,6 +1,8 @@
 package top.watech.backmonitor.entity;
 
 import javax.persistence.*;
+import javax.xml.crypto.Data;
+import java.sql.Date;
 import java.sql.Time;
 
 /**
@@ -11,9 +13,11 @@ import java.sql.Time;
 @IdClass(SRPTimeMultiKey.class)
 public class TotalReport {
     private Long srpId;         //复合主键
-    private Time createTime;    //复合主键
     private Integer monitorNum; //监控项个数
     private Integer errorCount; //失败数
+
+    private Date startTime;     //复合主键,监控开始执行时间
+    private Date endTime;       //监控结束执行时间
 
     @Id
     @Column(name = "srp_id")
@@ -26,13 +30,22 @@ public class TotalReport {
     }
 
     @Id
-    @Column(name = "create_time")
-    public Time getCreateTime() {
-        return createTime;
+    @Column(name = "start_time")
+    public Date getStartTime() {
+        return startTime;
     }
 
-    public void setCreateTime(Time createTime) {
-        this.createTime = createTime;
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    @Column(name = "end_time")
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     @Column(name = "monitor_num")
@@ -57,9 +70,10 @@ public class TotalReport {
     public String toString() {
         return "TotalReport{" +
                 "srpId=" + srpId +
-                ", createTime=" + createTime +
                 ", monitorNum=" + monitorNum +
                 ", errorCount=" + errorCount +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
                 '}';
     }
 }

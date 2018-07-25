@@ -8,15 +8,7 @@ import java.sql.Time;
  */
 public class SRPTimeMultiKey implements Serializable{
     private Long srpId;
-    private Time createTime;
-
-    public SRPTimeMultiKey() {
-    }
-
-    public SRPTimeMultiKey(Long srpId, Time createTime) {
-        this.srpId = srpId;
-        this.createTime = createTime;
-    }
+    private Time startTime;
 
     public Long getSrpId() {
         return srpId;
@@ -26,12 +18,20 @@ public class SRPTimeMultiKey implements Serializable{
         this.srpId = srpId;
     }
 
-    public Time getCreateTime() {
-        return createTime;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public void setCreateTime(Time createTime) {
-        this.createTime = createTime;
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
+    }
+
+    public SRPTimeMultiKey() {
+    }
+
+    public SRPTimeMultiKey(Long srpId, Time startTime) {
+        this.srpId = srpId;
+        this.startTime = startTime;
     }
 
     //  ***重写hashCode与equals方法***
@@ -40,7 +40,7 @@ public class SRPTimeMultiKey implements Serializable{
         final int PRIME = 31;
         int result = 1;
         result = PRIME * result + ((srpId == null) ? 0 : srpId.hashCode());
-        result = PRIME * result + ((createTime == null) ? 0 : createTime.hashCode());
+        result = PRIME * result + ((startTime == null) ? 0 : startTime.hashCode());
         return result;
     }
 
@@ -64,11 +64,11 @@ public class SRPTimeMultiKey implements Serializable{
         }else if(!srpId.equals(other.srpId)){
             return false;
         }
-        if(createTime == null){
-            if(other.createTime != null){
+        if(startTime == null){
+            if(other.startTime != null){
                 return false;
             }
-        }else if(!createTime.equals(other.createTime)){
+        }else if(!startTime.equals(other.startTime)){
             return false;
         }
 

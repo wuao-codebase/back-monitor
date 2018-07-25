@@ -16,8 +16,8 @@ public interface TotalReportRepository extends JpaRepository<TotalReport,SRPTime
     List<TotalReport> findBySrpId(Long srpId);
 
     // 根据监控执行时间,找出所有监控报告
-    List<TotalReport> findByCreateTime(Time createTime);
+    List<TotalReport> findByStartTime(Time startTime);
 
     // 根据SRP的id和监控执行开始时间，找出所有的TotalReport
-    List<TotalReport> findBySrpIdAndCreateTime(Long srpId,Time createTime);
+    List<TotalReport> findBySrpIdAndStartTime(Long srpId,Time startTime);
 }

@@ -59,7 +59,9 @@ public class Resttest {
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
 //        System.out.println();
         return parse.get("accessToken").toString();
+
     }
+
 
     @Test
     public void testVCM(){
@@ -71,7 +73,10 @@ public class Resttest {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+        System.out.println("*************************************");
         System.out.println(responseEntity);
+        System.out.println("*************************************");
+
     }
 
     @Test
@@ -84,7 +89,9 @@ public class Resttest {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
 
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+        System.out.println("*************************************");
         System.out.println(responseEntity);
+        System.out.println("*************************************");
     }
 
     public String testFanYa(){
@@ -98,6 +105,7 @@ public class Resttest {
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST,requestEntity,String.class);
+        System.out.println("*************************************");
         System.out.println(responseEntity);
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
         return parse.get("token").toString();
@@ -111,7 +119,9 @@ public class Resttest {
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+        System.out.println("*************************************");
         System.out.println(responseEntity);
+        System.out.println("*************************************");
     }
     @Test
     public void testSheBeiXinxi(){
@@ -122,7 +132,9 @@ public class Resttest {
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+        System.out.println("*************************************");
         System.out.println(responseEntity);
+        System.out.println("*************************************");
     }
 
 
