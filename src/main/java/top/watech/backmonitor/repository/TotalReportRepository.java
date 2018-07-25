@@ -3,7 +3,7 @@ package top.watech.backmonitor.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import top.watech.backmonitor.entity.SRPTimeMultiKey;
 import top.watech.backmonitor.entity.TotalReport;
-import top.watech.backmonitor.entity.UserSRP;
+
 
 import java.sql.Time;
 import java.util.List;
