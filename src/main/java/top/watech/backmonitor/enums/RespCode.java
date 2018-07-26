@@ -1,4 +1,4 @@
-package top.watech.backmonitor.entity;
+package top.watech.backmonitor.enums;
 
 /**
  * Created by wuao.tp on 2018/7/20.

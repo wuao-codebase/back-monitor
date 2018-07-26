@@ -10,13 +10,15 @@ import javax.persistence.*;
 public class MonitorItem {
     private Long monitorId;
     private String monitorName;
-    private Integer monitorType;    //监控项类型
+    private Integer monitorType;    //监控项类型:1、接口 2、视频 3、页面
     private Integer requestType;    //请求类型
     private String url;
 
     private String requestBody;     //请求体
     private String asserts;         //断言(预期返回结果)
     private String remark;  //备注
+
+    private Integer classify;//分类：1、平台登陆 2、平台接口 3、SRP登陆 4、SRP接口
 
 
 
@@ -91,6 +93,14 @@ public class MonitorItem {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Integer getClassify() {
+        return classify;
+    }
+
+    public void setClassify(Integer classify) {
+        this.classify = classify;
     }
 
     @JoinColumn(name = "srp_id")

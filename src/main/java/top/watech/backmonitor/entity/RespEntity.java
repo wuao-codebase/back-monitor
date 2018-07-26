@@ -1,5 +1,7 @@
 package top.watech.backmonitor.entity;
 
+import top.watech.backmonitor.enums.RespCode;
+
 /**
  * 请求数据返回格式
  */
