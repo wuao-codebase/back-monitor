@@ -13,6 +13,7 @@ import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,16 +44,16 @@ public class MonitorService {
         int code;   //成功还是失败
 
         HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.add("Authorization","Bearer "+token);
+
         String requestBodyStr = monitorItem.getRequestBody();
 
-//            String str = "{\"0\":\"zhangsan\",\"1\":\"lisi\",\"2\":\"wangwu\",\"3\":\"maliu\"}";
-        Map requestBody = (Map) JSON.parse(requestBodyStr);
-
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-
+//      String str = "{\"0\":\"zhangsan\",\"1\":\"lisi\",\"2\":\"wangwu\",\"3\":\"maliu\"}";
+        Map requestBody = new HashMap();
         //POST型，登录生成token
         if(requestType==1){
+            requestBody = (Map) JSON.parse(requestBodyStr);
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
             int statusCodeValue = responseEntity.getStatusCodeValue();
             JSONObject parse = JSON.parseObject(responseEntity.getBody());
@@ -64,6 +65,9 @@ public class MonitorService {
         }
         //GET请求，携带token访问
         else if (requestType==2){
+            requestHeaders.add("Authorization","Bearer "+token);
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
             int statusCodeValue = responseEntity.getStatusCodeValue();
             JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
