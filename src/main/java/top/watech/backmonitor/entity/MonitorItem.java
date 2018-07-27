@@ -20,7 +20,7 @@ public class MonitorItem {
 
     private Integer classify;//分类：1、平台登陆 2、平台接口 3、SRP登陆 4、SRP接口
 
-
+    private Long srpId;
 
     private SRP srp;             //外键
 
@@ -103,6 +103,21 @@ public class MonitorItem {
         this.classify = classify;
     }
 
+
+//    public Long getSrp_id() {
+//        return srp_id;
+//    }
+//
+//    public void setSrp_id(Long srp_id) {
+//        this.srp_id = srp_id;
+//    }
+
+    @Column(name="srp_id",insertable=false,updatable=false)
+    public Long getSrpId() {
+        return srpId;
+    } public void setSrpId(Long srpId) {
+        this.srpId = srpId;
+    }
     @JoinColumn(name = "srp_id")
     @ManyToOne(fetch = FetchType.LAZY)
     public SRP getSrp() {

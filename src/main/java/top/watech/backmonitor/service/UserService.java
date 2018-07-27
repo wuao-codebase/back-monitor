@@ -11,18 +11,7 @@ import java.util.List;
 /**
  * Created by fhm on 2018/7/23.
  */
-@Service
-public class UserService {
-    @Autowired
-    UserRepository userRepository;
 
-    @Transactional
-    public void saveUsers(List< User> users){
-        userRepository.saveAll(users);
-    }
-
-//    @Transactional
-//    public void updateUsers(Long userId,String username){
-//        userRepository.updateUserUsername(userId,username);
-//    }
+public interface UserService {
+    List<User> getUserList();
 }

@@ -24,6 +24,9 @@ public class DetailReport {
 
     private Time createTime;//复合主键,数据插入时间
 
+    private String uuid;    //外键
+    private TotalReport totalReport;
+
 
     @Id
     @Column(name = "monitor_id")
@@ -60,5 +63,24 @@ public class DetailReport {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Column(name="uuid",insertable=false,updatable=false)
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    @JoinColumn(name = "uuid")
+    @ManyToOne(fetch = FetchType.LAZY)
+    public TotalReport getTotalReport() {
+        return totalReport;
+    }
+
+    public void setTotalReport(TotalReport totalReport) {
+        this.totalReport = totalReport;
     }
 }
