@@ -7,7 +7,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by fhm on 2018/7/19.
@@ -30,7 +29,6 @@ public class User {
     private String remark;  //备注
 
     private List<SRP> srps;
-
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,8 +39,7 @@ public class User {
         this.userId = userId;
     }
 
-    @Column(name = "user_name",nullable = false, length = 20, unique = true)
-    @NotEmpty(message = "账号不能为空")
+    @Column(name = "user_name",nullable = false, length = 20)
     @Size(min=3, max=20)
     public String getUserName() {
         return userName;
@@ -52,7 +49,7 @@ public class User {
         this.userName = userName;
     }
 
-    @Column(name = "user_pwd",length = 100)
+    @Column(name = "user_pwd",length = 100, unique = true)
     @NotEmpty(message = "密码不能为空")
     @Size(max=100)
     public String getUserPwd() {

@@ -1,10 +1,8 @@
 package top.watech.backmonitor.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import top.watech.backmonitor.entity.PageEntity;
 import top.watech.backmonitor.entity.User;
-import top.watech.backmonitor.repository.UserRepository;
 
 import java.util.List;
 
@@ -13,5 +11,9 @@ import java.util.List;
  */
 
 public interface UserService {
-    List<User> getUserList();
+    User Login(Long id,String userPwd) throws Exception;
+    User getUserById(Long id) throws Exception;
+    PageEntity getUserList(int pageNo, int pageSize)throws Exception;
+    void saveUsers(List<User> users) throws Exception;
+
 }
