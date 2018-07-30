@@ -12,8 +12,10 @@ import java.util.List;
 
 public interface UserService {
     User Login(Long id,String userPwd) throws Exception;
+
     User getUserById(Long id) throws Exception;
     PageEntity getUserList(int pageNo, int pageSize)throws Exception;
     void saveUsers(List<User> users) throws Exception;
 
+    User getUserByName(String userName);
 }

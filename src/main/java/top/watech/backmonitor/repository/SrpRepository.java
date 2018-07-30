@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface SrpRepository extends JpaRepository<SRP,Long> ,JpaSpecificationExecutor<SRP>{
 
-
+//    List<SRP> findSRPByUsers
 }

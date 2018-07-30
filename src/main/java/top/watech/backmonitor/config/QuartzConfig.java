@@ -20,7 +20,7 @@ public class QuartzConfig {
 
     @Bean
     public Trigger testQuartTrigger(){
-        SimpleScheduleBuilder simpleScheduleBuilder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(10).repeatForever();
+        SimpleScheduleBuilder simpleScheduleBuilder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1000).repeatForever();
         return TriggerBuilder.newTrigger().forJob(testQuartDetail()).withIdentity("testQuart").withSchedule(simpleScheduleBuilder).build();
 
     }

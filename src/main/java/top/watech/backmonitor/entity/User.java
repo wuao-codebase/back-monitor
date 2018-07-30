@@ -28,6 +28,9 @@ public class User {
     private String orgName; //部门名称
     private String remark;  //备注
 
+    @Transient
+    private String token;
+
     private List<SRP> srps;
     @Id
     @Column(name = "user_id")

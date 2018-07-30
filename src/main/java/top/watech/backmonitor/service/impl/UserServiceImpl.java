@@ -6,12 +6,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import top.watech.backmonitor.entity.PageEntity;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by fhm on 2018/7/27.
@@ -57,8 +58,14 @@ public class UserServiceImpl implements UserService {
         userRepository.saveAll(users);
     }
 
+    @Override
+    public User getUserByName(String userName) {
+        return userRepository.findByUserName(userName);
+    }
+
 //    @Transactional
 //    public void updateUsers(Long userId,String username){
 //        userRepository.updateUserUsername(userId,username);
 //    }
+
 }

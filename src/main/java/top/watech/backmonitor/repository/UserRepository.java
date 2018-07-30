@@ -25,4 +25,9 @@ public interface UserRepository extends JpaRepository<User,Long> ,JpaSpecificati
 //    @Modifying
 //    @Query("update User u set u.username = :username where u.userId= :userId")
 //    void updateUserUsername(@Param("userId") Long userid, @Param("username") String username);
+
+    //根据用户名获取用户
+    User findByUserName(String userName);
+
+
 }
