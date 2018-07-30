@@ -47,6 +47,7 @@ public class UserController {
 
             System.out.println("************************************");
             System.out.println(result_str);
+            login.setToken(result_str);
             return new RespEntity(RespCode.SUCCESS, login);
         } else {
             RespCode respCode = RespCode.WARN;

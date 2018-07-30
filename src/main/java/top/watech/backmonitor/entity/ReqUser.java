@@ -16,6 +16,17 @@ public class ReqUser {
     private String orgName; //部门名称
     private String remark;  //备注
 
+    private String token;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+
+        this.token = token;
+    }
+
     public Long getUserId() {
         return userId;
     }
