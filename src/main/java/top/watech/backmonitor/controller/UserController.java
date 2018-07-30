@@ -1,21 +1,18 @@
 package top.watech.backmonitor.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import top.watech.backmonitor.entity.*;
 import top.watech.backmonitor.enums.RespCode;
-import top.watech.backmonitor.enums.ResultEnum;
 import top.watech.backmonitor.service.UserService;
 import top.watech.backmonitor.util.JwtHelper;
-import top.watech.backmonitor.util.MatcherUtil;
 import top.watech.backmonitor.util.ResultVOUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import java.util.List;
+
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Created by fhm on 2018/7/19.
@@ -43,7 +40,7 @@ public class UserController {
                     audience.getExpiresSecond()*1000,
                     audience.getBase64Secret());
 
-            String result_str = "bearer;" + jwtToken;
+            String result_str = "bearer " + jwtToken;
 
             System.out.println("************************************");
             System.out.println(result_str);
@@ -59,9 +56,10 @@ public class UserController {
 
 
     @GetMapping("/userList")
-    public String getList(){
-
-        return "";
+    public RespEntity getList() throws Exception {
+        List<User> userList = userService.getUserList();
+        System.err.println(userList);
+        return new RespEntity(RespCode.SUCCESS, userList);
     }
 
 

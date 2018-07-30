@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,14 +36,14 @@ public class Jpatest {
 
     @Test
     public void getUserListByUsername() {
-//        User user = new User();
-//        user.setUserName("wuao");
-//        Example<User> example = Example.of(user);
-//        List<User> all = userRepository.findAll(example);
-//        for (User user1 : all) {
-//            System.out.println("user1 = " + user1.getUserName());
-//        }
-        System.out.println(userRepository.findById((long) 111).isPresent());
+        User user = new User();
+        user.setUserName("wuao");
+        Example<User> example = Example.of(user);
+        List<User> all = userRepository.findAll(example);
+        for (User user1 : all) {
+            System.out.println("user1 = " + user1.getUserName());
+        }
+//        System.out.println(userRepository.findById((long) 111).isPresent());
 
     }
 
