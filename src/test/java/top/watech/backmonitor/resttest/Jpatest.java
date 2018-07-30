@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
+import top.watech.backmonitor.service.SRPService;
 
 import java.util.List;
 
@@ -74,6 +75,12 @@ public class Jpatest {
         System.out.println("总页数: " + page.getTotalPages());
         System.out.println("当前页面的 List: " + page.getContent());
         System.out.println("当前页面的记录数: " + page.getNumberOfElements());
+    }
+
+    @Autowired
+    SRPService srpService;
+    public void testsrpList(){
+
     }
 
 }
