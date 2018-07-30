@@ -1,8 +1,6 @@
 package top.watech.backmonitor.service;
 
-import org.springframework.stereotype.Service;
 import top.watech.backmonitor.entity.SRP;
-import top.watech.backmonitor.entity.User;
 
 import java.util.List;
 
@@ -11,5 +9,8 @@ import java.util.List;
  */
 
 public interface SRPService {
-    List<SRP> getSRPList();
+
+    List<SRP> findByUserId(String userId);
+
+
 }

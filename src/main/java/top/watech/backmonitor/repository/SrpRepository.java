@@ -3,7 +3,6 @@ package top.watech.backmonitor.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 
 import java.util.List;
@@ -13,5 +12,10 @@ import java.util.List;
  */
 public interface SrpRepository extends JpaRepository<SRP,Long> ,JpaSpecificationExecutor<SRP>{
 
-//    List<SRP> findSRPByUsers
+    //根据srpId和userName获取srp
+    SRP findSRPBySrpIdAndUserName();
+
+    //根据userId获取srp列表
+    List<SRP> findSRPSByuserId(Long userId);
+
 }
