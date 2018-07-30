@@ -2,6 +2,7 @@ package top.watech.backmonitor.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -12,6 +13,7 @@ import java.util.List;
  * Created by fhm on 2018/7/19.
  */
 @Entity
+@ToString
 @Table(name = "users")
 public class User {
 

@@ -1,18 +1,13 @@
 package top.watech.backmonitor.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-import top.watech.backmonitor.entity.PageEntity;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Created by fhm on 2018/7/27.
@@ -40,17 +35,23 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id).get();
     }
 
-    @Override
-    public PageEntity getUserList(int pageNo,int pageSize) {
-        int page = (pageNo < 0) ? 0 : pageNo;
-        int size = (pageSize<=0)?20:pageSize;
-        Pageable pageable = PageRequest.of(page, size);
-        Page<User>  pages = userRepository.findAll(pageable);
-        PageEntity pageEntity = new PageEntity();
-        pageEntity.setTotal(pages.getTotalPages());
-        pageEntity.setData(pages.getContent());
-        pageEntity.setPageNo(pages.getNumber() + 1);
-        return pageEntity;
+    //后端分页
+//    @Override
+//    public PageEntity getUserList(int pageNo,int pageSize) {
+//        int page = (pageNo < 0) ? 0 : pageNo;
+//        int size = (pageSize<=0)?25:pageSize;
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<User>  pages = userRepository.findAll(pageable);
+//        PageEntity pageEntity = new PageEntity();
+//        pageEntity.setTotal(pages.getTotalPages());
+//        pageEntity.setData(pages.getContent());
+//        pageEntity.setPageNo(pages.getNumber() + 1);
+//        return pageEntity;
+//    }
+
+        @Override
+    public List<User> getUserList() {
+            return userRepository.findAll();
     }
 
     @Transactional

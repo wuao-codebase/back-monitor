@@ -47,14 +47,14 @@ public class JwtFilter extends GenericFilterBean {
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
         //等到请求头信息authorization信息
-        final String authHeader = request.getHeader("authorization");
+        final String authHeader = request.getHeader("Authentication-Token");
 
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             chain.doFilter(req, res);
         } else {
 
-            if (authHeader == null || !authHeader.startsWith("bearer;")) {
+            if (authHeader == null || !authHeader.startsWith("bearer ")) {
                 throw new LoginException(ResultEnum.LOGIN_ERROR);
             }
             //token是bearer;之后的部分
