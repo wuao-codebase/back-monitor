@@ -13,9 +13,9 @@ import java.util.List;
 public interface SrpRepository extends JpaRepository<SRP,Long> ,JpaSpecificationExecutor<SRP>{
 
     //根据srpId和userName获取srp
-    SRP findSRPBySrpIdAndUserName();
+//    SRP findSRPBySrpIdAndUserName();
 
     //根据userId获取srp列表
-    List<SRP> findSRPSByuserId(Long userId);
+//    List<SRP> findSRPSByuserId(Long userId);
 
 }

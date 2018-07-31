@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.watech.backmonitor.entity.*;
 import top.watech.backmonitor.enums.RespCode;
+import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 import top.watech.backmonitor.util.JwtHelper;
 import top.watech.backmonitor.util.ResultVOUtil;
@@ -22,6 +23,8 @@ public class UserController {
 
     @Autowired
     private UserService userService ;
+    @Autowired
+    UserRepository userRepository;
 
     @Autowired
     private Audience audience;

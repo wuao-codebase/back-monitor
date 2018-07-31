@@ -10,7 +10,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
+import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
+import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.SRPService;
 
@@ -79,8 +81,68 @@ public class Jpatest {
 
     @Autowired
     SRPService srpService;
-    public void testsrpList(){
+    @Autowired
+    SrpRepository srpRepository;
 
+
+    @Test
+    public void testmtmsave(){
+        User user5 = new User();
+        SRP srp5 = new SRP();
+        SRP srp6 = new SRP();
+
+        user5.setUserName("u005");
+        user5.setUserPwd("111111");
+        srp5.setSrpName("s005");
+        srp6.setSrpName("s006");
+
+        //设置关联关系
+        user5.getSrps().add(srp5);
+        user5.getSrps().add(srp6);
+        srp5.getUsers().add(user5);
+        srp6.getUsers().add(user5);
+
+        userRepository.save(user5);
+        srpRepository.save(srp5);
+        srpRepository.save(srp6);
     }
 
+    /*
+     *SRP管理
+     */
+
+    //根据userId获取SRPname
+    @Test
+    public void testFindSrps(){
+        List<SRP> srpList = srpService.findByUserId("10000032");
+        for (SRP srp : srpList){
+            System.err.println(srp.getSrpName());
+        }
+    }
+
+    //获取所有SRP列表
+    @Test
+    public void testAllSrps(){
+        List<SRP> srpList = srpRepository.findAll();
+        for (SRP srp : srpList){
+            System.out.println(srp.getSrpId()+":"+srp.getSrpName());
+        }
+    }
+
+    /*
+     *用户管理
+     */
+
+    //获取所有用户列表
+    @Test
+    public void testAllUsers(){
+        List<User> userList = userRepository.findAll();
+        for (User user:userList){
+            System.out.println(user.getUserId()+":"+user.getUserName());
+        }
+    }
+
+    public void testUserInfo(){
+
+    }
 }

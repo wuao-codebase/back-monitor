@@ -18,7 +18,7 @@ public class SRP {
     private double freq;    //频率
     private String remark;  //备注
 
-    private List<User> users;
+    private Set<User> users = new HashSet<>();
 
     private Set<MonitorItem> monitorItems = new HashSet<>();
 
@@ -75,15 +75,12 @@ public class SRP {
     }
 
     @ManyToMany(mappedBy = "srps")
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
-    }
-
-    public void setUsers(List<User> users) {
+    } public void setUsers(Set<User> users) {
         this.users = users;
     }
-
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "srp")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "srp",cascade=CascadeType.ALL)
     public Set<MonitorItem> getMonitorItems() {
         return monitorItems;
     }

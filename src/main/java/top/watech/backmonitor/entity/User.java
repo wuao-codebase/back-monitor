@@ -7,7 +7,9 @@ import lombok.ToString;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by fhm on 2018/7/19.
@@ -41,7 +43,8 @@ public class User {
         this.token = token;
     }
 
-    private List<SRP> srps;
+    private Set<SRP> srps = new HashSet<>();
+
     @Id
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -123,13 +126,15 @@ public class User {
         this.remark = remark;
     }
 
-    @ManyToMany
-    @JoinTable(name = "user_srp",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "srp_id"))
-    public List<SRP> getSrps() {
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name = "user_srp",
+            joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "srp_id",referencedColumnName = "srp_id")})
+    public Set<SRP> getSrps() {
         return srps;
     }
 
-    public void setSrps(List<SRP> srps) {
+    public void setSrps(Set<SRP> srps) {
         this.srps = srps;
     }
 }

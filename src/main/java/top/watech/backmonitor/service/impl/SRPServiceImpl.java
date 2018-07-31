@@ -20,12 +20,12 @@ public class SRPServiceImpl implements SRPService {
     @Autowired
     SrpRepository srpRepository;
 
+    //根据userId获取SRPname
     @Override
     public List<SRP> findByUserId(String userId) {
         List<SRP> srpList = srpRepository.findAll(new Specification<SRP>() {
             public Predicate toPredicate(Root<SRP> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                ListJoin<Employee, Company> companyJoin = root.join(root.getModel().getList("companyList", Company.class), JoinType.LEFT);
-                Join<SRP, User> userJoin = root.join("userList", JoinType.LEFT);
+                Join<SRP, User> userJoin = root.join("users", JoinType.LEFT);
                 return cb.equal(userJoin.get("userId"), userId);
             }
         });
