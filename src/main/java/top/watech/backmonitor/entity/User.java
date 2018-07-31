@@ -31,11 +31,11 @@ public class User {
     private String orgName; //部门名称
     private String remark;  //备注
 
-    @Transient
-    private String token;
-    @Transient
-    private String srpnames;
 
+    private String token;
+
+    private String srpnames;
+    @Transient
     public String getSrpnames(Object object) {
         return srpnames;
     }
@@ -43,7 +43,7 @@ public class User {
     public void setSrpnames(String srpnames) {
         this.srpnames = srpnames;
     }
-
+    @Transient
     public String getToken() {
         return token;
     }
