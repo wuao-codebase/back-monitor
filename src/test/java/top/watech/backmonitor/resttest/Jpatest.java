@@ -16,6 +16,7 @@ import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.SRPService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,12 +55,16 @@ public class Jpatest {
 
     @Test
     public void insertUser() {
-        User user = new User();
-        user.setEmail("130278228@qq.com");
-        user.setUserName("wuao");
-        user.setUserPwd("123456");
-        User save = userRepository.save(user);
-        System.out.println(save);
+
+        for (char i = 'a'; i < 'z'; i++) {
+            User user = new User();
+            user.setEmail("130278228@qq.com");
+            user.setUserName(String.valueOf(i)+"123");
+            user.setUserPwd("123456");
+            User save = userRepository.save(user);
+            System.out.println(save);
+        }
+
     }
         @Test
         public void testPage(){
@@ -97,10 +102,10 @@ public class Jpatest {
         srp6.setSrpName("s006");
 
         //设置关联关系
-        user5.getSrps().add(srp5);
-        user5.getSrps().add(srp6);
-        srp5.getUsers().add(user5);
-        srp6.getUsers().add(user5);
+//        user5.getSrps().add(srp5);
+//        user5.getSrps().add(srp6);
+//        srp5.getUsers().add(user5);
+//        srp6.getUsers().add(user5);
 
         userRepository.save(user5);
         srpRepository.save(srp5);
@@ -142,7 +147,25 @@ public class Jpatest {
         }
     }
 
-    public void testUserInfo(){
+    @Test
+    public void testsql(){
 
+        ArrayList<User> users = new ArrayList<>();
+        List<Object[]> getuserlist = userRepository.getuserlist();
+        for (Object[] objects : getuserlist) {
+            User user = new User();
+            user.setUserId(Long.valueOf(String.valueOf(objects[0])));
+            user.setEmail((String)objects[1]);
+            user.setRole((Integer)objects[2]);
+            user.setPhone((String)objects[3]);
+            user.setUserPwd((String)objects[4]);
+            user.setRemark((String)objects[5]);
+            user.setSrpnames(String.valueOf(objects[6]));
+            users.add(user);
+        }
+        for (User user : users) {
+            System.out.println(user);
+        }
     }
+
 }

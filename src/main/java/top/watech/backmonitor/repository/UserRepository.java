@@ -3,7 +3,10 @@ package top.watech.backmonitor.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import top.watech.backmonitor.entity.User;
+
+import java.util.List;
 
 /**
  * Created by fhm on 2018/7/19.
@@ -29,5 +32,6 @@ public interface UserRepository extends JpaRepository<User,Long> ,JpaSpecificati
     //根据用户名获取用户
     User findByUserName(String userName);
 
-
+    @Query(value = "select users.user_id,users.email,users.role,users.phone,users.user_pwd,users.remark, string_agg(srps.srp_name,'，') as srpnames from users left join user_srp on users.user_id = user_srp.user_id left join srps on user_srp.srp_id = srps.srp_id group by users.user_id", nativeQuery = true)
+    List<Object[]> getuserlist();
 }

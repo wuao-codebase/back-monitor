@@ -7,6 +7,7 @@ import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,10 +49,22 @@ public class UserServiceImpl implements UserService {
 //        pageEntity.setPageNo(pages.getNumber() + 1);
 //        return pageEntity;
 //    }
-
-        @Override
+    @Override
     public List<User> getUserList() {
-            return userRepository.findAll();
+            ArrayList<User> users = new ArrayList<>();
+            List<Object[]> getuserlist = userRepository.getuserlist();
+            for (Object[] objects : getuserlist) {
+                User user = new User();
+                user.setUserId(Long.valueOf(String.valueOf(objects[0])));
+                user.setEmail((String)objects[1]);
+                user.setRole((Integer)objects[2]);
+                user.setPhone((String)objects[3]);
+                user.setUserPwd((String)objects[4]);
+                user.setRemark((String)objects[5]);
+                user.setSrpnames(String.valueOf(objects[6]));
+                users.add(user);
+            }
+            return users;
     }
 
     @Transactional

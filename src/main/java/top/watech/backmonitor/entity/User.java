@@ -8,7 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,6 +33,16 @@ public class User {
 
     @Transient
     private String token;
+    @Transient
+    private String srpnames;
+
+    public String getSrpnames(Object object) {
+        return srpnames;
+    }
+
+    public void setSrpnames(String srpnames) {
+        this.srpnames = srpnames;
+    }
 
     public String getToken() {
         return token;
