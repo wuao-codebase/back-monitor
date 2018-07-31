@@ -1,7 +1,5 @@
 package top.watech.backmonitor.resttest;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -234,4 +232,25 @@ public class Jpatest {
             System.err.println(user);
         }
     }
+    @Test
+    public void testsql(){
+
+        ArrayList<User> users = new ArrayList<>();
+        List<Object[]> getuserlist = userRepository.getuserlist();
+        for (Object[] objects : getuserlist) {
+            User user = new User();
+            user.setUserId(Long.valueOf(String.valueOf(objects[0])));
+            user.setEmail((String)objects[1]);
+            user.setRole((Integer)objects[2]);
+            user.setPhone((String)objects[3]);
+            user.setUserPwd((String)objects[4]);
+            user.setRemark((String)objects[5]);
+            user.setSrpnames(String.valueOf(objects[6]));
+            users.add(user);
+        }
+        for (User user : users) {
+            System.out.println(user);
+        }
+    }
+
 }

@@ -11,6 +11,7 @@ import top.watech.backmonitor.service.UserService;
 
 import javax.persistence.criteria.*;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by fhm on 2018/7/27.
@@ -57,6 +58,26 @@ public class UserServiceImpl implements UserService {
             return userRepository.findAll();
     }
 
+    //wuao
+    @Override
+    public List<User> getUserList() {
+        ArrayList<User> users = new ArrayList<>();
+        List<Object[]> getuserlist = userRepository.getuserlist();
+        for (Object[] objects : getuserlist) {
+            User user = new User();
+            user.setUserId(Long.valueOf(String.valueOf(objects[0])));
+            user.setEmail((String)objects[1]);
+            user.setRole((Integer)objects[2]);
+            user.setPhone((String)objects[3]);
+            user.setUserPwd((String)objects[4]);
+            user.setRemark((String)objects[5]);
+            user.setSrpnames(String.valueOf(objects[6]));
+            users.add(user);
+        }
+        return users;
+    }
+
+
     @Transactional
     public void saveUsers(List< User> users){
         userRepository.saveAll(users);
@@ -90,6 +111,5 @@ public class UserServiceImpl implements UserService {
 //    public void updateUsers(Long userId,String username){
 //        userRepository.updateUserUsername(userId,username);
 //    }
-
 
 }
