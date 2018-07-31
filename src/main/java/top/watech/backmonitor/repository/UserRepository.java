@@ -3,6 +3,9 @@ package top.watech.backmonitor.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import top.watech.backmonitor.entity.User;
 
 /**
@@ -29,5 +32,11 @@ public interface UserRepository extends JpaRepository<User,Long> ,JpaSpecificati
     //根据用户名获取用户
     User findByUserName(String userName);
 
+    User findByUserId(Long userId);
 
+    void deleteById(Long aLong);
+
+    @Modifying
+    @Query("UPDATE User u SET u.email = :email WHERE userId = :userId")
+    void updateUserEmail(@Param("userId") Long id, @Param("email") String email);
 }

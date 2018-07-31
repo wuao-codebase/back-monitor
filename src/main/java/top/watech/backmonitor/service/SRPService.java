@@ -12,5 +12,7 @@ public interface SRPService {
 
     List<SRP> findByUserId(String userId);
 
+    int deleteBySrpId(Long srpId);
+
 
 }

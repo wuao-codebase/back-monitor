@@ -33,6 +33,10 @@ public class SRPServiceImpl implements SRPService {
         return srpList;
     }
 
+    @Override
+    public int deleteBySrpId(Long srpId) {
+        return 0;
+    }
 
 
 //    @Transactional

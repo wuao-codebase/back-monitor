@@ -74,13 +74,13 @@ public class SRP {
         this.remark = remark;
     }
 
-    @ManyToMany(mappedBy = "srps")
+    @ManyToMany(mappedBy = "srps",fetch = FetchType.EAGER)
     public Set<User> getUsers() {
         return users;
     } public void setUsers(Set<User> users) {
         this.users = users;
     }
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "srp",cascade=CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade=CascadeType.MERGE)
     public Set<MonitorItem> getMonitorItems() {
         return monitorItems;
     }
@@ -89,5 +89,23 @@ public class SRP {
         this.monitorItems = monitorItems;
     }
 
+    public SRP() {
+    }
 
+    public SRP(String srpName) {
+        this.srpName = srpName;
+    }
+
+    @Override
+    public String toString() {
+        return "SRP{" +
+                "srpId=" + srpId +
+                ", srpName='" + srpName + '\'' +
+                ", description='" + description + '\'' +
+                ", switchs=" + switchs +
+                ", freq=" + freq +
+                ", remark='" + remark + '\'' +
+
+                '}';
+    }
 }

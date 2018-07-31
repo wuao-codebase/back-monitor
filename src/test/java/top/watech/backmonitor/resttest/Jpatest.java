@@ -1,5 +1,7 @@
 package top.watech.backmonitor.resttest;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,10 @@ import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.SRPService;
+import top.watech.backmonitor.service.UserService;
 
+import java.awt.print.Book;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -83,35 +88,38 @@ public class Jpatest {
     SRPService srpService;
     @Autowired
     SrpRepository srpRepository;
+    @Autowired
+    UserService userService;
 
 
+    //多对多保存
     @Test
     public void testmtmsave(){
-        User user5 = new User();
-        SRP srp5 = new SRP();
-        SRP srp6 = new SRP();
+        User user7 = new User();
+        SRP srp7 = new SRP();
+        SRP srp8 = new SRP();
 
-        user5.setUserName("u005");
-        user5.setUserPwd("111111");
-        srp5.setSrpName("s005");
-        srp6.setSrpName("s006");
+        user7.setUserName("u007");
+        user7.setUserPwd("111111");
+        srp7.setSrpName("s007");
+        srp8.setSrpName("s008");
 
         //设置关联关系
-        user5.getSrps().add(srp5);
-        user5.getSrps().add(srp6);
-        srp5.getUsers().add(user5);
-        srp6.getUsers().add(user5);
+        user7.getSrps().add(srp7);
+        user7.getSrps().add(srp8);
+        srp7.getUsers().add(user7);
+        srp8.getUsers().add(user7);
 
-        userRepository.save(user5);
-        srpRepository.save(srp5);
-        srpRepository.save(srp6);
+        userRepository.save(user7);
+        srpRepository.save(srp7);
+        srpRepository.save(srp8);
     }
 
     /*
      *SRP管理
      */
 
-    //根据userId获取SRPname
+    //根据userId获取SRPname(可用在某SRP接收者列表)
     @Test
     public void testFindSrps(){
         List<SRP> srpList = srpService.findByUserId("10000032");
@@ -129,6 +137,50 @@ public class Jpatest {
         }
     }
 
+    //SRP新增
+    @Test
+    public void testSrpInsert(){
+        SRP srp = new SRP();
+        srp.setSrpName("yayaya");
+        srp.setDescription("XXXXXXXXXXyayayaXXXXXXXXXXXXX");
+        srp.setSwitchs(true);
+        srp.setFreq(20);
+
+        srpRepository.save(srp);
+
+    }
+
+    //给SRP加所属用户
+    @Test
+    public void testSrpUserInsert(){
+        User u1 = userRepository.findByUserId(10000032L);
+        User u2 = userRepository.findByUserId(10000034L);
+
+        SRP srpnew = srpRepository.findBySrpId(26L);
+
+        System.err.println(u1);
+        System.err.println(u2);
+        System.err.println(srpnew);
+
+//        srpnew.getUsers().addAll(Arrays.asList(u1,u2));
+        srpnew.getUsers().add(u1);
+        srpnew.getUsers().add(u2);
+        u1.getSrps().add(srpnew);
+        u2.getSrps().add(srpnew);
+//
+        srpRepository.save(srpnew);
+        userRepository.save(u1);
+        userRepository.save(u2);
+    }
+
+//    //删除一个srp（关系表和user表会更新，关联SRP不会被删除）
+//    @Test
+//    public void testDelSrp(){
+//        srpRepository.deleteById(16L);
+//    }
+
+
+
     /*
      *用户管理
      */
@@ -138,11 +190,48 @@ public class Jpatest {
     public void testAllUsers(){
         List<User> userList = userRepository.findAll();
         for (User user:userList){
-            System.out.println(user.getUserId()+":"+user.getUserName());
+            System.out.println(user);
         }
     }
 
-    public void testUserInfo(){
+    //新增账户
+    @Test
+    public void testUserInsert(){
+        User user = new User("user01");
+        user.setRole(1);
+        user.setPhone("18300000000");
+        user.setEmail("xxx@xx.com");
+        user.setUserPwd("123456");
+        user.setRemark("user01xxx");
 
+        userRepository.save(user);
+
+        System.out.println(user);
+    }
+
+    //删除一个用户（关系表和user表会更新，关联SRP不会被删除）
+    @Test
+    public void testDelUser(){
+        userRepository.deleteById(10000034L);
+    }
+
+    //更新某用户信息
+    @Test
+    public void updateUser() {
+
+        User user = userRepository.findByUserId(10000032L);
+        if (user!=null){
+            userService.updateUserEmail(10000032L,"zhangsan@xx.cn");
+        }
+    }
+
+    //根据srpId获取user信息
+    @Test
+    public void testFindUsers(){
+        List<User> userList = userService.getAllUserInfo("16");
+
+        for (User user : userList){
+            System.err.println(user);
+        }
     }
 }

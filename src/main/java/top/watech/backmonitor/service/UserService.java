@@ -18,4 +18,9 @@ public interface UserService {
     void saveUsers(List<User> users) throws Exception;
 
     User getUserByName(String userName);
+
+    //获取所有用户信息，包括关联srp信息
+    List<User> getAllUserInfo(String srpId);
+
+    void updateUserEmail(Long userId,String email);
 }

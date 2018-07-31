@@ -32,9 +32,10 @@ public class User {
     private String orgName; //部门名称
     private String remark;  //备注
 
-    @Transient
+
     private String token;
 
+    @Transient
     public String getToken() {
         return token;
     }
@@ -76,6 +77,7 @@ public class User {
         this.userPwd = userPwd;
     }
 
+    @Size(min=11, max=11)
     public String getPhone() {
         return phone;
     }
@@ -126,7 +128,7 @@ public class User {
         this.remark = remark;
     }
 
-    @ManyToMany(cascade=CascadeType.ALL)
+    @ManyToMany(cascade=CascadeType.MERGE,fetch = FetchType.EAGER)
     @JoinTable(name = "user_srp",
             joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "srp_id",referencedColumnName = "srp_id")})
@@ -136,5 +138,29 @@ public class User {
 
     public void setSrps(Set<SRP> srps) {
         this.srps = srps;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", userPwd='" + userPwd + '\'' +
+                ", phone='" + phone + '\'' +
+                ", role=" + role +
+                ", nickName='" + nickName + '\'' +
+                ", email='" + email + '\'' +
+                ", orgName='" + orgName + '\'' +
+                ", remark='" + remark + '\'' +
+                ", token='" + token + '\'' +
+
+                '}';
+    }
+
+    public User(String userName) {
+        this.userName = userName;
+    }
+
+    public User() {
     }
 }

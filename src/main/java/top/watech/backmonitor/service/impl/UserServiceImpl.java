@@ -1,12 +1,15 @@
 package top.watech.backmonitor.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 
+import javax.persistence.criteria.*;
 import java.util.List;
 
 /**
@@ -64,9 +67,29 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUserName(userName);
     }
 
+
+    //根据srpId获取user列表
+    @Override
+    public List<User> getAllUserInfo(String srpId) {
+        List<User> users = userRepository.findAll(new Specification<User>() {
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);
+                return cb.equal(userJoin.get("srpId"), srpId);
+            }
+        });
+        return users;
+    }
+
+    @Transactional
+    @Override
+    public void updateUserEmail(Long userId, String email) {
+        userRepository.updateUserEmail(userId,email);
+    }
+
 //    @Transactional
 //    public void updateUsers(Long userId,String username){
 //        userRepository.updateUserUsername(userId,username);
 //    }
+
 
 }
