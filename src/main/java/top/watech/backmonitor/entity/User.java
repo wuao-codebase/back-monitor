@@ -36,14 +36,17 @@ public class User {
 
     @Transient
     private String srpnames;
+
+
     @Transient
-    public String getSrpnames(Object object) {
+    public String getSrpnames() {
         return srpnames;
     }
 
     public void setSrpnames(String srpnames) {
         this.srpnames = srpnames;
     }
+
     @Transient
     public String getToken() {
         return token;
