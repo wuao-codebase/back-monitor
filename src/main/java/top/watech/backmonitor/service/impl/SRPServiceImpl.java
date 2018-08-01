@@ -39,9 +39,14 @@ public class SRPServiceImpl implements SRPService {
         return 0;
     }
 
+    /*SRP新增*/
+    public SRP srpInsert(SRP srp){
+        SRP save = srpRepository.save(srp);
+        return save;
+    }
 
-//    @Transactional
-//    public void updateUsers(Long userId,String username){
-//        userRepository.updateUserUsername(userId,username);
-//    }
+    /*srp更新*/
+    public SRP srpUpdate(SRP srp){
+        return null;
+    }
 }

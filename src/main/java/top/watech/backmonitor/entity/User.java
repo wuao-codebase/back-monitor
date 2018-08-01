@@ -69,7 +69,7 @@ public class User {
     }
 
     @Column(name = "user_name",nullable = false, length = 20)
-    @Size(min=3, max=20)
+//    @Size(min=3, max=20)
     public String getUserName() {
         return userName;
     }
@@ -89,7 +89,7 @@ public class User {
         this.userPwd = userPwd;
     }
 
-    @Size(min=11, max=11)
+//    @Size(min=11, max=11)
     public String getPhone() {
         return phone;
     }
@@ -140,7 +140,7 @@ public class User {
         this.remark = remark;
     }
 
-    @ManyToMany(cascade=CascadeType.MERGE,fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)//cascade=CascadeType.REFRESH,
     @JoinTable(name = "user_srp",
             joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "srp_id",referencedColumnName = "srp_id")})

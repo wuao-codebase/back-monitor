@@ -150,7 +150,7 @@ public class UserController {
     }
 
     /*更新用户信息*/
-    @PostMapping("/userUpdate")
+    @PutMapping ("/userUpdate")
     public RespEntity userUpdate(@RequestBody User user){
         User user1 = userService.userUpdate(user.getUserId());
 
@@ -166,7 +166,7 @@ public class UserController {
     }
 
     /*更新用户密码*/
-    @PostMapping("/updateUserpwd")
+    @PutMapping("/updateUserpwd")
     public RespEntity updateUserpwd(@RequestBody ReqUser reqUser){
         User user = userService.updateUserpwd(reqUser.getUserId(), reqUser.getUserPwd());
         if (user!=null){
@@ -181,7 +181,7 @@ public class UserController {
     }
 
     /*删除一个用户*/
-    @PostMapping("/delUserById")
+    @DeleteMapping("/delUserById/{userId}")
     public RespEntity deleteUserById(@RequestParam("userId") Long userId){
         userService.deleteById(userId);
         User user = userRepository.findByUserId(userId);

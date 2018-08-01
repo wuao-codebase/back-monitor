@@ -74,14 +74,14 @@ public class SRP {
         this.remark = remark;
     }
 
-    @ManyToMany(mappedBy = "srps",fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "srps",fetch = FetchType.EAGER)//,cascade=CascadeType.REFRESH
     public Set<User> getUsers() {
         return users;
     } public void setUsers(Set<User> users) {
         this.users = users;
     }
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade={CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade = CascadeType.REMOVE)//,cascade={CascadeType.REMOVE}
     public Set<MonitorItem> getMonitorItems() {
         return monitorItems;
     }
