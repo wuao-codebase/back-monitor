@@ -154,14 +154,12 @@ public class Jpatest {
     //SRP更新
     @Test
     public void testSrpUpdate(){
-        srpRepository.findBySrpId(18L);
-        SRP srp = new SRP();
-        srp.setSrpName("yayaya");
-        srp.setDescription("XXXXXXXXXXyayayaXXXXXXXXXXXXX");
-        srp.setSwitchs(true);
-        srp.setFreq(20);
+        SRP srp1 = srpRepository.findBySrpId(18L);
 
-        srpRepository.save(srp);
+//        srp1.setSrpName("updateName");
+        srp1.setDescription("ddddddddddddddddddd");
+
+        srpRepository.saveAndFlush(srp1);
 
     }
 
@@ -169,9 +167,9 @@ public class Jpatest {
     @Test
     public void testSrpUserInsert(){
         User u1 = userRepository.findByUserId(10000032L);
-        User u2 = userRepository.findByUserId(10000034L);
+        User u2 = userRepository.findByUserId(10000043L);
 
-        SRP srpnew = srpRepository.findBySrpId(26L);
+        SRP srpnew = srpRepository.findBySrpId(23L);
 
         System.err.println(u1);
         System.err.println(u2);
@@ -205,33 +203,33 @@ public class Jpatest {
     //给SRP加监控项
     @Test
     public void testItemAdd(){
-        SRP srp = srpRepository.findBySrpId(26L);
+        SRP srp = srpRepository.findBySrpId(25L);
 //        MonitorItem monitorItem = new MonitorItem();
-        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(2L);
-        MonitorItem monitorItem4 = monitorItemRepository.findByMonitorId(3L);
-//        MonitorItem monitorItem2 = new MonitorItem();
-//
-//        monitorItem2.setMonitorName("API1");
-//        monitorItem2.setRemark("API111111111111");
-//        monitorItem2.setUrl("http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone");
-//        monitorItem2.setRequestType(1);
-//        monitorItem2.setRequestBody("{\n" +
-//                "    \"password\":\"123456\",\n" +
-//                "    \"phone\":\"13900000000\",\n" +
-//                "    \"tokenTs\":20160\n" +
-//                "}\n");
-//        monitorItem2.setAsserts("{\n" +
-//                "    \"statusCode\":\"200\"\n" +
-//                "}");
+        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(1L);
+//        MonitorItem monitorItem4 = monitorItemRepository.findByMonitorId(3L);
+        MonitorItem monitorItem2 = new MonitorItem();
+
+        monitorItem2.setMonitorName("API1");
+        monitorItem2.setRemark("API111111111111");
+        monitorItem2.setUrl("http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone");
+        monitorItem2.setRequestType(1);
+        monitorItem2.setRequestBody("{\n" +
+                "    \"password\":\"123456\",\n" +
+                "    \"phone\":\"13900000000\",\n" +
+                "    \"tokenTs\":20160\n" +
+                "}\n");
+        monitorItem2.setAsserts("{\n" +
+                "    \"statusCode\":\"200\"\n" +
+                "}");
 
         srp.getMonitorItems().add(monitorItem3);
-        srp.getMonitorItems().add(monitorItem4);
+        srp.getMonitorItems().add(monitorItem2);
         monitorItem3.setSrp(srp);
-        monitorItem4.setSrp(srp);
+        monitorItem2.setSrp(srp);
 
         srpRepository.save(srp);
         monitorItemRepository.save(monitorItem3);
-        monitorItemRepository.save(monitorItem4);
+        monitorItemRepository.save(monitorItem2);
     }
 
     //给SRP减监控项(未实现)
@@ -246,16 +244,28 @@ public class Jpatest {
         monitorItemRepository.save(monitorItem3);
     }
 
+    //有问题
     //删除一个srp（关系表和user表会更新，关联SRP不会被删除）
     @Test
     public void testDelSrp(){
 
-        User user = userRepository.findByUserId(1L);
-        SRP srp = srpRepository.findBySrpId(16L);
+        User user = userRepository.findByUserId(10000036L);
+        User user1 = userRepository.findByUserId(10000041L);
+        SRP srp = srpRepository.findBySrpId(25L);
 
         user.getSrps().remove(srp);
+        user1.getSrps().remove(srp);
+//        user.getSrps().clear();
+//        user1.getSrps().clear();
+        srp.getUsers().clear();
 
-        srpRepository.deleteById(16L);
+        srp.getMonitorItems().clear();
+
+        userRepository.save(user);
+        userRepository.save(user1);
+        srpRepository.save(srp);
+
+        srpRepository.deleteById(25L);
     }
 
 
@@ -291,7 +301,7 @@ public class Jpatest {
     //删除一个用户（关系表和user表会更新，关联SRP不会被删除）
     @Test
     public void testDelUser(){
-        userRepository.deleteById(10000034L);
+        userRepository.deleteById(10000041L);
     }
 
     //更新某用户密码
