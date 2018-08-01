@@ -91,6 +91,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /*用户新增*/
+    @Transactional
     @Override
     public User userInsert(User user) {
         User save = userRepository.save(user);
@@ -98,6 +99,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /*用户更新*/
+    @Transactional
     @Override
     public User userUpdate(Long userId) {
         User user = userRepository.findByUserId(userId);
@@ -113,6 +115,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /*删除一个用户*/
+    @Transactional
     @Override
     public void deleteById(Long aLong) {
         if (userRepository.findByUserId(aLong)!=null)

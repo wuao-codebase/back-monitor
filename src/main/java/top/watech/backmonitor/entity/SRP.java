@@ -80,7 +80,8 @@ public class SRP {
     } public void setUsers(Set<User> users) {
         this.users = users;
     }
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade=CascadeType.MERGE)
+
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade={CascadeType.REMOVE})
     public Set<MonitorItem> getMonitorItems() {
         return monitorItems;
     }

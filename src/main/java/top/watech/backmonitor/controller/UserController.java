@@ -135,18 +135,11 @@ public class UserController {
 
     /*用户新增*/
     @PostMapping("/userInsert")
-    public RespEntity userInsert(@RequestBody ReqUser reqUser){
-        User user = userService.userInsert(new User());
+    public RespEntity userInsert(@RequestBody User user){
+        User user1 = userService.userInsert(user);
 
-        user.setUserName(reqUser.getUserName());
-        user.setRole(reqUser.getRole());
-        user.setPhone(reqUser.getPhone());
-        user.setEmail(reqUser.getEmail());
-        user.setUserPwd(reqUser.getUserPwd());
-        user.setRemark(reqUser.getRemark());
-
-        if (user!=null){
-            return new RespEntity(RespCode.SUCCESS,user);
+        if (user1!=null){
+            return new RespEntity(RespCode.SUCCESS,user1);
         }
         else {
             RespCode respCode = RespCode.WARN;
@@ -158,17 +151,11 @@ public class UserController {
 
     /*更新用户信息*/
     @PostMapping("/userUpdate")
-    public RespEntity userUpdate(@RequestBody ReqUser reqUser){
-        User user = userRepository.findByUserId(reqUser.getUserId());
+    public RespEntity userUpdate(@RequestBody User user){
+        User user1 = userService.userUpdate(user.getUserId());
 
-        user.setUserName(reqUser.getUserName());
-        user.setPhone(reqUser.getPhone());
-        user.setEmail(reqUser.getEmail());
-        user.setUserPwd(reqUser.getUserPwd());
-        user.setRemark(reqUser.getRemark());
-
-        if (user!=null){
-            return new RespEntity(RespCode.SUCCESS,user);
+        if (user1!=null){
+            return new RespEntity(RespCode.SUCCESS,user1);
         }
         else {
             RespCode respCode = RespCode.WARN;
@@ -179,6 +166,7 @@ public class UserController {
     }
 
     /*更新用户密码*/
+    @PostMapping("/updateUserpwd")
     public RespEntity updateUserpwd(@RequestBody ReqUser reqUser){
         User user = userService.updateUserpwd(reqUser.getUserId(), reqUser.getUserPwd());
         if (user!=null){

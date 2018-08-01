@@ -242,7 +242,7 @@ public class Jpatest {
         MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(2L);
         SRP srpsub = srpRepository.findBySrpId(26L);
 
-        srpsub.getMonitorItems().clear();
+        srpsub.getMonitorItems().remove(2);
 
         srpRepository.save(srpsub);
         monitorItemRepository.save(monitorItem3);
@@ -251,6 +251,11 @@ public class Jpatest {
     //删除一个srp（关系表和user表会更新，关联SRP不会被删除）
     @Test
     public void testDelSrp(){
+
+        User user = userRepository.findByUserId(1L);
+        SRP srp = srpRepository.findBySrpId(16L);
+
+        user.getSrps().remove(srp);
 
         srpRepository.deleteById(16L);
     }

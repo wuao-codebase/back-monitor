@@ -34,7 +34,7 @@ public class User {
 
     private String token;
 
-    @Transient
+
     private String srpnames;
 
 
