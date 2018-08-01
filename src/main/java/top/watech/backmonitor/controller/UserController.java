@@ -45,8 +45,6 @@ public class UserController {
 
             String result_str = "bearer " + jwtToken;
 
-            System.out.println("************************************");
-            System.out.println(result_str);
             login.setToken(result_str);
             return new RespEntity(RespCode.SUCCESS, login);
         } else {
@@ -56,15 +54,6 @@ public class UserController {
             return new RespEntity(respCode);
         }
     }
-
-
-    @GetMapping("/userList")
-    public RespEntity getList() throws Exception {
-        List<User> userList = userService.getUserList();
-        System.err.println(userList);
-        return new RespEntity(RespCode.SUCCESS, userList);
-    }
-
 
 //    @PostMapping("/user/userlist")
 //    public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
@@ -111,7 +100,114 @@ public class UserController {
         System.out.println(result_str);
 
         return ResultVOUtil.success(result_str);
-
-
     }
+
+    /*根据id取用户*/
+    @GetMapping("/getUserById")
+    public RespEntity getUserById(@RequestParam("userId") Long userId) throws Exception {
+        User userById = userService.getUserById(userId);
+        if (userById!=null){
+            return new RespEntity(RespCode.SUCCESS,userById);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("获取用户失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+    /*获取用户列表(admin)*/
+    @GetMapping("/userList")
+    public RespEntity getList() throws Exception {
+        List<User> userList = userService.getUserList();
+        if(userList.size()!=0){
+            return new RespEntity(RespCode.SUCCESS, userList);
+        }
+//        System.err.println(userList);
+        else{
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("获取用户列表失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+    /*用户新增*/
+    @PostMapping("/userInsert")
+    public RespEntity userInsert(@RequestBody ReqUser reqUser){
+        User user = userService.userInsert(new User());
+
+        user.setUserName(reqUser.getUserName());
+        user.setRole(reqUser.getRole());
+        user.setPhone(reqUser.getPhone());
+        user.setEmail(reqUser.getEmail());
+        user.setUserPwd(reqUser.getUserPwd());
+        user.setRemark(reqUser.getRemark());
+
+        if (user!=null){
+            return new RespEntity(RespCode.SUCCESS,user);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("添加用户失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+    /*更新用户信息*/
+    @PostMapping("/userUpdate")
+    public RespEntity userUpdate(@RequestBody ReqUser reqUser){
+        User user = userRepository.findByUserId(reqUser.getUserId());
+
+        user.setUserName(reqUser.getUserName());
+        user.setPhone(reqUser.getPhone());
+        user.setEmail(reqUser.getEmail());
+        user.setUserPwd(reqUser.getUserPwd());
+        user.setRemark(reqUser.getRemark());
+
+        if (user!=null){
+            return new RespEntity(RespCode.SUCCESS,user);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("更新用户失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+    /*更新用户密码*/
+    public RespEntity updateUserpwd(@RequestBody ReqUser reqUser){
+        User user = userService.updateUserpwd(reqUser.getUserId(), reqUser.getUserPwd());
+        if (user!=null){
+            return new RespEntity(RespCode.SUCCESS,user);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("重设密码失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+    /*删除一个用户*/
+    @PostMapping("/delUserById")
+    public RespEntity deleteUserById(@RequestParam("userId") Long userId){
+        userService.deleteById(userId);
+        User user = userRepository.findByUserId(userId);
+        if(user==null){
+            return new RespEntity(RespCode.SUCCESS);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("删除用户失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+
+
 }

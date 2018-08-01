@@ -20,5 +20,6 @@ public interface MonitorItemRepository extends JpaRepository<MonitorItem,Long> {
     //根据srpId查所有监控项，并根据classify排序
     List<MonitorItem> findBySrpIdOrderByClassify(Long srpId);
 
+    MonitorItem findByMonitorId(Long mobitorItemId);
 
 }

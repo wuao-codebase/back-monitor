@@ -11,7 +11,7 @@ public class MonitorItem {
     private Long monitorId;
     private String monitorName;
     private Integer monitorType;    //监控项类型:1、接口 2、视频 3、页面
-    private Integer requestType;    //请求类型
+    private Integer requestType;    //请求类型:1、POST 2、GET
     private String url;
 
     private String requestBody;     //请求体
@@ -118,6 +118,7 @@ public class MonitorItem {
     } public void setSrpId(Long srpId) {
         this.srpId = srpId;
     }
+
     @JoinColumn(name = "srp_id")
     @ManyToOne(fetch = FetchType.LAZY)
     public SRP getSrp() {

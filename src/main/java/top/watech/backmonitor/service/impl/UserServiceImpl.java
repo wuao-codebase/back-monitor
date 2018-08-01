@@ -2,8 +2,10 @@ package top.watech.backmonitor.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.watech.backmonitor.entity.ReqUser;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
@@ -53,10 +55,10 @@ public class UserServiceImpl implements UserService {
 //        return pageEntity;
 //    }
 
-        @Override
-    public List<User> getUserList() {
-            return userRepository.findAll();
-    }
+//        @Override
+//    public List<User> getUserList() {
+//            return userRepository.findAll();
+//    }
 
     //wuao
     @Override
@@ -88,6 +90,55 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUserName(userName);
     }
 
+    /*用户新增*/
+    @Override
+    public User userInsert(User user) {
+        User save = userRepository.save(user);
+        return save;
+    }
+
+    /*用户更新*/
+    @Override
+    public User userUpdate(Long userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user!=null){
+            User user1 = userRepository.saveAndFlush(user);
+            return user1;
+        }
+       else {
+            userRepository.save(user);
+            return user;
+        }
+
+    }
+
+    /*删除一个用户*/
+    @Override
+    public void deleteById(Long aLong) {
+        if (userRepository.findByUserId(aLong)!=null)
+            userRepository.deleteById(aLong);
+    }
+
+//    /*删多个用户*/
+//    public void deleteAllUser(){
+//        List<User> userIdIn = userRepository.findUsersByUserIdIn();
+//        for (User u : userIdIn){
+//            userRepository.deleteById(u.getUserId());
+//        }
+//    }
+
+    /*更新用户密码*/
+    @Transactional
+    @Override
+    public User updateUserpwd(Long userId,String userPwd) {
+        User byUserId = userRepository.findByUserId(userId);
+        if (byUserId!=null){
+            byUserId.setUserId(byUserId.getUserId());
+            byUserId.setUserPwd(userPwd);
+        }
+        User user = userRepository.saveAndFlush(byUserId);
+        return user;
+    }
 
     //根据srpId获取user列表
     @Override
@@ -99,12 +150,6 @@ public class UserServiceImpl implements UserService {
             }
         });
         return users;
-    }
-
-    @Transactional
-    @Override
-    public void updateUserEmail(Long userId, String email) {
-        userRepository.updateUserEmail(userId,email);
     }
 
 //    @Transactional

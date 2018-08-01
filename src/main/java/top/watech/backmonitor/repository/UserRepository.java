@@ -37,13 +37,17 @@ public interface UserRepository extends JpaRepository<User,Long> ,JpaSpecificati
 
     User findByUserId(Long userId);
 
+    /*删除一个用户*/
     void deleteById(Long aLong);
 
+    //没用到
+    /*更新用户密码*/
     @Modifying
-    @Query("UPDATE User u SET u.email = :email WHERE userId = :userId")
-    void updateUserEmail(@Param("userId") Long id, @Param("email") String email);
+    @Query("UPDATE User u SET u.userPwd = :userPwd WHERE userId = :userId")
+    void updateUserPwd(@Param("userId") Long id, @Param("userPwd") String userPwd);
 
     @Query(value = "select users.user_id,users.email,users.role,users.phone,users.user_pwd,users.remark, string_agg(srps.srp_name,'，') as srpnames from users left join user_srp on users.user_id = user_srp.user_id left join srps on user_srp.srp_id = srps.srp_id group by users.user_id", nativeQuery = true)
     List<Object[]> getuserlist();
 
+//    List<User> findUsersByUserIdIn();
 }

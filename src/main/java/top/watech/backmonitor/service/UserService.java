@@ -22,5 +22,17 @@ public interface UserService {
     //获取所有用户信息，包括关联srp信息
     List<User> getAllUserInfo(String srpId);
 
-    void updateUserEmail(Long userId,String email);
+
+
+    //新增账户
+    User userInsert(User user);
+
+    //更新账户
+    User userUpdate(Long userId);
+
+    /*删除一个用户*/
+    void deleteById(Long aLong);
+
+    /*更新用户密码*/
+    User updateUserpwd(Long userId,String userPwd);
 }

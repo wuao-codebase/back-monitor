@@ -10,14 +10,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
+import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
+import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.SRPService;
 import top.watech.backmonitor.service.UserService;
 
 import java.awt.print.Book;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,6 +34,14 @@ public class Jpatest {
 
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    SRPService srpService;
+    @Autowired
+    SrpRepository srpRepository;
+    @Autowired
+    UserService userService;
+    @Autowired
+    MonitorItemRepository monitorItemRepository;
 
     @Test
     public void getUserList() {
@@ -82,12 +93,6 @@ public class Jpatest {
         System.out.println("当前页面的记录数: " + page.getNumberOfElements());
     }
 
-    @Autowired
-    SRPService srpService;
-    @Autowired
-    SrpRepository srpRepository;
-    @Autowired
-    UserService userService;
 
 
     //多对多保存
@@ -148,6 +153,20 @@ public class Jpatest {
 
     }
 
+    //SRP更新
+    @Test
+    public void testSrpUpdate(){
+        srpRepository.findBySrpId(18L);
+        SRP srp = new SRP();
+        srp.setSrpName("yayaya");
+        srp.setDescription("XXXXXXXXXXyayayaXXXXXXXXXXXXX");
+        srp.setSwitchs(true);
+        srp.setFreq(20);
+
+        srpRepository.save(srp);
+
+    }
+
     //给SRP加所属用户
     @Test
     public void testSrpUserInsert(){
@@ -171,11 +190,70 @@ public class Jpatest {
         userRepository.save(u2);
     }
 
-//    //删除一个srp（关系表和user表会更新，关联SRP不会被删除）
-//    @Test
-//    public void testDelSrp(){
-//        srpRepository.deleteById(16L);
-//    }
+    //给SRP减所属用户
+    @Test
+    public void testSrpUserSub(){
+        User uu = userRepository.findByUserId(10000036L);
+
+        SRP srpsub = srpRepository.findBySrpId(11L);
+
+        srpsub.getUsers().clear();
+        uu.getSrps().clear();
+
+        srpRepository.save(srpsub);
+        userRepository.save(uu);
+    }
+
+    //给SRP加监控项
+    @Test
+    public void testItemAdd(){
+        SRP srp = srpRepository.findBySrpId(26L);
+//        MonitorItem monitorItem = new MonitorItem();
+        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(2L);
+        MonitorItem monitorItem4 = monitorItemRepository.findByMonitorId(3L);
+//        MonitorItem monitorItem2 = new MonitorItem();
+//
+//        monitorItem2.setMonitorName("API1");
+//        monitorItem2.setRemark("API111111111111");
+//        monitorItem2.setUrl("http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone");
+//        monitorItem2.setRequestType(1);
+//        monitorItem2.setRequestBody("{\n" +
+//                "    \"password\":\"123456\",\n" +
+//                "    \"phone\":\"13900000000\",\n" +
+//                "    \"tokenTs\":20160\n" +
+//                "}\n");
+//        monitorItem2.setAsserts("{\n" +
+//                "    \"statusCode\":\"200\"\n" +
+//                "}");
+
+        srp.getMonitorItems().add(monitorItem3);
+        srp.getMonitorItems().add(monitorItem4);
+        monitorItem3.setSrp(srp);
+        monitorItem4.setSrp(srp);
+
+        srpRepository.save(srp);
+        monitorItemRepository.save(monitorItem3);
+        monitorItemRepository.save(monitorItem4);
+    }
+
+    //给SRP减监控项(未实现)
+    @Test
+    public void testItemSub(){
+        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(2L);
+        SRP srpsub = srpRepository.findBySrpId(26L);
+
+        srpsub.getMonitorItems().clear();
+
+        srpRepository.save(srpsub);
+        monitorItemRepository.save(monitorItem3);
+    }
+
+    //删除一个srp（关系表和user表会更新，关联SRP不会被删除）
+    @Test
+    public void testDelSrp(){
+
+        srpRepository.deleteById(16L);
+    }
 
 
 
@@ -213,14 +291,52 @@ public class Jpatest {
         userRepository.deleteById(10000034L);
     }
 
-    //更新某用户信息
+    //更新某用户密码
     @Test
     public void updateUser() {
 
         User user = userRepository.findByUserId(10000032L);
         if (user!=null){
-            userService.updateUserEmail(10000032L,"zhangsan@xx.cn");
+            userService.updateUserpwd(10000032L,"zhangsan");
         }
+    }
+
+    //更新某用户信息
+    @Test
+    public void updateUser1(){
+        User user = new User();
+        user.setEmail("xxxxxx");
+        user.setNickName("xx122");
+        user.setRemark("xxxxx");
+        user.setUserName("updUser111");
+        user.setUserPwd("111111");
+        user.setPhone("18900000011");
+//        user.setUserId(10000036L);
+
+//        userRepository.save(user);
+//        userRepository.flush();
+        userRepository.saveAndFlush(user);
+
+        System.err.println(user);
+
+    }
+
+    //更新某用户信息
+    @Test
+    public void updateUser2(){
+
+        User user = userRepository.findByUserId(10000036L);
+
+        user.setRemark("ZZZZZZZZZ");
+
+//        user.setUserId(10000036L);
+
+//        userRepository.save(user);
+//        userRepository.flush();
+        userRepository.saveAndFlush(user);
+
+        System.err.println(user);
+
     }
 
     //根据srpId获取user信息
@@ -231,6 +347,7 @@ public class Jpatest {
         for (User user : userList){
             System.err.println(user);
         }
+
     }
     @Test
     public void testsql(){
@@ -249,7 +366,7 @@ public class Jpatest {
             users.add(user);
         }
         for (User user : users) {
-            System.out.println(user);
+            System.err.println(user);
         }
     }
 
