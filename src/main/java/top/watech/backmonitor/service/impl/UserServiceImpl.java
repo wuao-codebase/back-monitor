@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
 
     //根据srpId获取user列表(查srp的用户列表时)
     @Override
-    public List<User> getAllUserInfo(String srpId) {
+    public List<User> getUserBySrpId(Long srpId) {
         List<User> users = userRepository.findAll(new Specification<User>() {
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);

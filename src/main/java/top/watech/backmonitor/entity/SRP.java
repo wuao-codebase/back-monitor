@@ -2,7 +2,6 @@ package top.watech.backmonitor.entity;
 
 import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -81,7 +80,7 @@ public class SRP {
         this.users = users;
     }
 
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade = CascadeType.REMOVE)//,cascade={CascadeType.REMOVE}
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade = CascadeType.REMOVE)
     public Set<MonitorItem> getMonitorItems() {
         return monitorItems;
     }

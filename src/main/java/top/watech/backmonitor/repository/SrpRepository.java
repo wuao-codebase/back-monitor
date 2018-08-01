@@ -5,10 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import top.watech.backmonitor.entity.SRP;
-
-import java.util.List;
 
 /**
  * Created by fhm on 2018/7/19.
@@ -21,6 +18,7 @@ public interface SrpRepository extends JpaRepository<SRP,Long> ,JpaSpecification
     //根据userId获取srp列表
 //    List<SRP> findSRPSByuserId(Long userId);
 
+    /*根据id获取srp*/
     SRP findBySrpId(Long srpId);
 
     @Modifying

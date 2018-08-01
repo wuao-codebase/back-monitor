@@ -21,7 +21,7 @@ public interface UserService {
     User getUserByName(String userName);
 
     //获取所有用户信息，包括关联srp信息name等
-    List<User> getAllUserInfo(String srpId);
+    List<User> getUserBySrpId(Long srpId);
 
 
 

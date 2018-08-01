@@ -149,11 +149,13 @@ public class UserController {
         }
     }
 
-
-    /*删除一个用户*/
+    /*删除多个用户*/
     @DeleteMapping("/delUserList")
     public RespEntity deleteUserlist(@RequestParam("userId") List<Long> userIds){
         userService.deleteUserlist(userIds);
+//        for (Long userId : userIds){
+//            if (userRepository.findByUserId(userId)==null)
+//        }
             RespCode respCode = RespCode.WARN;
             respCode.setMsg("删除用户失败");
             respCode.setCode(-1);

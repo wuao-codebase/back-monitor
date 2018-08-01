@@ -250,11 +250,12 @@ public class Jpatest {
     public void testDelSrp(){
 
         User user = userRepository.findByUserId(10000036L);
-        User user1 = userRepository.findByUserId(10000041L);
+//        User user1 = userRepository.findByUserId(10000041L);
         SRP srp = srpRepository.findBySrpId(25L);
 
         user.getSrps().remove(srp);
-        user1.getSrps().remove(srp);
+//        user1.getSrps().remove(srp);
+
 //        user.getSrps().clear();
 //        user1.getSrps().clear();
         srp.getUsers().clear();
@@ -262,7 +263,7 @@ public class Jpatest {
         srp.getMonitorItems().clear();
 
         userRepository.save(user);
-        userRepository.save(user1);
+//        userRepository.save(user1);
         srpRepository.save(srp);
 
         srpRepository.deleteById(25L);
@@ -351,7 +352,7 @@ public class Jpatest {
     //根据srpId获取user信息
     @Test
     public void testFindUsers(){
-        List<User> userList = userService.getAllUserInfo("16");
+        List<User> userList = userService.getUserBySrpId(16L);
 
         for (User user : userList){
             System.err.println(user);

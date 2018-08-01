@@ -10,9 +10,21 @@ import java.util.List;
 
 public interface SRPService {
 
+    //获取SRP列表
+    List<SRP> getsrpList();
+
+    //新增SRP
+    SRP srpInsert(SRP srp);
+
+    //更新SRP
+    SRP srpUpdate(SRP srp);
+
+    /*删除一个SRP*/
+    void deleteById(Long srpId);
+
+    /*删除多个SRP*/
+    void deleteSrplist(List<Long> srpIDs);
+
+    /*根据userId获取srp*/
     List<SRP> findByUserId(String userId);
-
-    int deleteBySrpId(Long srpId);
-
-
 }
