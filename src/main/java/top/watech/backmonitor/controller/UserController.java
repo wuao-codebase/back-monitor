@@ -196,14 +196,11 @@ public class UserController {
     }
 
 
-    /*删除一个用户*/
-    @DeleteMapping("/delUserList")
-    public RespEntity deleteUserlist(@RequestParam("userId") List<Long> userIds){
-        userService.deleteUserlist(userIds);
-            RespCode respCode = RespCode.WARN;
-            respCode.setMsg("删除用户失败");
-            respCode.setCode(-1);
-            return new RespEntity(respCode);
+    /*删除多个用户*/
+    @DeleteMapping("/delUserList/{userIDs}")
+    public RespEntity deleteUserlist(@PathVariable List<Long> userIDs){
+        userService.deleteUserlist(userIDs);
+            return new RespEntity(RespCode.SUCCESS);
         }
     }
 

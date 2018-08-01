@@ -132,9 +132,13 @@ public class UserServiceImpl implements UserService {
             userRepository.deleteById(aLong);
     }
 
+    @Transactional
     @Override
     public void deleteUserlist(List<Long> userIDs) {
-
+        for (Long userid : userIDs) {
+            if (userRepository.findByUserId(userid)!=null)
+                userRepository.deleteById(userid);
+        }
     }
 
 //    /*删多个用户*/
