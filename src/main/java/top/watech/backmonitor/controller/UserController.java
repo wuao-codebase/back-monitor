@@ -56,6 +56,7 @@ public class UserController {
         }
     }
 
+
     /*根据id取用户*/
     @GetMapping("/getUserById")
     public RespEntity getUserById(@RequestParam("userId") Long userId) throws Exception {
@@ -103,7 +104,7 @@ public class UserController {
     }
 
     /*更新用户信息*/
-    @PutMapping ("/userUpdate")
+    @PostMapping("/userUpdate")
     public RespEntity userUpdate(@RequestBody User user){
         User user1 = userService.userUpdate(user);
 
@@ -119,7 +120,7 @@ public class UserController {
     }
 
     /*更新用户密码*/
-    @PutMapping("/updateUserpwd")
+    @PostMapping("/updateUserpwd")
     public RespEntity updateUserpwd(@RequestBody ReqUser reqUser){
         User user = userService.updateUserpwd(reqUser.getUserId(), reqUser.getUserPwd());
         if (user!=null){
@@ -149,18 +150,38 @@ public class UserController {
         }
     }
 
-    /*删除多个用户*/
+
+    /*删除一个用户*/
     @DeleteMapping("/delUserList")
     public RespEntity deleteUserlist(@RequestParam("userId") List<Long> userIds){
         userService.deleteUserlist(userIds);
-//        for (Long userId : userIds){
-//            if (userRepository.findByUserId(userId)==null)
-//        }
             RespCode respCode = RespCode.WARN;
             respCode.setMsg("删除用户失败");
             respCode.setCode(-1);
             return new RespEntity(respCode);
+        }
     }
+
+    /*删除多个用户*/
+    @DeleteMapping("/delUserList/{userIDs}")
+    public RespEntity deleteUserlist(@PathVariable List<Long> userIDs){
+        userService.deleteUserlist(userIDs);
+        return new RespEntity(RespCode.SUCCESS);
+    }
+}
+
+//    /*删除多个用户*/
+//    @DeleteMapping("/delUserList")
+//    public RespEntity deleteUserlist(@RequestParam("userId") List<Long> userIds){
+//        userService.deleteUserlist(userIds);
+////        for (Long userId : userIds){
+////            if (userRepository.findByUserId(userId)==null)
+////        }
+//        RespCode respCode = RespCode.WARN;
+//        respCode.setMsg("删除用户失败");
+//        respCode.setCode(-1);
+//        return new RespEntity(respCode);
+//    }
 
 
 //    @PostMapping("/user/userlist")
@@ -209,5 +230,3 @@ public class UserController {
 //
 //        return ResultVOUtil.success(result_str);
 //    }
-}
-
