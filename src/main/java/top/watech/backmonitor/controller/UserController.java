@@ -135,9 +135,8 @@ public class UserController {
 
     /*用户新增*/
     @PostMapping("/userInsert")
-    public RespEntity userInsert(@RequestBody User user){
-        User user1 = userService.userInsert(user);
-
+    public RespEntity userInsert(@RequestBody  ReqUser reqUser){
+        User user1 = userService.userInsert(reqUser);
         if (user1!=null){
             return new RespEntity(RespCode.SUCCESS,user1);
         }
@@ -152,7 +151,7 @@ public class UserController {
     /*更新用户信息*/
     @PostMapping("/userUpdate")
     public RespEntity userUpdate(@RequestBody User user){
-        User user1 = userService.userUpdate(user.getUserId());
+        User user1 = userService.userUpdate(user);
 
         if (user1!=null){
             return new RespEntity(RespCode.SUCCESS,user1);
@@ -181,7 +180,7 @@ public class UserController {
     }
 
     /*删除一个用户*/
-    @PostMapping("/delUserById")
+    @DeleteMapping("/delUserById")
     public RespEntity deleteUserById(@RequestParam("userId") Long userId){
         userService.deleteById(userId);
         User user = userRepository.findByUserId(userId);
@@ -197,5 +196,14 @@ public class UserController {
     }
 
 
+    /*删除一个用户*/
+    @DeleteMapping("/delUserList")
+    public RespEntity deleteUserlist(@RequestParam("userId") List<Long> userIds){
+        userService.deleteUserlist(userIds);
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("删除用户失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
 
-}

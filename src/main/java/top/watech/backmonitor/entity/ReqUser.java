@@ -1,8 +1,11 @@
 package top.watech.backmonitor.entity;
 
+import lombok.ToString;
+
 /**
  * 用于接收登陆账户信息
  */
+@ToString
 public class ReqUser {
     private Long userId;
     private String userName;

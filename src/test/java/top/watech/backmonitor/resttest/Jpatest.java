@@ -19,9 +19,7 @@ import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.SRPService;
 import top.watech.backmonitor.service.UserService;
 
-import java.awt.print.Book;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -278,7 +276,7 @@ public class Jpatest {
     //新增账户
     @Test
     public void testUserInsert(){
-        User user = new User("user01");
+        User user = new User();
         user.setRole(1);
         user.setPhone("18300000000");
         user.setEmail("xxx@xx.com");

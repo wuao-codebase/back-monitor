@@ -69,7 +69,6 @@ public class User {
     }
 
     @Column(name = "user_name",nullable = false, length = 20)
-    @Size(min=3, max=20)
     public String getUserName() {
         return userName;
     }
@@ -89,7 +88,6 @@ public class User {
         this.userPwd = userPwd;
     }
 
-    @Size(min=11, max=11)
     public String getPhone() {
         return phone;
     }

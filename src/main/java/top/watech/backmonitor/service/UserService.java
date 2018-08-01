@@ -1,6 +1,7 @@
 package top.watech.backmonitor.service;
 
 
+import top.watech.backmonitor.entity.ReqUser;
 import top.watech.backmonitor.entity.User;
 
 import java.util.List;
@@ -25,14 +26,16 @@ public interface UserService {
 
 
     //新增账户
-    User userInsert(User user);
+    User userInsert(ReqUser reqUser);
 
     //更新账户
-    User userUpdate(Long userId);
+    User userUpdate(User user);
 
     /*删除一个用户*/
-    void deleteById(Long aLong);
+    void deleteById(Long Long);
 
+    /*删除多个用户*/
+    void deleteUserlist(List<Long> userIDs);
     /*更新用户密码*/
     User updateUserpwd(Long userId,String userPwd);
 }

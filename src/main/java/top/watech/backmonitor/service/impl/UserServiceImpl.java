@@ -2,7 +2,6 @@ package top.watech.backmonitor.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.ReqUser;
@@ -12,8 +11,8 @@ import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 
 import javax.persistence.criteria.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by fhm on 2018/7/27.
@@ -74,6 +73,7 @@ public class UserServiceImpl implements UserService {
             user.setUserPwd((String)objects[4]);
             user.setRemark((String)objects[5]);
             user.setSrpnames(String.valueOf(objects[6]));
+            user.setUserName(String.valueOf(objects[7]));
             users.add(user);
         }
         return users;
@@ -93,7 +93,15 @@ public class UserServiceImpl implements UserService {
     /*用户新增*/
     @Transactional
     @Override
-    public User userInsert(User user) {
+    public User userInsert(ReqUser reqUser) {
+        System.err.println(reqUser);
+        User user = new User();
+        user.setUserName(reqUser.getUserName());
+        user.setEmail(reqUser.getEmail());
+        user.setPhone(reqUser.getPhone());
+        user.setRole(reqUser.getRole());
+        user.setUserPwd(reqUser.getUserPwd());
+        user.setRemark(reqUser.getRemark());
         User save = userRepository.save(user);
         return save;
     }
@@ -101,15 +109,17 @@ public class UserServiceImpl implements UserService {
     /*用户更新*/
     @Transactional
     @Override
-    public User userUpdate(Long userId) {
-        User user = userRepository.findByUserId(userId);
-        if (user!=null){
-            User user1 = userRepository.saveAndFlush(user);
-            return user1;
+    public User userUpdate(User user) {
+        User user1 = userRepository.findByUserId(user.getUserId());
+        if (user1!=null){
+            user1.setUserName(user.getUserName());
+            user1.setPhone(user.getPhone());
+            user1.setEmail(user.getEmail());
+            user1.setRemark(user.getRemark());
+            return userRepository.saveAndFlush(user1);
         }
        else {
-            userRepository.save(user);
-            return user;
+            return null;
         }
 
     }
@@ -120,6 +130,11 @@ public class UserServiceImpl implements UserService {
     public void deleteById(Long aLong) {
         if (userRepository.findByUserId(aLong)!=null)
             userRepository.deleteById(aLong);
+    }
+
+    @Override
+    public void deleteUserlist(List<Long> userIDs) {
+
     }
 
 //    /*删多个用户*/
