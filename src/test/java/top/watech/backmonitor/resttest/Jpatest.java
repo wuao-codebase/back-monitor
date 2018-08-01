@@ -342,10 +342,6 @@ public class Jpatest {
 
         user.setRemark("ZZZZZZZZZ");
 
-//        user.setUserId(10000036L);
-
-//        userRepository.save(user);
-//        userRepository.flush();
         userRepository.saveAndFlush(user);
 
         System.err.println(user);
@@ -382,5 +378,16 @@ public class Jpatest {
             System.err.println(user);
         }
     }
+
+//    @Test
+//    public void updateUser(){
+//        User user = new User();
+//        user.setEmail("xxxxxx");
+//        user.setNickName("xx1");
+//        user.setRemark("xxxxx");
+//
+//        userRepository.saveAndFlush(user);
+//        System.err.println(user);
+//    }
 
 }

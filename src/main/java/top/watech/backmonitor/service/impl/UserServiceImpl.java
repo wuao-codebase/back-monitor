@@ -23,43 +23,19 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
+    /*登录，根据userId和用户密码精确匹配*/
     @Override
     public User Login(Long id,String userPwd) throws Exception {
-//        User user = new User();
-//        user.setUserName("wuao");
-//        Example<User> example = Example.of(user);
-//        return userRepository.findAll(example);
         return userRepository.getByUserIdIsAndAndUserPwdIs(id,userPwd);
     }
+
+    /*根据userId获取用户*/
     @Override
     public User getUserById(Long id) throws Exception {
-//        User user = new User();
-//        user.setUserName("wuao");
-//        Example<User> example = Example.of(user);
-//        return userRepository.findAll(example);
         return userRepository.findById(id).get();
     }
 
-    //后端分页
-//    @Override
-//    public PageEntity getUserList(int pageNo,int pageSize) {
-//        int page = (pageNo < 0) ? 0 : pageNo;
-//        int size = (pageSize<=0)?25:pageSize;
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<User>  pages = userRepository.findAll(pageable);
-//        PageEntity pageEntity = new PageEntity();
-//        pageEntity.setTotal(pages.getTotalPages());
-//        pageEntity.setData(pages.getContent());
-//        pageEntity.setPageNo(pages.getNumber() + 1);
-//        return pageEntity;
-//    }
-
-//        @Override
-//    public List<User> getUserList() {
-//            return userRepository.findAll();
-//    }
-
-    //wuao
+    //wu获取用户列表，包括用户基本信息和srpName
     @Override
     public List<User> getUserList() {
         ArrayList<User> users = new ArrayList<>();
@@ -77,17 +53,6 @@ public class UserServiceImpl implements UserService {
             users.add(user);
         }
         return users;
-    }
-
-
-    @Transactional
-    public void saveUsers(List< User> users){
-        userRepository.saveAll(users);
-    }
-
-    @Override
-    public User getUserByName(String userName) {
-        return userRepository.findByUserName(userName);
     }
 
     /*用户新增*/
@@ -121,29 +86,7 @@ public class UserServiceImpl implements UserService {
        else {
             return null;
         }
-
     }
-
-    /*删除一个用户*/
-    @Transactional
-    @Override
-    public void deleteById(Long aLong) {
-        if (userRepository.findByUserId(aLong)!=null)
-            userRepository.deleteById(aLong);
-    }
-
-    @Override
-    public void deleteUserlist(List<Long> userIDs) {
-
-    }
-
-//    /*删多个用户*/
-//    public void deleteAllUser(){
-//        List<User> userIdIn = userRepository.findUsersByUserIdIn();
-//        for (User u : userIdIn){
-//            userRepository.deleteById(u.getUserId());
-//        }
-//    }
 
     /*更新用户密码*/
     @Transactional
@@ -158,7 +101,21 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
-    //根据srpId获取user列表
+    /*删除一个用户*/
+    @Transactional
+    @Override
+    public void deleteById(Long aLong) {
+        if (userRepository.findByUserId(aLong)!=null)
+            userRepository.deleteById(aLong);
+    }
+    /*删多个用户*/
+    @Transactional
+    @Override
+    public void deleteUserlist(List<Long> userIDs) {
+
+    }
+
+    //根据srpId获取user列表(查srp的用户列表时)
     @Override
     public List<User> getAllUserInfo(String srpId) {
         List<User> users = userRepository.findAll(new Specification<User>() {
@@ -170,9 +127,40 @@ public class UserServiceImpl implements UserService {
         return users;
     }
 
+    //保存所有用户
+    @Transactional
+    public void saveUsers(List< User> users){
+        userRepository.saveAll(users);
+    }
+
+    //根据用户名获取用户
+    @Override
+    public User getUserByName(String userName) {
+        return userRepository.findByUserName(userName);
+    }
+
 //    @Transactional
 //    public void updateUsers(Long userId,String username){
 //        userRepository.updateUserUsername(userId,username);
+//    }
+
+    //后端分页
+//    @Override
+//    public PageEntity getUserList(int pageNo,int pageSize) {
+//        int page = (pageNo < 0) ? 0 : pageNo;
+//        int size = (pageSize<=0)?25:pageSize;
+//        Pageable pageable = PageRequest.of(page, size);
+//        Page<User>  pages = userRepository.findAll(pageable);
+//        PageEntity pageEntity = new PageEntity();
+//        pageEntity.setTotal(pages.getTotalPages());
+//        pageEntity.setData(pages.getContent());
+//        pageEntity.setPageNo(pages.getNumber() + 1);
+//        return pageEntity;
+//    }
+
+//        @Override
+//    public List<User> getUserList() {
+//            return userRepository.findAll();
 //    }
 
 }

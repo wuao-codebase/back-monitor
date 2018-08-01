@@ -20,7 +20,7 @@ public interface UserService {
 
     User getUserByName(String userName);
 
-    //获取所有用户信息，包括关联srp信息
+    //获取所有用户信息，包括关联srp信息name等
     List<User> getAllUserInfo(String srpId);
 
 
@@ -36,6 +36,7 @@ public interface UserService {
 
     /*删除多个用户*/
     void deleteUserlist(List<Long> userIDs);
+
     /*更新用户密码*/
     User updateUserpwd(Long userId,String userPwd);
 }
