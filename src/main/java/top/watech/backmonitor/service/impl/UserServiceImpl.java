@@ -88,31 +88,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    /*删除一个用户*/
-    @Transactional
-    @Override
-    public void deleteById(Long aLong) {
-        if (userRepository.findByUserId(aLong)!=null)
-            userRepository.deleteById(aLong);
-    }
-
-    @Transactional
-    @Override
-    public void deleteUserlist(List<Long> userIDs) {
-        for (Long userid : userIDs) {
-            if (userRepository.findByUserId(userid)!=null)
-                userRepository.deleteById(userid);
-        }
-    }
-
-//    /*删多个用户*/
-//    public void deleteAllUser(){
-//        List<User> userIdIn = userRepository.findUsersByUserIdIn();
-//        for (User u : userIdIn){
-//            userRepository.deleteById(u.getUserId());
-//        }
-//    }
-
     /*更新用户密码*/
     @Transactional
     @Override
@@ -125,44 +100,35 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.saveAndFlush(byUserId);
         return user;
     }
-
-    //根据srpId获取user列表
+    /*删除一个用户*/
+    @Transactional
     @Override
-    public List<User> getAllUserInfo(String srpId) {
+    public void deleteById(Long aLong) {
+        if (userRepository.findByUserId(aLong)!=null)
+            userRepository.deleteById(aLong);
+    }
+
+    /*删多个用户*/
+    @Transactional
+    @Override
+    public void deleteUserlist(List<Long> userIDs) {
+        for (Long userid : userIDs) {
+            if (userRepository.findByUserId(userid)!=null)
+                userRepository.deleteById(userid);
+        }
+    }
+
+    /*根据srpId获取user列表(查srp的用户列表时)*/
+    @Override
+    public List<User> getUserBySrpId(User user) {
         List<User> users = userRepository.findAll(new Specification<User>() {
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);
-                return cb.equal(userJoin.get("srpId"), srpId);
+                return cb.equal(userJoin.get("srpId"), user.getUserId());
             }
         });
         return users;
     }
-
-//    /*删除一个用户*/
-//    @Transactional
-//    @Override
-//    public void deleteById(Long aLong) {
-//        if (userRepository.findByUserId(aLong)!=null)
-//            userRepository.deleteById(aLong);
-//    }
-//    /*删多个用户*/
-//    @Transactional
-//    @Override
-//    public void deleteUserlist(List<Long> userIDs) {
-//
-//    }
-//
-//    //根据srpId获取user列表(查srp的用户列表时)
-//    @Override
-//    public List<User> getUserBySrpId(Long srpId) {
-//        List<User> users = userRepository.findAll(new Specification<User>() {
-//            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);
-//                return cb.equal(userJoin.get("srpId"), srpId);
-//            }
-//        });
-//        return users;
-//    }
 
     //保存所有用户
     @Transactional

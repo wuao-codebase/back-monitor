@@ -56,7 +56,6 @@ public class UserController {
         }
     }
 
-
     /*根据id取用户*/
     @GetMapping("/getUserById")
     public RespEntity getUserById(@RequestParam("userId") Long userId) throws Exception {
@@ -66,7 +65,7 @@ public class UserController {
         }
         else {
             RespCode respCode = RespCode.WARN;
-            respCode.setMsg("获取用户失败");
+            respCode.setMsg("根据userId获取用户失败");
             respCode.setCode(-1);
             return new RespEntity(respCode);
         }
@@ -104,7 +103,7 @@ public class UserController {
     }
 
     /*更新用户信息*/
-    @PostMapping("/userUpdate")
+    @PutMapping("/userUpdate")
     public RespEntity userUpdate(@RequestBody User user){
         User user1 = userService.userUpdate(user);
 
@@ -120,7 +119,7 @@ public class UserController {
     }
 
     /*更新用户密码*/
-    @PostMapping("/updateUserpwd")
+    @PutMapping ("/updateUserpwd")
     public RespEntity updateUserpwd(@RequestBody ReqUser reqUser){
         User user = userService.updateUserpwd(reqUser.getUserId(), reqUser.getUserPwd());
         if (user!=null){
@@ -150,38 +149,30 @@ public class UserController {
         }
     }
 
-
-    /*删除一个用户*/
-    @DeleteMapping("/delUserList")
-    public RespEntity deleteUserlist(@RequestParam("userId") List<Long> userIds){
-        userService.deleteUserlist(userIds);
-            RespCode respCode = RespCode.WARN;
-            respCode.setMsg("删除用户失败");
-            respCode.setCode(-1);
-            return new RespEntity(respCode);
-        }
-    }
-
     /*删除多个用户*/
     @DeleteMapping("/delUserList/{userIDs}")
     public RespEntity deleteUserlist(@PathVariable List<Long> userIDs){
         userService.deleteUserlist(userIDs);
         return new RespEntity(RespCode.SUCCESS);
     }
+
+    /*根据srpId获取user列表*/
+    @PutMapping("/getUserBySrpId")
+    public RespEntity getUserBySrpId(@RequestBody User user){
+        List<User> users = userService.getUserBySrpId(user);
+
+        if (users!=null){
+            return new RespEntity(RespCode.SUCCESS,users);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("根据srpId获取用户失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
 }
 
-//    /*删除多个用户*/
-//    @DeleteMapping("/delUserList")
-//    public RespEntity deleteUserlist(@RequestParam("userId") List<Long> userIds){
-//        userService.deleteUserlist(userIds);
-////        for (Long userId : userIds){
-////            if (userRepository.findByUserId(userId)==null)
-////        }
-//        RespCode respCode = RespCode.WARN;
-//        respCode.setMsg("删除用户失败");
-//        respCode.setCode(-1);
-//        return new RespEntity(respCode);
-//    }
 
 
 //    @PostMapping("/user/userlist")
