@@ -11,24 +11,19 @@ import java.util.List;
  */
 
 public interface UserService {
+    /*登录*/
     User Login(Long id,String userPwd) throws Exception;
 
+    /*根据userId获取用户*/
     User getUserById(Long id) throws Exception;
-//    PageEntity getUserList(int pageNo, int pageSize)throws Exception;
+
+    /*获取用户列表，包括用户基本信息和srpName*/
     List<User> getUserList( )throws Exception;
-    void saveUsers(List<User> users) throws Exception;
 
-    User getUserByName(String userName);
-
-    //获取所有用户信息，包括关联srp信息name等
-    List<User> getUserBySrpId(Long srpId);
-
-
-
-    //新增账户
+    /*新增账户*/
     User userInsert(ReqUser reqUser);
 
-    //更新账户
+    /*更新账户*/
     User userUpdate(User user);
 
     /*删除一个用户*/
@@ -38,5 +33,12 @@ public interface UserService {
     void deleteUserlist(List<Long> userIDs);
 
     /*更新用户密码*/
-    User updateUserpwd(Long userId,String userPwd);
+    User updateUserpwd(Long userId,String oldPwd, String userPwd);
+
+    //根据srpId获取user列表,包括关联srp信息name等
+    List<User> getUserBySrpId(User user);
+
+    void saveUsers(List<User> users) throws Exception;
+
+    User getUserByName(String userName);
 }

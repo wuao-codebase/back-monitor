@@ -10,6 +10,7 @@ import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 import top.watech.backmonitor.util.JwtHelper;
+import top.watech.backmonitor.util.SecurityUtil;
 
 import java.util.List;
 
@@ -33,9 +34,16 @@ public class UserController {
     //登录
     @PostMapping("/")
     public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
-
         User login = userService.Login(reqUser.getUserId(), reqUser.getUserPwd());
-        if (login != null) {
+
+        if(login==null || !login.getUserPwd().equals(SecurityUtil.md5(login.getUserName(),login.getUserPwd())))
+        {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("用户或密码错误");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+        else {
             String jwtToken = JwtHelper.createJWT(login.getUserName(),
                     login.getUserId(),
                     login.getRole().toString(),
@@ -46,16 +54,10 @@ public class UserController {
 
             String result_str = "bearer " + jwtToken;
 
-            login.setToken(result_str);
+            login.setToken(result_str);//登录成功生成token
             return new RespEntity(RespCode.SUCCESS, login);
-        } else {
-            RespCode respCode = RespCode.WARN;
-            respCode.setMsg("用户或密码错误");
-            respCode.setCode(-1);
-            return new RespEntity(respCode);
         }
     }
-
 
     /*根据id取用户*/
     @GetMapping("/getUserById")
@@ -66,7 +68,7 @@ public class UserController {
         }
         else {
             RespCode respCode = RespCode.WARN;
-            respCode.setMsg("获取用户失败");
+            respCode.setMsg("根据userId获取用户失败");
             respCode.setCode(-1);
             return new RespEntity(respCode);
         }
@@ -104,7 +106,7 @@ public class UserController {
     }
 
     /*更新用户信息*/
-    @PostMapping("/userUpdate")
+    @PutMapping("/userUpdate")
     public RespEntity userUpdate(@RequestBody User user){
         User user1 = userService.userUpdate(user);
 
@@ -120,15 +122,15 @@ public class UserController {
     }
 
     /*更新用户密码*/
-    @PostMapping("/updateUserpwd")
-    public RespEntity updateUserpwd(@RequestBody ReqUser reqUser){
-        User user = userService.updateUserpwd(reqUser.getUserId(), reqUser.getUserPwd());
+    @PutMapping ("/updateUserpwd")
+    public RespEntity updateUserpwd(@RequestBody ReqUser reqUser, @RequestBody String oldPwd, @RequestBody String userPwd){
+        User user = userService.updateUserpwd(reqUser.getUserId(), oldPwd, userPwd);
         if (user!=null){
             return new RespEntity(RespCode.SUCCESS,user);
         }
         else {
             RespCode respCode = RespCode.WARN;
-            respCode.setMsg("重设密码失败");
+            respCode.setMsg("原始密码输入错误");
             respCode.setCode(-1);
             return new RespEntity(respCode);
         }
@@ -150,27 +152,30 @@ public class UserController {
         }
     }
 
-
     /*删除多个用户*/
     @DeleteMapping("/delUserList/{userIDs}")
     public RespEntity deleteUserlist(@PathVariable List<Long> userIDs){
         userService.deleteUserlist(userIDs);
         return new RespEntity(RespCode.SUCCESS);
     }
+
+    /*根据srpId获取user列表*/
+    @PutMapping("/getUserBySrpId")
+    public RespEntity getUserBySrpId(@RequestBody User user){
+        List<User> users = userService.getUserBySrpId(user);
+
+        if (users!=null){
+            return new RespEntity(RespCode.SUCCESS,users);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("根据srpId获取用户失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
 }
 
-//    /*删除多个用户*/
-//    @DeleteMapping("/delUserList")
-//    public RespEntity deleteUserlist(@RequestParam("userId") List<Long> userIds){
-//        userService.deleteUserlist(userIds);
-////        for (Long userId : userIds){
-////            if (userRepository.findByUserId(userId)==null)
-////        }
-//        RespCode respCode = RespCode.WARN;
-//        respCode.setMsg("删除用户失败");
-//        respCode.setCode(-1);
-//        return new RespEntity(respCode);
-//    }
 
 
 //    @PostMapping("/user/userlist")

@@ -63,17 +63,17 @@ public class SRPServiceImpl implements SRPService {
     @Transactional
     @Override
     public void deleteById(Long srpId) {
-        SRP srp = srpRepository.findBySrpId(srpId);
-        if (srp!=null) {
-            List<User> users = userService.getUserBySrpId(srpId);
-            for (User user : users){
-                user.getSrps().remove(srp);
-            }
-            srp.getMonitorItems().clear();
-            srpRepository.save(srp);
-            userRepository.saveAll(users);
-            srpRepository.deleteById(srpId);
-        }
+//        SRP srp = srpRepository.findBySrpId(srpId);
+//        if (srp!=null) {
+//            List<User> users = userService.getUserBySrpId(srpId);
+//            for (User user : users){
+//                user.getSrps().remove(srp);
+//            }
+////            srp.getMonitorItems().clear();
+//            srpRepository.save(srp);
+//            userRepository.saveAll(users);
+//            srpRepository.deleteById(srpId);
+//        }
 
     }
 

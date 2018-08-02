@@ -1,13 +1,18 @@
 package top.watech.backmonitor.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.ReqUser;
+import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
+import top.watech.backmonitor.util.SecurityUtil;
 
+import javax.persistence.criteria.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +28,7 @@ public class UserServiceImpl implements UserService {
     /*登录，根据userId和用户密码精确匹配*/
     @Override
     public User Login(Long id,String userPwd) throws Exception {
+
         return userRepository.getByUserIdIsAndAndUserPwdIs(id,userPwd);
     }
 
@@ -62,7 +68,11 @@ public class UserServiceImpl implements UserService {
         user.setEmail(reqUser.getEmail());
         user.setPhone(reqUser.getPhone());
         user.setRole(reqUser.getRole());
-        user.setUserPwd(reqUser.getUserPwd());
+        try {
+            user.setUserPwd(SecurityUtil.md5(reqUser.getUserName(),reqUser.getUserPwd()));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         user.setRemark(reqUser.getRemark());
         User save = userRepository.save(user);
         return save;
@@ -78,9 +88,6 @@ public class UserServiceImpl implements UserService {
             user1.setPhone(user.getPhone());
             user1.setEmail(user.getEmail());
             user1.setRemark(user.getRemark());
-            if(user.getUserPwd()!=null){
-                user1.setUserPwd(user.getUserPwd());
-            }
             return userRepository.saveAndFlush(user1);
         }
        else {
@@ -88,6 +95,25 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    /*更新用户密码*/
+    @Transactional
+    @Override
+    public User updateUserpwd(Long userId,String oldPwd, String userPwd) {
+        User user1 = userRepository.findByUserId(userId);
+        if(userPwd!=null && !"".equals(userPwd)) { //如果没有输入密码，则不修改
+            try {
+                if(user1!=null && SecurityUtil.md5(user1.getUserName(), oldPwd).equals(user1.getUserPwd())) {
+                    user1.setUserId(userId);
+                    user1.setUserPwd(SecurityUtil.md5(user1.getUserName(),userPwd));
+                    User user = userRepository.saveAndFlush(user1);
+                    return user;
+                }
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
     /*删除一个用户*/
     @Transactional
     @Override
@@ -96,6 +122,7 @@ public class UserServiceImpl implements UserService {
             userRepository.deleteById(aLong);
     }
 
+    /*删多个用户*/
     @Transactional
     @Override
     public void deleteUserlist(List<Long> userIDs) {
@@ -105,64 +132,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//    /*删多个用户*/
-//    public void deleteAllUser(){
-//        List<User> userIdIn = userRepository.findUsersByUserIdIn();
-//        for (User u : userIdIn){
-//            userRepository.deleteById(u.getUserId());
-//        }
-//    }
-
-    /*更新用户密码*/
-    @Transactional
+    /*根据srpId获取user列表(查srp的用户列表时)*/
     @Override
-    public User updateUserpwd(Long userId,String userPwd) {
-        User byUserId = userRepository.findByUserId(userId);
-        if (byUserId!=null){
-            byUserId.setUserId(byUserId.getUserId());
-            byUserId.setUserPwd(userPwd);
-        }
-        User user = userRepository.saveAndFlush(byUserId);
-        return user;
+    public List<User> getUserBySrpId(User user) {
+        List<User> users = userRepository.findAll(new Specification<User>() {
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);
+                return cb.equal(userJoin.get("srpId"), user.getUserId());
+            }
+        });
+        return users;
     }
-
-    //根据srpId获取user列表
-//    @Override
-//    public List<User> getAllUserInfo(String srpId) {
-//        List<User> users = userRepository.findAll(new Specification<User>() {
-//            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);
-//                return cb.equal(userJoin.get("srpId"), srpId);
-//            }
-//        });
-//        return users;
-//    }
-
-//    /*删除一个用户*/
-//    @Transactional
-//    @Override
-//    public void deleteById(Long aLong) {
-//        if (userRepository.findByUserId(aLong)!=null)
-//            userRepository.deleteById(aLong);
-//    }
-//    /*删多个用户*/
-//    @Transactional
-//    @Override
-//    public void deleteUserlist(List<Long> userIDs) {
-//
-//    }
-//
-//    //根据srpId获取user列表(查srp的用户列表时)
-//    @Override
-//    public List<User> getUserBySrpId(Long srpId) {
-//        List<User> users = userRepository.findAll(new Specification<User>() {
-//            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-//                Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);
-//                return cb.equal(userJoin.get("srpId"), srpId);
-//            }
-//        });
-//        return users;
-//    }
 
     //保存所有用户
     @Transactional
@@ -174,11 +154,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByName(String userName) {
         return userRepository.findByUserName(userName);
-    }
-
-    @Override
-    public List<User> getUserBySrpId(Long srpId) {
-        return null;
     }
 
 //    @Transactional
@@ -205,4 +180,11 @@ public class UserServiceImpl implements UserService {
 //            return userRepository.findAll();
 //    }
 
+    //更新密码原版
+//        if (user1!=null){
+//            user1.setUserId(user1.getUserId());
+//            user1.setUserPwd(userPwd);
+//        }
+//        User user = userRepository.saveAndFlush(user1);
+//        return user;
 }
