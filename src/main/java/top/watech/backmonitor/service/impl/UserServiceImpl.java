@@ -1,16 +1,13 @@
 package top.watech.backmonitor.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.ReqUser;
-import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 
-import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,6 +78,9 @@ public class UserServiceImpl implements UserService {
             user1.setPhone(user.getPhone());
             user1.setEmail(user.getEmail());
             user1.setRemark(user.getRemark());
+            if(user.getUserPwd()!=null){
+                user1.setUserPwd(user.getUserPwd());
+            }
             return userRepository.saveAndFlush(user1);
         }
        else {
@@ -127,16 +127,16 @@ public class UserServiceImpl implements UserService {
     }
 
     //根据srpId获取user列表
-    @Override
-    public List<User> getAllUserInfo(String srpId) {
-        List<User> users = userRepository.findAll(new Specification<User>() {
-            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);
-                return cb.equal(userJoin.get("srpId"), srpId);
-            }
-        });
-        return users;
-    }
+//    @Override
+//    public List<User> getAllUserInfo(String srpId) {
+//        List<User> users = userRepository.findAll(new Specification<User>() {
+//            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+//                Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);
+//                return cb.equal(userJoin.get("srpId"), srpId);
+//            }
+//        });
+//        return users;
+//    }
 
 //    /*删除一个用户*/
 //    @Transactional
@@ -174,6 +174,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserByName(String userName) {
         return userRepository.findByUserName(userName);
+    }
+
+    @Override
+    public List<User> getUserBySrpId(Long srpId) {
+        return null;
     }
 
 //    @Transactional
