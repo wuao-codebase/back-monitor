@@ -18,7 +18,9 @@ import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.SRPService;
 import top.watech.backmonitor.service.UserService;
+import top.watech.backmonitor.util.SecurityUtil;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -291,7 +293,14 @@ public class Jpatest {
         user.setRole(1);
         user.setPhone("18300000000");
         user.setEmail("xxx@xx.com");
-        user.setUserPwd("123456");
+        user.setUserName("wuao1234");
+        String usepwd =null;
+        try {
+            user.setUserPwd( SecurityUtil.md5("123456"));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
         user.setRemark("user01xxx");
 
         userRepository.save(user);

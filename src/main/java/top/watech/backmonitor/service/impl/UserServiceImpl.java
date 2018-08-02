@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User Login(Long id,String userPwd) throws Exception {
 
-        return userRepository.getByUserIdIsAndAndUserPwdIs(id,userPwd);
+        return userRepository.getByUserIdIsAndAndUserPwdIs(id,SecurityUtil.md5(userPwd));
     }
 
     /*根据userId获取用户*/
@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
         user.setPhone(reqUser.getPhone());
         user.setRole(reqUser.getRole());
         try {
-            user.setUserPwd(SecurityUtil.md5(reqUser.getUserName(),reqUser.getUserPwd()));
+            user.setUserPwd(SecurityUtil.md5(reqUser.getUserPwd()));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -88,6 +88,13 @@ public class UserServiceImpl implements UserService {
             user1.setPhone(user.getPhone());
             user1.setEmail(user.getEmail());
             user1.setRemark(user.getRemark());
+            if(user.getUserPwd()!=null){
+                try {
+                    user1.setUserPwd(SecurityUtil.md5(user.getUserPwd()));
+                } catch (NoSuchAlgorithmException e) {
+                    e.printStackTrace();
+                }
+            }
             return userRepository.saveAndFlush(user1);
         }
        else {
