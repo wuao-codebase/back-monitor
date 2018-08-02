@@ -28,6 +28,7 @@ public interface SRPService {
 
     /*给SRP减所属用户*/
     int userSub(Long srpId, Long userId);
+
     /*删除一个SRP*/
     void deleteById(Long srpId);
 

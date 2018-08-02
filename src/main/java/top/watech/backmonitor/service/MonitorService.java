@@ -10,8 +10,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.MonitorItem;
-import top.watech.backmonitor.entity.SRP;
-import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
 
 import java.util.HashMap;
@@ -124,7 +122,7 @@ public class MonitorService {
 
     public static void monitorLogic(Long srpId){
         //SRP的所有监控项（sort by classify）
-        List<MonitorItem> monitorItems = monitorItemService.getMonitTtemList(srpId);
+        List<MonitorItem> monitorItems = monitorItemService.getMonitTtemListBySrpId(srpId);
 
         for (MonitorItem monitorItem:monitorItems){
             //平台登录

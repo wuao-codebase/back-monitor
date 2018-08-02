@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
@@ -21,11 +20,12 @@ import top.watech.backmonitor.service.SRPService;
 import top.watech.backmonitor.service.UserService;
 import top.watech.backmonitor.util.SecurityUtil;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by wuao.tp on 2018/7/20.
@@ -50,7 +50,7 @@ public class Jpatest {
     public void getUserList() {
         List<User> all = userRepository.findAll();
         for (User user : all) {
-            System.out.println("user = " +user.getUserName());
+            System.out.println("user = " + user.getUserName());
         }
     }
 
@@ -68,7 +68,6 @@ public class Jpatest {
     }
 
 
-
     @Test
     public void insertUser() {
         User user = new User();
@@ -78,15 +77,16 @@ public class Jpatest {
         User save = userRepository.save(user);
         System.out.println(save);
     }
-        @Test
-        public void testPage(){
+
+    @Test
+    public void testPage() {
 
         int pageNo = 0;
         int pageSize = 5;
 
 //            pageNo = (pageNo==null || pageNo<0)?0:pageNo;
 //            pageSize = (pageSize==null || pageSize<=0)?10:pageSize;
-            Pageable pageable = PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<User> page = userRepository.findAll(pageable);
 
         System.out.println("总记录数: " + page.getTotalElements());
@@ -97,10 +97,9 @@ public class Jpatest {
     }
 
 
-
     //多对多保存
     @Test
-    public void testmtmsave(){
+    public void testmtmsave() {
         User user7 = new User();
         SRP srp7 = new SRP();
         SRP srp8 = new SRP();
@@ -127,18 +126,18 @@ public class Jpatest {
 
     //根据userId获取SRPname(可用在某SRP接收者列表)
     @Test
-    public void testFindSrps(){
+    public void testFindSrps() {
         List<SRP> srpList = srpService.findByUserId(10000032L);
-        for (SRP srp : srpList){
+        for (SRP srp : srpList) {
             System.err.println(srp);
         }
     }
 
     //获取所有SRP列表
     @Test
-    public void testAllSrps(){
+    public void testAllSrps() {
         List<SRP> srpList = srpRepository.findAll();
-        for (SRP srp : srpList){
+        for (SRP srp : srpList) {
 //            System.out.println(srp.getSrpId()+":"+srp.getSrpName());
             System.err.println(srp);
         }
@@ -146,7 +145,7 @@ public class Jpatest {
 
     //SRP新增
     @Test
-    public void testSrpInsert(){
+    public void testSrpInsert() {
         SRP srp = new SRP();
         srp.setSrpName("yayaya");
         srp.setDescription("XXXXXXXXXXyayayaXXXXXXXXXXXXX");
@@ -159,7 +158,7 @@ public class Jpatest {
 
     //SRP更新
     @Test
-    public void testSrpUpdate(){
+    public void testSrpUpdate() {
         SRP srp1 = srpRepository.findBySrpId(18L);
 
 //        srp1.setSrpName("updateName");
@@ -171,13 +170,13 @@ public class Jpatest {
 
     //给SRP加所属用户
     @Test
-    public void testSrpUserInsert(){
+    public void testSrpUserInsert() {
         User u1 = userRepository.findByUserId(10000021L);
         User u2 = userRepository.findByUserId(10000022L);
 
         SRP srpnew = srpRepository.findBySrpId(18L);
 
-        srpnew.getUsers().addAll(Arrays.asList(u1,u2));
+        srpnew.getUsers().addAll(Arrays.asList(u1, u2));
 //        srpnew.getUsers().add(u1);
 //        srpnew.getUsers().add(u2);
         u1.getSrps().add(srpnew);
@@ -191,7 +190,7 @@ public class Jpatest {
     //给SRP减所属用户
 //    @Transactional
     @Test
-    public void testSrpUserSub(){
+    public void testSrpUserSub() {
         User uu = userRepository.findByUserId(10000021L);
 
         SRP srpsub = srpRepository.findBySrpId(23L);
@@ -201,7 +200,7 @@ public class Jpatest {
 
         System.err.println(uu.getSrps().size());
 
-        for (SRP srp :uu.getSrps()){
+        for (SRP srp : uu.getSrps()) {
             System.err.println(srp);
         }
 
@@ -223,7 +222,7 @@ public class Jpatest {
 
     //给SRP加监控项
     @Test
-    public void testItemAdd(){
+    public void testItemAdd() {
         SRP srp = srpRepository.findBySrpId(20L);
         MonitorItem monitorItem3 = new MonitorItem();
 //        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(1L);
@@ -268,20 +267,22 @@ public class Jpatest {
 
     //给SRP减监控项
     @Test
-    public void testItemSub(){
-        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(2L);
-        SRP srpsub = srpRepository.findBySrpId(26L);
+    public void testItemSub() {
+        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(9L);
+        SRP srpsub = srpRepository.findBySrpId(16L);
 
-        srpsub.getMonitorItems().remove(2);
+        boolean remove = srpsub.getMonitorItems().remove(9);
 
-        srpRepository.save(srpsub);
-        monitorItemRepository.save(monitorItem3);
+        srpRepository.saveAndFlush(srpsub);
+        monitorItemRepository.saveAndFlush(monitorItem3);
+
+        System.err.println(remove);
     }
 
     //有问题
-    //删除一个srp（关系表和user表会更新，关联SRP不会被删除）
+    //删除一个srp（关系表和srp表会更新，关联user不会被删除）
     @Test
-    public void testDelSrp(){
+    public void testDelSrp() {
 
 //        User user = userRepository.findByUserId(10000036L);
 //        User user1 = userRepository.findByUserId(10000041L);
@@ -300,45 +301,46 @@ public class Jpatest {
 //        userRepository.save(user1);
 
 
-
         srpRepository.save(srp);
 
         srpRepository.deleteById(25L);
     }
 
     @Test
-    public void testDelSrp2 (){
+    public void testDelSrp2() {
 
-        User user = userRepository.findByUserId(10000021L);
-        User user1 = userRepository.findByUserId(10000022L);
-        SRP srp = srpRepository.findBySrpId(15L);
-//
-//        user.getSrps().remove(srp);
-//        user1.getSrps().remove(srp);
+        EntityManager em = null;
+        EntityTransaction tx = null;
+        try {
+            tx = em.getTransaction();
+            tx.begin();
 
-//        user.getSrps().clear();
-//        user1.getSrps().clear();
-//        srp.getUsers().clear();
-//
-//        srp.getMonitorItems().clear();
+            User user = userRepository.findByUserId(10000023L);
+            User user1 = userRepository.findByUserId(10000036L);
+            SRP srp = srpRepository.findBySrpId(16L);
 
-//        userRepository.save(user);
-//        userRepository.save(user1);
-//        srpRepository.save(srp);
-//        srpRepository.deleteById(25L);
+            user.getSrps().remove(srp);
+            user1.getSrps().remove(srp);
 
-        user.getSrps().remove(srp);
-        user1.getSrps().remove(srp);
-//        user.getSrps().removeAll(user.getSrps());
-//        user1.getSrps().removeAll(user1.getSrps());
-        srp.getUsers().clear();
+            userRepository.saveAndFlush(user);
+            userRepository.saveAndFlush(user1);
 
-        userRepository.save(user);
-        userRepository.save(user1);
-        srpRepository.save(srp);
-//        srpRepository.deleteById(15L);
-        srpRepository.delete(srp);
+            srpRepository.delete(srp);
 
+            tx.commit();
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+        } finally {
+
+            if (em != null) {
+
+                em.close();
+
+            }
+
+        }
     }
 
 
@@ -348,24 +350,24 @@ public class Jpatest {
 
     //获取所有用户列表
     @Test
-    public void testAllUsers(){
+    public void testAllUsers() {
         List<User> userList = userRepository.findAll();
-        for (User user:userList){
+        for (User user : userList) {
             System.out.println(user);
         }
     }
 
     //新增账户
     @Test
-    public void testUserInsert(){
+    public void testUserInsert() {
         User user = new User();
         user.setRole(1);
         user.setPhone("18300000000");
         user.setEmail("xxx@xx.com");
         user.setUserName("wuao1234");
-        String usepwd =null;
+        String usepwd = null;
         try {
-            user.setUserPwd( SecurityUtil.md5("123456"));
+            user.setUserPwd(SecurityUtil.md5("123456"));
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
@@ -379,7 +381,7 @@ public class Jpatest {
 
     //删除一个用户（关系表和user表会更新，关联SRP不会被删除）
     @Test
-    public void testDelUser(){
+    public void testDelUser() {
         userRepository.deleteById(10000041L);
     }
 
@@ -395,7 +397,7 @@ public class Jpatest {
 
     //更新某用户信息
     @Test
-    public void updateUser1(){
+    public void updateUser1() {
         User user = new User();
         user.setEmail("xxxxxx");
         user.setNickName("xx122");
@@ -415,7 +417,7 @@ public class Jpatest {
 
     //更新某用户信息
     @Test
-    public void updateUser2(){
+    public void updateUser2() {
 
         User user = userRepository.findByUserId(10000036L);
 
@@ -427,30 +429,31 @@ public class Jpatest {
 
     }
 
-//    //根据srpId获取user信息
-//    @Test
-//    public void testFindUsers(){
-////        SRP srp = srpRepository.findBySrpId(16L);
-//        List<User> userList = userService.getUserBySrpId(16L);
-//
-//        for (User user : userList){
-//            System.err.println(user);
-//        }
-//
-//    }
+    //根据srpId获取user信息
     @Test
-    public void testsql(){
+    public void testFindUsers() {
+//        SRP srp = srpRepository.findBySrpId(16L);
+        List<User> userList = userService.getUserBySrpId(23L);
+
+        for (User user : userList) {
+            System.err.println(user);
+        }
+
+    }
+
+    @Test
+    public void testsql() {
 
         ArrayList<User> users = new ArrayList<>();
         List<Object[]> getuserlist = userRepository.getuserlist();
         for (Object[] objects : getuserlist) {
             User user = new User();
             user.setUserId(Long.valueOf(String.valueOf(objects[0])));
-            user.setEmail((String)objects[1]);
-            user.setRole((Integer)objects[2]);
-            user.setPhone((String)objects[3]);
-            user.setUserPwd((String)objects[4]);
-            user.setRemark((String)objects[5]);
+            user.setEmail((String) objects[1]);
+            user.setRole((Integer) objects[2]);
+            user.setPhone((String) objects[3]);
+            user.setUserPwd((String) objects[4]);
+            user.setRemark((String) objects[5]);
             user.setSrpnames(String.valueOf(objects[6]));
             users.add(user);
         }

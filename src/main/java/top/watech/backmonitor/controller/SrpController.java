@@ -8,6 +8,7 @@ import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.service.SRPService;
+import top.watech.backmonitor.service.UserService;
 
 import java.util.List;
 
@@ -24,6 +25,8 @@ public class SrpController {
     SRPService srpService;
     @Autowired
     SrpRepository srpRepository;
+    @Autowired
+    UserService userService;
 
     /*获取SRP列表*/
     @PostMapping ("/srpList")
@@ -169,6 +172,22 @@ public class SrpController {
         else{
             RespCode respCode = RespCode.WARN;
             respCode.setMsg("显示用户列表失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+    /*根据srpId获取user列表*/
+    @PutMapping("/getUserBySrpId")
+    public RespEntity getUserBySrpId(@RequestParam("srpId") Long srpId){
+        List<User> users = userService.getUserBySrpId(srpId);
+
+        if (users!=null){
+            return new RespEntity(RespCode.SUCCESS,users);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("根据srpId获取用户失败");
             respCode.setCode(-1);
             return new RespEntity(respCode);
         }
