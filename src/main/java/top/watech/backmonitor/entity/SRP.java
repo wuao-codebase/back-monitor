@@ -1,5 +1,6 @@
 package top.watech.backmonitor.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.ToString;
 
 import javax.persistence.*;
