@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.watech.backmonitor.entity.RespEntity;
 import top.watech.backmonitor.entity.SRP;
+import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.service.SRPService;
@@ -23,6 +24,28 @@ public class SrpController {
     SRPService srpService;
     @Autowired
     SrpRepository srpRepository;
+
+    /*获取SRP列表(admin)*/
+    @GetMapping("/srpList")
+    public RespEntity getsrpList(@RequestBody User user) {
+        List<SRP> srpList=null;
+        if (user.getRole()==1){
+            srpList = srpService.getsrpList();
+        }
+        else {
+            srpList = srpService.findByUserId(user.getUserId());
+        }
+
+        if(srpList!=null){
+            return new RespEntity(RespCode.SUCCESS, srpList);
+        }
+        else{
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("获取SRP列表失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
 
     /*SRP新增*/
     @PostMapping("/srpInsert")

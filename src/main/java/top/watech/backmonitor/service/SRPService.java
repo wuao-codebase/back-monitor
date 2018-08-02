@@ -13,6 +13,9 @@ public interface SRPService {
     //获取SRP列表
     List<SRP> getsrpList();
 
+    /*根据srpId获取SRP*/
+    SRP getSrpById(Long srpId);
+
     //新增SRP
     SRP srpInsert(SRP srp);
 
@@ -26,5 +29,5 @@ public interface SRPService {
     void deleteSrplist(List<Long> srpIDs);
 
     /*根据userId获取srp*/
-    List<SRP> findByUserId(String userId);
+    List<SRP> findByUserId(Long userId);
 }
