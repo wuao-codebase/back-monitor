@@ -78,7 +78,7 @@ public class SRP {
         this.remark = remark;
     }
 
-
+    @JsonBackReference
     @ManyToMany(mappedBy = "srps",fetch = FetchType.EAGER)//,cascade=CascadeType.REFRESH
     public Set<User> getUsers() {
         return users;

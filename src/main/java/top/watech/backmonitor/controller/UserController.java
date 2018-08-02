@@ -157,24 +157,24 @@ public class UserController {
         return new RespEntity(RespCode.SUCCESS);
     }
 
-    /*根据srpId获取user列表*/
-    @PutMapping("/getUserBySrpId")
-    public RespEntity getUserBySrpId(@RequestBody User user){
-        List<User> users = userService.getUserBySrpId(user);
 
-        if (users!=null){
-            return new RespEntity(RespCode.SUCCESS,users);
-        }
-        else {
-            RespCode respCode = RespCode.WARN;
-            respCode.setMsg("根据srpId获取用户失败");
-            respCode.setCode(-1);
-            return new RespEntity(respCode);
-        }
-    }
 }
 
-
+//    /*根据srpId获取user列表*/
+//    @PutMapping("/getUserBySrpId")
+//    public RespEntity getUserBySrpId(@RequestBody User user){
+//        List<User> users = userService.getUserBySrpId(user);
+//
+//        if (users!=null){
+//            return new RespEntity(RespCode.SUCCESS,users);
+//        }
+//        else {
+//            RespCode respCode = RespCode.WARN;
+//            respCode.setMsg("根据srpId获取用户失败");
+//            respCode.setCode(-1);
+//            return new RespEntity(respCode);
+//        }
+//    }
 
 //    @PostMapping("/user/userlist")
 //    public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {

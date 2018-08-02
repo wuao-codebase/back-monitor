@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
@@ -22,7 +23,9 @@ import top.watech.backmonitor.util.SecurityUtil;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wuao.tp on 2018/7/20.
@@ -169,18 +172,14 @@ public class Jpatest {
     //给SRP加所属用户
     @Test
     public void testSrpUserInsert(){
-        User u1 = userRepository.findByUserId(10000032L);
-        User u2 = userRepository.findByUserId(10000043L);
+        User u1 = userRepository.findByUserId(10000021L);
+        User u2 = userRepository.findByUserId(10000022L);
 
-        SRP srpnew = srpRepository.findBySrpId(23L);
+        SRP srpnew = srpRepository.findBySrpId(18L);
 
-        System.err.println(u1);
-        System.err.println(u2);
-        System.err.println(srpnew);
-
-//        srpnew.getUsers().addAll(Arrays.asList(u1,u2));
-        srpnew.getUsers().add(u1);
-        srpnew.getUsers().add(u2);
+        srpnew.getUsers().addAll(Arrays.asList(u1,u2));
+//        srpnew.getUsers().add(u1);
+//        srpnew.getUsers().add(u2);
         u1.getSrps().add(srpnew);
         u2.getSrps().add(srpnew);
 //
@@ -190,25 +189,44 @@ public class Jpatest {
     }
 
     //给SRP减所属用户
+//    @Transactional
     @Test
     public void testSrpUserSub(){
-        User uu = userRepository.findByUserId(10000036L);
+        User uu = userRepository.findByUserId(10000021L);
 
-        SRP srpsub = srpRepository.findBySrpId(11L);
+        SRP srpsub = srpRepository.findBySrpId(23L);
 
+//        srpsub.getUsers().clear();
+//        uu.getSrps().clear();
+
+        System.err.println(uu.getSrps().size());
+
+        for (SRP srp :uu.getSrps()){
+            System.err.println(srp);
+        }
+
+        System.err.println(uu.getSrps().contains(srpsub));
+
+        uu.getSrps().remove(srpsub);
         srpsub.getUsers().clear();
-        uu.getSrps().clear();
 
-        srpRepository.save(srpsub);
-        userRepository.save(uu);
+        System.err.println(uu.getSrps().contains(srpsub));
+
+        srpRepository.saveAndFlush(srpsub);
+        userRepository.saveAndFlush(uu);
+
+        System.err.println(uu.getSrps().contains(srpsub));
+
+//        srpRepository.save(srpsub);
+//        userRepository.save(uu);
     }
 
     //给SRP加监控项
     @Test
     public void testItemAdd(){
-        SRP srp = srpRepository.findBySrpId(25L);
-//        MonitorItem monitorItem = new MonitorItem();
-        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(1L);
+        SRP srp = srpRepository.findBySrpId(20L);
+        MonitorItem monitorItem3 = new MonitorItem();
+//        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(1L);
 //        MonitorItem monitorItem4 = monitorItemRepository.findByMonitorId(3L);
         MonitorItem monitorItem2 = new MonitorItem();
 
@@ -225,6 +243,19 @@ public class Jpatest {
                 "    \"statusCode\":\"200\"\n" +
                 "}");
 
+        monitorItem3.setMonitorName("API3");
+        monitorItem3.setRemark("AP33333333333333333");
+        monitorItem3.setUrl("http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone");
+        monitorItem3.setRequestType(1);
+        monitorItem3.setRequestBody("{\n" +
+                "    \"password\":\"123456\",\n" +
+                "    \"phone\":\"13900000000\",\n" +
+                "    \"tokenTs\":20160\n" +
+                "}\n");
+        monitorItem3.setAsserts("{\n" +
+                "    \"statusCode\":\"200\"\n" +
+                "}");
+
         srp.getMonitorItems().add(monitorItem3);
         srp.getMonitorItems().add(monitorItem2);
         monitorItem3.setSrp(srp);
@@ -235,7 +266,7 @@ public class Jpatest {
         monitorItemRepository.save(monitorItem2);
     }
 
-    //给SRP减监控项(未实现)
+    //给SRP减监控项
     @Test
     public void testItemSub(){
         MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(2L);
@@ -252,26 +283,63 @@ public class Jpatest {
     @Test
     public void testDelSrp(){
 
-        User user = userRepository.findByUserId(10000036L);
+//        User user = userRepository.findByUserId(10000036L);
 //        User user1 = userRepository.findByUserId(10000041L);
         SRP srp = srpRepository.findBySrpId(25L);
-
-        user.getSrps().remove(srp);
+//
+//        user.getSrps().remove(srp);
 //        user1.getSrps().remove(srp);
 
 //        user.getSrps().clear();
 //        user1.getSrps().clear();
-        srp.getUsers().clear();
+//        srp.getUsers().clear();
+//
+//        srp.getMonitorItems().clear();
 
-        srp.getMonitorItems().clear();
-
-        userRepository.save(user);
+//        userRepository.save(user);
 //        userRepository.save(user1);
+
+
+
         srpRepository.save(srp);
 
         srpRepository.deleteById(25L);
     }
 
+    @Test
+    public void testDelSrp2 (){
+
+        User user = userRepository.findByUserId(10000021L);
+        User user1 = userRepository.findByUserId(10000022L);
+        SRP srp = srpRepository.findBySrpId(15L);
+//
+//        user.getSrps().remove(srp);
+//        user1.getSrps().remove(srp);
+
+//        user.getSrps().clear();
+//        user1.getSrps().clear();
+//        srp.getUsers().clear();
+//
+//        srp.getMonitorItems().clear();
+
+//        userRepository.save(user);
+//        userRepository.save(user1);
+//        srpRepository.save(srp);
+//        srpRepository.deleteById(25L);
+
+        user.getSrps().remove(srp);
+        user1.getSrps().remove(srp);
+//        user.getSrps().removeAll(user.getSrps());
+//        user1.getSrps().removeAll(user1.getSrps());
+        srp.getUsers().clear();
+
+        userRepository.save(user);
+        userRepository.save(user1);
+        srpRepository.save(srp);
+//        srpRepository.deleteById(15L);
+        srpRepository.delete(srp);
+
+    }
 
 
     /*

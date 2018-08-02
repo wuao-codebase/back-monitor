@@ -12,6 +12,7 @@ import top.watech.backmonitor.service.SRPService;
 import top.watech.backmonitor.service.UserService;
 
 import javax.persistence.criteria.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,6 +49,24 @@ public class SRPServiceImpl implements SRPService {
         return srpList;
     }
 
+    /*显示用户列表*/
+    @Override
+    public List<User> getUserList() {
+        ArrayList<User> users = new ArrayList<>();
+        List<Object[]> userlist = srpRepository.getusers();
+        for (Object[] objects : userlist) {
+            User user = new User();
+            user.setUserId(Long.valueOf(String.valueOf(objects[0])));
+            user.setRole((Integer)objects[2]);
+            user.setPhone((String)objects[3]);
+            user.setUserPwd((String)objects[4]);
+            user.setSrpnames(String.valueOf(objects[6]));
+            user.setUserName(String.valueOf(objects[7]));
+            users.add(user);
+        }
+        return users;
+    }
+
     /*根据srpId获取SRP*/
     @Override
     public SRP getSrpById(Long srpId) {
@@ -81,22 +100,58 @@ public class SRPServiceImpl implements SRPService {
         return null;
     }
 
+    /*给SRP加所属用户*/
+    @Transactional
+    @Override
+    public int userAdd(Long srpId, List<Long> userIds) {
+        SRP srp = srpRepository.findBySrpId(srpId);
+        int oldsize = srp.getUsers().size();
+        for (Long userId : userIds){
+            User user = userRepository.findByUserId(userId);
+            srp.getUsers().add(user);
+            user.getSrps().add(srp);
+            userRepository.save(user);
+        }
+        srpRepository.save(srp);
+        int addCount = srp.getUsers().size()-oldsize;
+        return addCount;
+    }
+
+    /*给SRP减所属用户*/
+    @Transactional
+    @Override
+    public int userSub(Long srpId, Long userId) {
+        SRP srp = srpRepository.findBySrpId(srpId);
+        User user1 = userRepository.findByUserId(userId);
+
+        int oldsize = srp.getUsers().size();
+
+        user1.getSrps().remove(srp);
+        srp.getUsers().remove(user1);
+
+        userRepository.save(user1);
+        srpRepository.save(srp);
+
+        int addCount = srp.getUsers().size()-oldsize;
+        return addCount;
+    }
+
     /*删除一个srp*/
     @Transactional
     @Override
     public void deleteById(Long srpId) {
-//        SRP srp = srpRepository.findBySrpId(srpId);
-//        if (srp!=null) {
-//            List<User> users = userService.getUserBySrpId(srpId);
-//            for (User user : users){
-//                user.getSrps().remove(srp);
-//            }
-////            srp.getMonitorItems().clear();
-//            srpRepository.save(srp);
-//            userRepository.saveAll(users);
-//            srpRepository.deleteById(srpId);
-//        }
+        SRP srp = srpRepository.findBySrpId(srpId);
+        if (srp!=null) {
+            List<User> users = userService.getUserBySrpId(srpId);
+            for (User user : users){
+                user.getSrps().remove(srp);
+                srp.getUsers().clear();
+                userRepository.saveAll(users);
+            }
+            srpRepository.save(srp);
 
+            srpRepository.deleteById(srpId);
+        }
     }
 
     /*删除多个srp*/

@@ -1,5 +1,6 @@
 package top.watech.backmonitor.service.impl;
 
+import com.sun.xml.internal.bind.v2.TODO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -139,13 +140,15 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    //TODO
+    // 方法参数
     /*根据srpId获取user列表(查srp的用户列表时)*/
     @Override
-    public List<User> getUserBySrpId(User user) {
+    public List<User> getUserBySrpId(Long srpId) {
         List<User> users = userRepository.findAll(new Specification<User>() {
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Join<SRP, User> userJoin = root.join("srps", JoinType.LEFT);
-                return cb.equal(userJoin.get("srpId"), user.getUserId());
+                return cb.equal(userJoin.get("srpId"), srpId);
             }
         });
         return users;

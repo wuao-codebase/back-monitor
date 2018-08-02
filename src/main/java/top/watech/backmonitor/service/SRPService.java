@@ -1,6 +1,7 @@
 package top.watech.backmonitor.service;
 
 import top.watech.backmonitor.entity.SRP;
+import top.watech.backmonitor.entity.User;
 
 import java.util.List;
 
@@ -22,6 +23,11 @@ public interface SRPService {
     //更新SRP
     SRP srpUpdate(SRP srp);
 
+    /*给SRP加所属用户*/
+    int userAdd(Long srpId, List<Long> userIds);
+
+    /*给SRP减所属用户*/
+    int userSub(Long srpId, Long userId);
     /*删除一个SRP*/
     void deleteById(Long srpId);
 
@@ -30,4 +36,13 @@ public interface SRPService {
 
     /*根据userId获取srp*/
     List<SRP> findByUserId(Long userId);
+
+    /*显示用户列表*/
+    List<User> getUserList();
+
+    /*给SRP加监控项*/
+
+    /*给SRP加监控项*/
+
+    //根据srpId获取监控项列表
 }

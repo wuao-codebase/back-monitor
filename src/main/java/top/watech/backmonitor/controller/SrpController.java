@@ -25,7 +25,7 @@ public class SrpController {
     @Autowired
     SrpRepository srpRepository;
 
-    /*获取SRP列表(admin)*/
+    /*获取SRP列表*/
     @PostMapping ("/srpList")
     public RespEntity getsrpList(@RequestBody User user) {
         System.err.println(user);
@@ -54,6 +54,20 @@ public class SrpController {
             }
         }
 
+    }
+    /*根据srpId获取SRP*/
+    @GetMapping("/getSrpById")
+    public RespEntity getUserById(@RequestParam("srpId") Long srpId) throws Exception {
+        SRP srp = srpService.getSrpById(srpId);
+        if (srp!=null){
+            return new RespEntity(RespCode.SUCCESS,srp);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("根据srpId获取SRP失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
     }
 
     /*SRP新增*/
@@ -88,6 +102,36 @@ public class SrpController {
         }
     }
 
+    /*给SRP加所属用户*/
+    @PostMapping("/userAdd")
+    public RespEntity userAdd(@PathVariable Long srpId, @PathVariable List<Long> userIds){
+        int userCount = srpService.userAdd(srpId, userIds);
+        if (userCount>0){
+            return new RespEntity(RespCode.SUCCESS,userCount);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("给SRP添加所属用户失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+    /*给SRP减所属用户*/
+    @PostMapping("/userSub")
+    public RespEntity userSub(@PathVariable Long srpId, Long userId){
+        int userCount = srpService.userSub(srpId,userId);
+        if (userCount<0){
+            return new RespEntity(RespCode.SUCCESS,userCount);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("给SRP删除用户失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
     /*删除一个SRP*/
     @DeleteMapping("/delSrpById")
     public RespEntity deleteSrpById(@RequestParam("srpId") Long srpId){
@@ -113,6 +157,21 @@ public class SrpController {
         respCode.setMsg("删除SRP失败");
         respCode.setCode(-1);
         return new RespEntity(respCode);
+    }
+
+    /*显示用户列表（给SRP加用户时选用户）*/
+    @GetMapping("/users")
+    public RespEntity getAllUsers() throws Exception {
+        List<User> users = srpService.getUserList();
+        if(users.size()!=0){
+            return new RespEntity(RespCode.SUCCESS, users);
+        }
+        else{
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("显示用户列表失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
     }
 
 }
