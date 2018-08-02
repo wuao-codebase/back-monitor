@@ -10,7 +10,6 @@ import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 import top.watech.backmonitor.util.JwtHelper;
-import top.watech.backmonitor.util.SecurityUtil;
 
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class UserController {
     public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
         User login = userService.Login(reqUser.getUserId(), reqUser.getUserPwd());
 
-        if(login==null || !login.getUserPwd().equals(SecurityUtil.md5(login.getUserName(),login.getUserPwd())))
+        if(login==null )
         {
             RespCode respCode = RespCode.WARN;
             respCode.setMsg("用户或密码错误");
@@ -151,7 +150,6 @@ public class UserController {
             return new RespEntity(respCode);
         }
     }
-
     /*删除多个用户*/
     @DeleteMapping("/delUserList/{userIDs}")
     public RespEntity deleteUserlist(@PathVariable List<Long> userIDs){
