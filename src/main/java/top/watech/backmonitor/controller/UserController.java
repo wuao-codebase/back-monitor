@@ -10,6 +10,7 @@ import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 import top.watech.backmonitor.util.JwtHelper;
+import top.watech.backmonitor.util.SecurityUtil;
 
 import java.util.List;
 
@@ -33,9 +34,16 @@ public class UserController {
     //登录
     @PostMapping("/")
     public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
-
         User login = userService.Login(reqUser.getUserId(), reqUser.getUserPwd());
-        if (login != null) {
+
+        if(login==null || !login.getUserPwd().equals(SecurityUtil.md5(login.getUserName(),login.getUserPwd())))
+        {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("用户或密码错误");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+        else {
             String jwtToken = JwtHelper.createJWT(login.getUserName(),
                     login.getUserId(),
                     login.getRole().toString(),
@@ -46,13 +54,8 @@ public class UserController {
 
             String result_str = "bearer " + jwtToken;
 
-            login.setToken(result_str);
+            login.setToken(result_str);//登录成功生成token
             return new RespEntity(RespCode.SUCCESS, login);
-        } else {
-            RespCode respCode = RespCode.WARN;
-            respCode.setMsg("用户或密码错误");
-            respCode.setCode(-1);
-            return new RespEntity(respCode);
         }
     }
 
@@ -120,14 +123,14 @@ public class UserController {
 
     /*更新用户密码*/
     @PutMapping ("/updateUserpwd")
-    public RespEntity updateUserpwd(@RequestBody ReqUser reqUser){
-        User user = userService.updateUserpwd(reqUser.getUserId(), reqUser.getUserPwd());
+    public RespEntity updateUserpwd(@RequestBody ReqUser reqUser, @RequestBody String oldPwd, @RequestBody String userPwd){
+        User user = userService.updateUserpwd(reqUser.getUserId(), oldPwd, userPwd);
         if (user!=null){
             return new RespEntity(RespCode.SUCCESS,user);
         }
         else {
             RespCode respCode = RespCode.WARN;
-            respCode.setMsg("重设密码失败");
+            respCode.setMsg("原始密码输入错误");
             respCode.setCode(-1);
             return new RespEntity(respCode);
         }

@@ -9,8 +9,10 @@ import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
+import top.watech.backmonitor.util.SecurityUtil;
 
 import javax.persistence.criteria.*;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     /*登录，根据userId和用户密码精确匹配*/
     @Override
     public User Login(Long id,String userPwd) throws Exception {
+
         return userRepository.getByUserIdIsAndAndUserPwdIs(id,userPwd);
     }
 
@@ -65,7 +68,11 @@ public class UserServiceImpl implements UserService {
         user.setEmail(reqUser.getEmail());
         user.setPhone(reqUser.getPhone());
         user.setRole(reqUser.getRole());
-        user.setUserPwd(reqUser.getUserPwd());
+        try {
+            user.setUserPwd(SecurityUtil.md5(reqUser.getUserName(),reqUser.getUserPwd()));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
         user.setRemark(reqUser.getRemark());
         User save = userRepository.save(user);
         return save;
@@ -91,14 +98,21 @@ public class UserServiceImpl implements UserService {
     /*更新用户密码*/
     @Transactional
     @Override
-    public User updateUserpwd(Long userId,String userPwd) {
-        User byUserId = userRepository.findByUserId(userId);
-        if (byUserId!=null){
-            byUserId.setUserId(byUserId.getUserId());
-            byUserId.setUserPwd(userPwd);
+    public User updateUserpwd(Long userId,String oldPwd, String userPwd) {
+        User user1 = userRepository.findByUserId(userId);
+        if(userPwd!=null && !"".equals(userPwd)) { //如果没有输入密码，则不修改
+            try {
+                if(user1!=null && SecurityUtil.md5(user1.getUserName(), oldPwd).equals(user1.getUserPwd())) {
+                    user1.setUserId(userId);
+                    user1.setUserPwd(SecurityUtil.md5(user1.getUserName(),userPwd));
+                    User user = userRepository.saveAndFlush(user1);
+                    return user;
+                }
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
         }
-        User user = userRepository.saveAndFlush(byUserId);
-        return user;
+        return null;
     }
     /*删除一个用户*/
     @Transactional
@@ -166,4 +180,11 @@ public class UserServiceImpl implements UserService {
 //            return userRepository.findAll();
 //    }
 
+    //更新密码原版
+//        if (user1!=null){
+//            user1.setUserId(user1.getUserId());
+//            user1.setUserPwd(userPwd);
+//        }
+//        User user = userRepository.saveAndFlush(user1);
+//        return user;
 }

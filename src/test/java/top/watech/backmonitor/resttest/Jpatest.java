@@ -309,10 +309,10 @@ public class Jpatest {
     @Test
     public void updateUser() {
 
-        User user = userRepository.findByUserId(10000032L);
-        if (user!=null){
-            userService.updateUserpwd(10000032L,"zhangsan");
-        }
+//        User user = userRepository.findByUserId(10000032L);
+//        if (user!=null){
+//            userService.updateUserpwd(10000032L,"zhangsan");
+//        }
     }
 
     //更新某用户信息
@@ -349,16 +349,17 @@ public class Jpatest {
 
     }
 
-    //根据srpId获取user信息
-    @Test
-    public void testFindUsers(){
-        List<User> userList = userService.getUserBySrpId(16L);
-
-        for (User user : userList){
-            System.err.println(user);
-        }
-
-    }
+//    //根据srpId获取user信息
+//    @Test
+//    public void testFindUsers(){
+////        SRP srp = srpRepository.findBySrpId(16L);
+//        List<User> userList = userService.getUserBySrpId(16L);
+//
+//        for (User user : userList){
+//            System.err.println(user);
+//        }
+//
+//    }
     @Test
     public void testsql(){
 
