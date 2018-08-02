@@ -32,7 +32,7 @@ public class SRP {
         this.srpId = srpId;
     }
 
-    @Column(name = "srp_name")
+    @Column(name = "srp_name",length = 20)
     public String getSrpName() {
         return srpName;
     }
@@ -41,6 +41,7 @@ public class SRP {
         this.srpName = srpName;
     }
 
+    @Column(length = 200)
     public String getDescription() {
         return description;
     }
@@ -65,6 +66,7 @@ public class SRP {
         this.freq = freq;
     }
 
+    @Column(length = 100)
     public String getRemark() {
         return remark;
     }

@@ -123,9 +123,9 @@ public class Jpatest {
     //根据userId获取SRPname(可用在某SRP接收者列表)
     @Test
     public void testFindSrps(){
-        List<SRP> srpList = srpService.findByUserId("10000032");
+        List<SRP> srpList = srpService.findByUserId(10000032L);
         for (SRP srp : srpList){
-            System.err.println(srp.getSrpName());
+            System.err.println(srp);
         }
     }
 
@@ -134,7 +134,8 @@ public class Jpatest {
     public void testAllSrps(){
         List<SRP> srpList = srpRepository.findAll();
         for (SRP srp : srpList){
-            System.out.println(srp.getSrpId()+":"+srp.getSrpName());
+//            System.out.println(srp.getSrpId()+":"+srp.getSrpName());
+            System.err.println(srp);
         }
     }
 

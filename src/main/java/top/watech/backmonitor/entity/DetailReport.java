@@ -57,6 +57,7 @@ public class DetailReport {
         this.code = code;
     }
 
+    @Column(length = 100)
     public String getMessage() {
         return message;
     }
@@ -65,7 +66,7 @@ public class DetailReport {
         this.message = message;
     }
 
-    @Column(name="uuid",insertable=false,updatable=false)
+    @Column(name="uuid",insertable=false,updatable=false,length = 100)
     public String getUuid() {
         return uuid;
     }

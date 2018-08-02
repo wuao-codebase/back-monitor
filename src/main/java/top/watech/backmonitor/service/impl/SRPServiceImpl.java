@@ -27,9 +27,31 @@ public class SRPServiceImpl implements SRPService {
     @Autowired
     UserRepository userRepository;
 
+
+
+    /*获取SRP列表*/
     @Override
     public List<SRP> getsrpList() {
-        return null;
+        List<SRP> srpList = srpRepository.findAll();
+        return srpList;
+    }
+
+    //根据userId获取SRP列表
+    @Override
+    public List<SRP> findByUserId(Long userId) {
+        List<SRP> srpList = srpRepository.findAll(new Specification<SRP>() {
+            public Predicate toPredicate(Root<SRP> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Join<SRP, User> userJoin = root.join("users", JoinType.LEFT);
+                return cb.equal(userJoin.get("userId"), userId);
+            }
+        });
+        return srpList;
+    }
+
+    /*根据srpId获取SRP*/
+    @Override
+    public SRP getSrpById(Long srpId) {
+        return srpRepository.findBySrpId(srpId);
     }
 
     /*SRP新增*/
@@ -84,18 +106,5 @@ public class SRPServiceImpl implements SRPService {
         for (Long srpId : srpIDs){
             deleteById(srpId);
         }
-    }
-
-    //根据userId获取SRPname
-    @Override
-    public List<SRP> findByUserId(String userId) {
-        List<SRP> srpList = srpRepository.findAll(new Specification<SRP>() {
-            public Predicate toPredicate(Root<SRP> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
-                Join<SRP, User> userJoin = root.join("users", JoinType.LEFT);
-                return cb.equal(userJoin.get("userId"), userId);
-            }
-        });
-
-        return srpList;
     }
 }

@@ -77,9 +77,9 @@ public class User {
         this.userName = userName;
     }
 
-    @Column(name = "user_pwd",length = 100, unique = true)
+    @Column(name = "user_pwd",length = 50, unique = true)
     @NotEmpty(message = "密码不能为空")
-    @Size(max=100)
+    @Size(max=50)
     public String getUserPwd() {
         return userPwd;
     }
@@ -88,6 +88,7 @@ public class User {
         this.userPwd = userPwd;
     }
 
+    @Column(length = 20)
     public String getPhone() {
         return phone;
     }
@@ -104,7 +105,7 @@ public class User {
         this.role = role;
     }
 
-    @Column(name = "nick_name")
+    @Column(name = "nick_name",length = 20)
     public String getNickName() {
         return nickName;
     }
@@ -113,6 +114,7 @@ public class User {
         this.nickName = nickName;
     }
 
+    @Column(length = 50)
     public String getEmail() {
         return email;
     }
@@ -121,7 +123,7 @@ public class User {
         this.email = email;
     }
 
-    @Column(name = "org_name")
+    @Column(name = "org_name",length = 20)
     public String getOrgName() {
         return orgName;
     }
@@ -130,6 +132,7 @@ public class User {
         this.orgName = orgName;
     }
 
+    @Column(length = 200)
     public String getRemark() {
         return remark;
     }

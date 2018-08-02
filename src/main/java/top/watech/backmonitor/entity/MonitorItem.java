@@ -35,7 +35,7 @@ public class MonitorItem {
         this.monitorId = monitorId;
     }
 
-    @Column(name = "monitor_name")
+    @Column(name = "monitor_name",length = 20)
     public String getMonitorName() {
         return monitorName;
     }
@@ -62,6 +62,7 @@ public class MonitorItem {
         this.requestType = requestType;
     }
 
+    @Column(length = 200)
     public String getUrl() {
         return url;
     }
@@ -70,7 +71,7 @@ public class MonitorItem {
         this.url = url;
     }
 
-    @Column(name = "request_body")
+    @Column(name = "request_body",length = 200)
     public String getRequestBody() {
         return requestBody;
     }
@@ -79,6 +80,7 @@ public class MonitorItem {
         this.requestBody = requestBody;
     }
 
+    @Column(length = 200)
     public String getAsserts() {
         return asserts;
     }
@@ -87,6 +89,7 @@ public class MonitorItem {
         this.asserts = asserts;
     }
 
+    @Column(length = 200)
     public String getRemark() {
         return remark;
     }

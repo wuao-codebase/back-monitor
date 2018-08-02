@@ -26,6 +26,7 @@ public class TotalReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(length = 100)
     public String getUuid() {
         return uuid;
     }
