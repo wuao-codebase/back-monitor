@@ -26,25 +26,34 @@ public class SrpController {
     SrpRepository srpRepository;
 
     /*获取SRP列表(admin)*/
-    @GetMapping("/srpList")
+    @PostMapping ("/srpList")
     public RespEntity getsrpList(@RequestBody User user) {
-        List<SRP> srpList=null;
+        System.err.println(user);
         if (user.getRole()==1){
-            srpList = srpService.getsrpList();
+            List<SRP> srpList = srpService.getsrpList();
+            if(srpList!=null){
+                return new RespEntity(RespCode.SUCCESS, srpList);
+            }
+            else{
+                RespCode respCode = RespCode.WARN;
+                respCode.setMsg("获取SRP列表失败");
+                respCode.setCode(-1);
+                return new RespEntity(respCode);
+            }
         }
         else {
-            srpList = srpService.findByUserId(user.getUserId());
+            List<SRP> srpList = srpService.findByUserId(user.getUserId());
+            if(srpList!=null){
+                return new RespEntity(RespCode.SUCCESS, srpList);
+            }
+            else{
+                RespCode respCode = RespCode.WARN;
+                respCode.setMsg("获取SRP列表失败");
+                respCode.setCode(-1);
+                return new RespEntity(respCode);
+            }
         }
 
-        if(srpList!=null){
-            return new RespEntity(RespCode.SUCCESS, srpList);
-        }
-        else{
-            RespCode respCode = RespCode.WARN;
-            respCode.setMsg("获取SRP列表失败");
-            respCode.setCode(-1);
-            return new RespEntity(respCode);
-        }
     }
 
     /*SRP新增*/

@@ -24,7 +24,7 @@ public interface UserService {
     User userInsert(ReqUser reqUser);
 
     /*更新账户*/
-    User userUpdate(User user);
+    User userUpdate(ReqUser user);
 
     /*删除一个用户*/
     void deleteById(Long Long);

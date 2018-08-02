@@ -81,7 +81,7 @@ public class UserServiceImpl implements UserService {
     /*用户更新*/
     @Transactional
     @Override
-    public User userUpdate(User user) {
+    public User userUpdate(ReqUser user) {
         User user1 = userRepository.findByUserId(user.getUserId());
         if (user1!=null){
             user1.setUserName(user.getUserName());

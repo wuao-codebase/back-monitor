@@ -1,5 +1,7 @@
 package top.watech.backmonitor.entity;
 
+import lombok.ToString;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,6 +10,7 @@ import java.util.Set;
  * Created by fhm on 2018/7/24.
  */
 @Entity
+@ToString
 @Table(name = "srps")
 public class SRP {
     private Long srpId;
@@ -74,6 +77,7 @@ public class SRP {
     public void setRemark(String remark) {
         this.remark = remark;
     }
+
 
     @ManyToMany(mappedBy = "srps",fetch = FetchType.EAGER)//,cascade=CascadeType.REFRESH
     public Set<User> getUsers() {

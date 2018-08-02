@@ -1,6 +1,7 @@
 package top.watech.backmonitor.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
 
@@ -141,6 +142,7 @@ public class User {
         this.remark = remark;
     }
 
+    @JsonBackReference
     @ManyToMany(cascade=CascadeType.MERGE,fetch = FetchType.EAGER)
     @JoinTable(name = "user_srp",
             joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "user_id")},
