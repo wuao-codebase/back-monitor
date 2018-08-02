@@ -1,5 +1,7 @@
 package top.watech.backmonitor.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -75,7 +77,8 @@ public class SRP {
         this.remark = remark;
     }
 
-    @ManyToMany(mappedBy = "srps",fetch = FetchType.EAGER)//,cascade=CascadeType.REFRESH
+    @JsonBackReference
+    @ManyToMany(mappedBy = "srps",fetch = FetchType.EAGER,cascade=CascadeType.REFRESH)//
     public Set<User> getUsers() {
         return users;
     } public void setUsers(Set<User> users) {

@@ -36,7 +36,7 @@ public interface UserService {
     User updateUserpwd(Long userId,String oldPwd, String userPwd);
 
     //根据srpId获取user列表,包括关联srp信息name等
-    List<User> getUserBySrpId(User user);
+    List<User> getUserBySrpId(Long srpId);
 
     void saveUsers(List<User> users) throws Exception;
 

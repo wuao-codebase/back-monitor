@@ -1,5 +1,7 @@
 package top.watech.backmonitor.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 
 /**
@@ -122,6 +124,7 @@ public class MonitorItem {
         this.srpId = srpId;
     }
 
+    @JsonBackReference
     @JoinColumn(name = "srp_id")
     @ManyToOne(fetch = FetchType.LAZY)
     public SRP getSrp() {
