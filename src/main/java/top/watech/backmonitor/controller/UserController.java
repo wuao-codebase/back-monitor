@@ -10,6 +10,7 @@ import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 import top.watech.backmonitor.util.JwtHelper;
+import top.watech.backmonitor.util.SecurityUtil;
 
 import java.util.List;
 
@@ -33,13 +34,19 @@ public class UserController {
     //登录
     @PostMapping("/")
     public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
-        User login = userService.Login(reqUser.getUserId(), reqUser.getUserPwd());
+        User login = userService.Login(reqUser.getUserName());
 
         if(login==null )
         {
             RespCode respCode = RespCode.WARN;
-            respCode.setMsg("用户或密码错误");
+            respCode.setMsg("用户不存在");
             respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+        else if (!SecurityUtil.md5(reqUser.getUserPwd()).equals(login.getUserPwd())){
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("密码错误");
+            respCode.setCode(-2);
             return new RespEntity(respCode);
         }
         else {
@@ -138,14 +145,14 @@ public class UserController {
     /*删除一个用户*/
     @DeleteMapping("/delUserById")
     public RespEntity deleteUserById(@RequestParam("userId") Long userId){
-        userService.deleteById(userId);
+        RespCode respCode1 = userService.deleteById(userId);
         User user = userRepository.findByUserId(userId);
         if(user==null){
-            return new RespEntity(RespCode.SUCCESS);
+            return new RespEntity(respCode1);
         }
         else {
             RespCode respCode = RespCode.WARN;
-            respCode.setMsg("删除用户失败");
+            respCode.setMsg("不能删除管理员用户");
             respCode.setCode(-1);
             return new RespEntity(respCode);
         }
@@ -171,7 +178,6 @@ public class UserController {
             return new RespEntity(respCode);
         }
     }
-
 }
 
 

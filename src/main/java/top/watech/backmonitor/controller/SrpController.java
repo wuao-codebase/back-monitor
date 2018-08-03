@@ -233,6 +233,8 @@ public class SrpController {
     }
 
     //监控项详细配置查看的接口在MonitorItemController文件中
-    /*通过id获取监控项(监控项详细配置查看)*/
     //@GetMapping("/getMonitorById")
+
+    //SRP下监控项列表查看的接口在MonitorItemController文件中
+    //@GetMapping("/getMonitorsBySrpId")
 }

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.ReqUser;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
+import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 import top.watech.backmonitor.util.SecurityUtil;
@@ -25,11 +26,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
-    /*登录，根据userId和用户密码精确匹配*/
+    /*登录，根据userName匹配*/
     @Override
-    public User Login(Long id,String userPwd) throws Exception {
+    public User Login(String userName) throws Exception {
 
-        return userRepository.getByUserIdIsAndAndUserPwdIs(id,SecurityUtil.md5(userPwd));
+        return userRepository.findByUserName(userName);
+//        return userRepository.getByUserIdIsAndAndUserPwdIs(id,SecurityUtil.md5(userPwd));
     }
 
     /*根据userId获取用户*/
@@ -124,9 +126,24 @@ public class UserServiceImpl implements UserService {
     /*删除一个用户*/
     @Transactional
     @Override
-    public void deleteById(Long aLong) {
-        if (userRepository.findByUserId(aLong)!=null)
-            userRepository.deleteById(aLong);
+    public RespCode deleteById(Long userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user.getSrps()==null){
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("此用户可以删除");
+            respCode.setCode(2);
+            if (user.getRole()!=1)
+                userRepository.deleteById(userId);
+            return respCode;
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("此用户还管理有其他SRP，确认删除吗");
+            respCode.setCode(3);
+            if (user.getRole()!=1)
+                userRepository.deleteById(userId);
+            return respCode;
+        }
     }
 
     /*删多个用户*/
@@ -134,8 +151,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserlist(List<Long> userIDs) {
         for (Long userid : userIDs) {
-            if (userRepository.findByUserId(userid)!=null)
-                userRepository.deleteById(userid);
+            deleteById(userid);
         }
     }
 

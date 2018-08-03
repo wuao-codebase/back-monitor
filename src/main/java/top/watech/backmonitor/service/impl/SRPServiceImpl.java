@@ -80,26 +80,15 @@ public class SRPServiceImpl implements SRPService {
     /*SRP新增*/
     @Transactional
     public SRP srpInsert(SRP srp){
-        SRP srp1 = new SRP();
-        srp1.setSrpName(srp.getSrpName());
-        srp1.setDescription(srp.getDescription());
-        srp1.setSwitchs(srp.isSwitchs());
-        srp1.setFreq(srp.getFreq());
-
-        SRP save = srpRepository.save(srp1);
+        SRP save = srpRepository.save(srp);
         return save;
     }
 
     /*srp更新*/
     @Transactional
     public SRP srpUpdate(SRP srp){
-        SRP srp1 = srpRepository.findBySrpId(srp.getSrpId());
-        if(srp1!=null){
-            srp1.setSrpName(srp.getSrpName());
-            srp1.setDescription(srp.getDescription());
-            srp1.setSwitchs(srp.isSwitchs());
-            srp1.setFreq(srp.getFreq());
-            return srpRepository.saveAndFlush(srp1);
+        if(srp!=null){
+            return srpRepository.saveAndFlush(srp);
         }
         return null;
     }
@@ -112,16 +101,18 @@ public class SRPServiceImpl implements SRPService {
         int oldsize = srp.getUsers().size();
         for (Long userId : userIds){
             User user = userRepository.findByUserId(userId);
-            srp.getUsers().add(user);
-            user.getSrps().add(srp);
-            userRepository.save(user);
+            if (!srp.getUsers().contains(user)){
+                srp.getUsers().add(user);
+                user.getSrps().add(srp);
+                userRepository.save(user);
+            }
         }
         srpRepository.save(srp);
         int addCount = srp.getUsers().size()-oldsize;
         return addCount;
     }
 
-    /*给SRP减所属用户*/
+    /*给SRP减所属用户(解除关系)*/
     @Transactional
     @Override
     public int userSub(Long srpId, Long userId) {

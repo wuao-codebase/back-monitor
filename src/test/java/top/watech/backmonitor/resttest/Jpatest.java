@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
@@ -171,10 +172,10 @@ public class Jpatest {
     //给SRP加所属用户
     @Test
     public void testSrpUserInsert() {
-        User u1 = userRepository.findByUserId(10000021L);
-        User u2 = userRepository.findByUserId(10000022L);
+        User u1 = userRepository.findByUserId(10000001L);
+        User u2 = userRepository.findByUserId(10000003L);
 
-        SRP srpnew = srpRepository.findBySrpId(18L);
+        SRP srpnew = srpRepository.findBySrpId(1L);
 
         srpnew.getUsers().addAll(Arrays.asList(u1, u2));
 //        srpnew.getUsers().add(u1);
@@ -223,7 +224,7 @@ public class Jpatest {
     //给SRP加监控项
     @Test
     public void testItemAdd() {
-        SRP srp = srpRepository.findBySrpId(20L);
+        SRP srp = srpRepository.findBySrpId(1L);
         MonitorItem monitorItem3 = new MonitorItem();
 //        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(1L);
 //        MonitorItem monitorItem4 = monitorItemRepository.findByMonitorId(3L);
@@ -292,6 +293,16 @@ public class Jpatest {
         }
     }
 
+    //SRP监控项列表
+    @Test
+    public void testMonitorListByclassify(){
+        List<MonitorItem> bySrpIdOrderByClassify = monitorItemRepository.findBySrpIdOrderByClassify(1L);
+        for (MonitorItem monitorItem : bySrpIdOrderByClassify){
+            System.err.println(monitorItem);
+        }
+
+    }
+
     //有问题
     //删除一个srp（关系表和srp表会更新，关联user不会被删除）
     @Test
@@ -354,6 +365,19 @@ public class Jpatest {
             }
 
         }
+    }
+
+//    @Transactional
+    @Test
+    public void testDelSrp3() {
+        User user = userRepository.findByUserId(10000036L);
+        SRP srp = srpRepository.findBySrpId(16L);
+
+        user.getSrps().remove(srp);
+//        user.getSrps().clear();
+
+        userRepository.saveAndFlush(user);
+        srpRepository.delete(srp);
     }
 
 

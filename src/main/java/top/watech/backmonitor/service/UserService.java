@@ -3,6 +3,7 @@ package top.watech.backmonitor.service;
 
 import top.watech.backmonitor.entity.ReqUser;
 import top.watech.backmonitor.entity.User;
+import top.watech.backmonitor.enums.RespCode;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 public interface UserService {
     /*登录*/
-    User Login(Long id,String userPwd) throws Exception;
+    User Login(String userName) throws Exception;
 
     /*根据userId获取用户*/
     User getUserById(Long id) throws Exception;
@@ -27,7 +28,7 @@ public interface UserService {
     User userUpdate(ReqUser user);
 
     /*删除一个用户*/
-    void deleteById(Long Long);
+    RespCode deleteById(Long Long);
 
     /*删除多个用户*/
     void deleteUserlist(List<Long> userIDs);

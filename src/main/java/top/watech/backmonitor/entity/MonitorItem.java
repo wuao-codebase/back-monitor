@@ -135,4 +135,35 @@ public class MonitorItem {
         this.srp = srp;
     }
 
+    public MonitorItem() {
+    }
+
+    public MonitorItem(Long monitorId, String monitorName, Integer monitorType, Integer requestType, String url, String requestBody, String asserts, String remark, Integer classify, Long srpId) {
+        this.monitorId = monitorId;
+        this.monitorName = monitorName;
+        this.monitorType = monitorType;
+        this.requestType = requestType;
+        this.url = url;
+        this.requestBody = requestBody;
+        this.asserts = asserts;
+        this.remark = remark;
+        this.classify = classify;
+        this.srpId = srpId;
+    }
+
+    @Override
+    public String toString() {
+        return "MonitorItem{" +
+                "monitorId=" + monitorId +
+                ", monitorName='" + monitorName + '\'' +
+                ", monitorType=" + monitorType +
+                ", requestType=" + requestType +
+                ", url='" + url + '\'' +
+                ", requestBody='" + requestBody + '\'' +
+                ", asserts='" + asserts + '\'' +
+                ", remark='" + remark + '\'' +
+                ", classify=" + classify +
+                ", srpId=" + srpId +
+                '}';
+    }
 }
