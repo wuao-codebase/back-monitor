@@ -107,6 +107,7 @@ public class UserController {
     /*更新用户信息*/
     @PutMapping("/userUpdate")
     public RespEntity userUpdate(@RequestBody ReqUser user){
+        System.err.println(user);
         User user1 = userService.userUpdate(user);
 
         if (user1!=null){
