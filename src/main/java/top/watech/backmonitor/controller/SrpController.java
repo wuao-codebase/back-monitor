@@ -2,12 +2,16 @@ package top.watech.backmonitor.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.RespEntity;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.enums.RespCode;
+import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
+import top.watech.backmonitor.service.MonitorItemService;
 import top.watech.backmonitor.service.SRPService;
+import top.watech.backmonitor.service.UserService;
 
 import java.util.List;
 
@@ -26,6 +30,10 @@ public class SrpController {
     SrpRepository srpRepository;
     @Autowired
     UserService userService;
+    @Autowired
+    MonitorItemService monitorItemService;
+    @Autowired
+    MonitorItemRepository monitorItemRepository;
 
     /*获取SRP列表*/
     @PostMapping ("/srpList")
@@ -186,11 +194,45 @@ public class SrpController {
         }
         else {
             RespCode respCode = RespCode.WARN;
-            respCode.setMsg("根据srpId获取用户失败");
+            respCode.setMsg("根据srpId获取用户列表失败");
             respCode.setCode(-1);
             return new RespEntity(respCode);
         }
     }
 
+    /*给SRP加监控项*/
+    @PostMapping("/monitorItemAdd")
+    public RespEntity monitorItemAdd(@PathVariable Long srpId, @PathVariable Long monitorItemId){
+        SRP srp = srpService.monitorItemAdd(srpId, monitorItemId);
 
+        if (srp!=null){
+            return new RespEntity(RespCode.SUCCESS,srp);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("给SRP添加监控项失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+    /*给SRP减监控项*/
+    @DeleteMapping("/monitorItemSub")
+    public RespEntity monitorItemSub(@RequestParam("monitorItemId") Long monitorItemId){
+        srpService.monitorItemSub(monitorItemId);
+        MonitorItem monitorItem = monitorItemRepository.findByMonitorId(monitorItemId);
+        if(monitorItem==null){
+            return new RespEntity(RespCode.SUCCESS);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("删除监控项失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
+    //监控项详细配置查看的接口在MonitorItemController文件中
+    /*通过id获取监控项(监控项详细配置查看)*/
+    //@GetMapping("/getMonitorById")
 }

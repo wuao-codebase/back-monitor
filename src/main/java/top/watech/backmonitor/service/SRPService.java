@@ -1,5 +1,6 @@
 package top.watech.backmonitor.service;
 
+import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
 
@@ -42,8 +43,13 @@ public interface SRPService {
     List<User> getUserList();
 
     /*给SRP加监控项*/
+    SRP monitorItemAdd(Long srpId,Long monitorItemId);
 
-    /*给SRP加监控项*/
+    /*给SRP减监控项*/
+    void monitorItemSub(Long monitorItemId);
+
+    /*给SRP删除多个监控项*/
+    void monitorItemListSub(List<Long> monitorItemIds);
 
     //根据srpId获取监控项列表
 }

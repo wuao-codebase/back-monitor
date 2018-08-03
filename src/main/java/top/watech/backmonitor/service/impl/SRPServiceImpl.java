@@ -4,8 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
+import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.SRPService;
@@ -27,6 +29,8 @@ public class SRPServiceImpl implements SRPService {
     UserService userService;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    MonitorItemRepository monitorItemRepository;
 
 
 
@@ -163,5 +167,33 @@ public class SRPServiceImpl implements SRPService {
         }
     }
 
+    /*给SRP加监控项*/
+    @Transactional
+    @Override
+    public SRP monitorItemAdd(Long srpId,Long monitorItemId) {
+        SRP srp = srpRepository.findBySrpId(srpId);
+        MonitorItem monitorItem = monitorItemRepository.findByMonitorId(monitorItemId);
+        srp.getMonitorItems().add(monitorItem);
+        monitorItem.setSrp(srp);
 
+        SRP srp1 = srpRepository.saveAndFlush(srp);
+        monitorItemRepository.saveAndFlush(monitorItem);
+        return srp1;
+    }
+
+    /*给SRP减监控项*/
+    @Transactional
+    @Override
+    public void monitorItemSub(Long monitorItemId) {
+        if (monitorItemRepository.findByMonitorId(monitorItemId)!=null)
+            monitorItemRepository.deleteById(monitorItemId);
+    }
+
+    /*给SRP删除多个监控项*/
+    @Override
+    public void monitorItemListSub(List<Long> monitorItemIds) {
+        for (Long monitorId : monitorItemIds){
+            monitorItemSub(monitorId);
+        }
+    }
 }
