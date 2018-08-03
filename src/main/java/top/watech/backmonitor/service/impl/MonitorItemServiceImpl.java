@@ -52,13 +52,12 @@ public class MonitorItemServiceImpl implements MonitorItemService {
         monitorItem1.setClassify(monitorItem.getClassify());
         monitorItem1.setSrpId(monitorItem.getSrpId());
 
-        SRP srp = monitorItem.getSrp();
-        monitorItem1.setSrp(srp);
-        srp.getMonitorItems().add(monitorItem1);
-
-        srpRepository.save(srp);
+//        SRP srp = monitorItem.getSrp();
+//        monitorItem1.setSrp(srp);
+//        srp.getMonitorItems().add(monitorItem1);
+//
+//        srpRepository.save(srp);
         MonitorItem save = monitorItemRepository.save(monitorItem1);
-
         return save;
     }
 

@@ -269,14 +269,27 @@ public class Jpatest {
     @Test
     public void testItemSub() {
         MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(9L);
-        SRP srpsub = srpRepository.findBySrpId(16L);
+//        SRP srpsub = srpRepository.findBySrpId(16L);
 
-        boolean remove = srpsub.getMonitorItems().remove(9);
 
-        srpRepository.saveAndFlush(srpsub);
-        monitorItemRepository.saveAndFlush(monitorItem3);
+//        boolean remove = srpsub.getMonitorItems().remove(monitorItem3);
 
-        System.err.println(remove);
+//        monitorItemRepository.saveAndFlush(monitorItem3);
+        monitorItemRepository.delete(monitorItem3);
+//        System.err.println(remove);
+    }
+
+    //给SRP清空监控项
+    @Test
+    public void testItemClear() {
+        SRP srp = srpRepository.findBySrpId(16L);
+
+        srp.getMonitorItems().clear();
+        srpRepository.saveAndFlush(srp);
+
+        for (MonitorItem monitorItem : srp.getMonitorItems()){
+            monitorItemRepository.delete(monitorItem);
+        }
     }
 
     //有问题
