@@ -19,6 +19,9 @@ public interface UserRepository extends JpaRepository<User,Long> ,JpaSpecificati
     //根据用户名获取用户
     User findByUserName(String userName);
 
+    //根据手机号获取用户
+    User findByPhone(Long phone);
+
     //根据userId获取用户
     User findByUserId(Long userId);
 

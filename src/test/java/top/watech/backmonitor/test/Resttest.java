@@ -1,8 +1,7 @@
-package top.watech.backmonitor.resttest;
+package top.watech.backmonitor.test;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,6 @@
 package top.watech.backmonitor.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.ToString;
 
@@ -24,7 +23,7 @@ public class User {
     @JsonIgnore
     private String userPwd;
 
-    private String phone;
+    private Long phone;
     private Integer role;   //角色id
 
     private String nickName; //昵称
@@ -57,10 +56,10 @@ public class User {
         this.token = token;
     }
 
-    private Set<SRP> srps = new HashSet<>();
+    private Set<SRP> srps = new HashSet<SRP>();
 
     @Id
-    @Column(name = "user_id")
+    @Column(name = "userId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getUserId() {
         return userId;
@@ -78,7 +77,7 @@ public class User {
         this.userName = userName;
     }
 
-    @Column(name = "user_pwd",length = 50, unique = true)
+    @Column(name = "user_pwd",length = 50)
     @NotEmpty(message = "密码不能为空")
     @Size(max=50)
     public String getUserPwd() {
@@ -89,12 +88,12 @@ public class User {
         this.userPwd = userPwd;
     }
 
-    @Column(length = 20)
-    public String getPhone() {
+    @Column(length = 20, unique = true)
+    public Long getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(Long phone) {
         this.phone = phone;
     }
 
@@ -143,10 +142,10 @@ public class User {
     }
 
 //    @JsonBackReference
-    @ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.REFRESH,fetch = FetchType.EAGER)
     @JoinTable(name = "user_srp",
-            joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "srp_id",referencedColumnName = "srp_id")})
+            joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "userId")},
+            inverseJoinColumns = {@JoinColumn(name = "srp_id",referencedColumnName = "srpId")})
     public Set<SRP> getSrps() {
         return srps;
     }

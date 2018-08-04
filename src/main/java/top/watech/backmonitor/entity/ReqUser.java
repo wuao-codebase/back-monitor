@@ -11,7 +11,7 @@ public class ReqUser {
     private String userName;
     private String userPwd;
 
-    private String phone;
+    private Long phone;
     private Integer role;   //角色id
 
     private String nickName; //昵称
@@ -54,11 +54,11 @@ public class ReqUser {
         this.userPwd = userPwd;
     }
 
-    public String getPhone() {
+    public Long getPhone() {
         return phone;
     }
 
-    public void setPhone(String phone) {
+    public void setPhone(Long phone) {
         this.phone = phone;
     }
 

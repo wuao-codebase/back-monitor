@@ -21,12 +21,12 @@ public class SRP {
     private double freq;    //频率
     private String remark;  //备注
 
-    private Set<User> users = new HashSet<>();
+    private Set<User> users = new HashSet<User>();
 
-    private Set<MonitorItem> monitorItems = new HashSet<>();
+    private Set<MonitorItem> monitorItems = new HashSet<MonitorItem>();
 
     @Id
-    @Column(name = "srp_id")
+    @Column(name = "srpId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long getSrpId() {
         return srpId;
@@ -80,7 +80,7 @@ public class SRP {
     }
 
     @JsonBackReference
-    @ManyToMany(mappedBy = "srps",cascade = CascadeType.ALL,fetch = FetchType.EAGER)//,cascade=CascadeType.REFRESH
+    @ManyToMany(mappedBy = "srps",cascade = CascadeType.REFRESH,fetch = FetchType.EAGER)//,cascade=CascadeType.REFRESH
     public Set<User> getUsers() {
         return users;
     } public void setUsers(Set<User> users) {

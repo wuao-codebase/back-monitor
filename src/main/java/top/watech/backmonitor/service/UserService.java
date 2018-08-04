@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface UserService {
     /*登录*/
-    User Login(String userName) throws Exception;
+    User Login(Long phone) throws Exception;
 
     /*根据userId获取用户*/
     User getUserById(Long id) throws Exception;

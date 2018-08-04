@@ -145,10 +145,10 @@ public class SrpController {
     /*删除一个SRP*/
     @DeleteMapping("/delSrpById")
     public RespEntity deleteSrpById(@RequestParam("srpId") Long srpId){
-        srpService.deleteById(srpId);
+        RespCode respCode1 = srpService.deleteById(srpId);
 
         if(srpRepository.findBySrpId(srpId)==null){
-            return new RespEntity(RespCode.SUCCESS);
+            return new RespEntity(respCode1);
         }
         else {
             RespCode respCode = RespCode.WARN;
@@ -162,11 +162,7 @@ public class SrpController {
     @DeleteMapping("/delSrpList")
     public RespEntity deleteUserlist(@RequestParam("srpIds") List<Long> srpIds){
         srpService.deleteSrplist(srpIds);
-
-        RespCode respCode = RespCode.WARN;
-        respCode.setMsg("删除SRP失败");
-        respCode.setCode(-1);
-        return new RespEntity(respCode);
+        return new RespEntity(RespCode.SUCCESS);
     }
 
     /*显示用户列表（给SRP加用户时选用户）*/

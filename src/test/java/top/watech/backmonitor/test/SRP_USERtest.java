@@ -1,4 +1,4 @@
-package top.watech.backmonitor.resttest;
+package top.watech.backmonitor.test;
 
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

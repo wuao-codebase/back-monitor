@@ -26,11 +26,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
-    /*登录，根据userName匹配*/
+    /*登录，根据手机号匹配*/
     @Override
-    public User Login(String userName) throws Exception {
+    public User Login(Long phone) throws Exception {
 
-        return userRepository.findByUserName(userName);
+        return userRepository.findByPhone(phone);
 //        return userRepository.getByUserIdIsAndAndUserPwdIs(id,SecurityUtil.md5(userPwd));
     }
 
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
             user.setUserId(Long.valueOf(String.valueOf(objects[0])));
             user.setEmail((String)objects[1]);
             user.setRole((Integer)objects[2]);
-            user.setPhone((String)objects[3]);
+            user.setPhone((Long) objects[3]);
             user.setUserPwd((String)objects[4]);
             user.setRemark((String)objects[5]);
             user.setSrpnames(String.valueOf(objects[6]));
@@ -128,21 +128,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public RespCode deleteById(Long userId) {
         User user = userRepository.findByUserId(userId);
-        if (user.getSrps()==null){
+        if (user.getRole()==1){
             RespCode respCode = RespCode.WARN;
-            respCode.setMsg("此用户可以删除");
+            respCode.setMsg("不能删除管理员用户");
             respCode.setCode(2);
-            if (user.getRole()!=1)
-                userRepository.deleteById(userId);
             return respCode;
         }
         else {
-            RespCode respCode = RespCode.WARN;
-            respCode.setMsg("此用户还管理有其他SRP，确认删除吗");
-            respCode.setCode(3);
-            if (user.getRole()!=1)
+            if (user.getSrps()==null){
+                RespCode respCode = RespCode.WARN;
+                respCode.setCode(2);
                 userRepository.deleteById(userId);
-            return respCode;
+                return respCode;
+            }
+            else {
+                RespCode respCode = RespCode.WARN;
+                respCode.setMsg("此用户还管理有其他SRP，确认删除吗");
+                respCode.setCode(3);
+                userRepository.deleteById(userId);
+                return respCode;
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-package top.watech.backmonitor.resttest;
+package top.watech.backmonitor.test;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
@@ -154,8 +153,21 @@ public class Jpatest {
         srp.setFreq(20);
 
         srpRepository.save(srp);
-
     }
+
+    @Test
+    public void testSrpInsert2() {
+        for (int i = 1 ; i <= 10 ; i ++){
+            SRP srp = new SRP();
+            srp.setSrpName("srp"+i);
+            srp.setDescription("XXXXXXXXXXyayayaXXXXXXXXXXXXX");
+            srp.setSwitchs(true);
+            srp.setFreq(20);
+            srpRepository.save(srp);
+        }
+    }
+
+
 
     //SRP更新
     @Test
@@ -172,10 +184,10 @@ public class Jpatest {
     //给SRP加所属用户
     @Test
     public void testSrpUserInsert() {
-        User u1 = userRepository.findByUserId(10000001L);
-        User u2 = userRepository.findByUserId(10000003L);
+        User u1 = userRepository.findByUserId(10000053L);
+        User u2 = userRepository.findByUserId(10000054L);
 
-        SRP srpnew = srpRepository.findBySrpId(1L);
+        SRP srpnew = srpRepository.findBySrpId(49L);
 
         srpnew.getUsers().addAll(Arrays.asList(u1, u2));
 //        srpnew.getUsers().add(u1);
@@ -221,16 +233,56 @@ public class Jpatest {
 //        userRepository.save(uu);
     }
 
+    @Test
+    public void testSrpUserSub2() {
+        User u1 = userRepository.findByUserId(10000053L);
+        User u2 = userRepository.findByUserId(10000054L);
+//        SRP srp = srpRepository.findBySrpId(48L);
+        SRP srp = u1.getSrps().iterator().next();
+        SRP srp1 = u2.getSrps().iterator().next();
+
+//        for (User user : srp.getUsers()){
+//            user.getSrps().remove(srp);
+//        }
+        u1.getSrps().remove(srp);
+        u2.getSrps().remove(srp1);
+
+        srpRepository.saveAndFlush(srp);
+        userRepository.saveAndFlush(u1);
+        userRepository.saveAndFlush(u2);
+
+//        Category ctg = em.find(Category.class, 3);
+//        Item item = ctg.getItemsSet().iterator().next();
+//        ctg.getItemsSet().remove(item);
+    }
+
+    //成功
+    @Test
+    public void testSrpUserSub3() {
+        User u1 = userRepository.findByUserId(10000054L);
+//        SRP srp = srpRepository.findBySrpId(48L);
+        SRP srp = u1.getSrps().iterator().next();
+
+        u1.getSrps().remove(srp);
+        srp.getUsers().remove(u1);
+
+//        System.err.println(srp);
+//        System.err.println(srp.getUsers());
+
+        srpRepository.saveAndFlush(srp);
+        userRepository.saveAndFlush(u1);
+    }
+
     //给SRP加监控项
     @Test
     public void testItemAdd() {
-        SRP srp = srpRepository.findBySrpId(1L);
+        SRP srp = srpRepository.findBySrpId(48L);
         MonitorItem monitorItem3 = new MonitorItem();
 //        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(1L);
 //        MonitorItem monitorItem4 = monitorItemRepository.findByMonitorId(3L);
         MonitorItem monitorItem2 = new MonitorItem();
 
-        monitorItem2.setMonitorName("API1");
+        monitorItem2.setMonitorName("API");
         monitorItem2.setRemark("API111111111111");
         monitorItem2.setUrl("http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone");
         monitorItem2.setRequestType(1);
@@ -243,7 +295,7 @@ public class Jpatest {
                 "    \"statusCode\":\"200\"\n" +
                 "}");
 
-        monitorItem3.setMonitorName("API3");
+        monitorItem3.setMonitorName("API");
         monitorItem3.setRemark("AP33333333333333333");
         monitorItem3.setUrl("http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone");
         monitorItem3.setRequestType(1);
@@ -380,6 +432,20 @@ public class Jpatest {
         srpRepository.delete(srp);
     }
 
+    @Test
+    public void testDelSrp4() {
+        //        SRP srp = srpRepository.findBySrpId(48L);
+        User u1 = userRepository.findByUserId(10000054L);
+        SRP srp = u1.getSrps().iterator().next();
+
+        u1.getSrps().remove(srp);
+        srp.getUsers().clear();
+
+        srpRepository.saveAndFlush(srp);
+        userRepository.saveAndFlush(u1);
+
+        srpRepository.delete(srp);
+    }
 
     /*
      *用户管理
@@ -399,7 +465,7 @@ public class Jpatest {
     public void testUserInsert() {
         User user = new User();
         user.setRole(1);
-        user.setPhone("18300000000");
+        user.setPhone(18300000000L);
         user.setEmail("xxx@xx.com");
         user.setUserName("wuao1234");
         String usepwd = null;
@@ -414,6 +480,31 @@ public class Jpatest {
         userRepository.save(user);
 
         System.out.println(user);
+    }
+
+    @Test
+    public void testUserInsert2() {
+
+        List<User> users = new ArrayList<>();
+        for (int i=1;i<=9;i++){
+            User user = new User();
+            user.setRole(2);
+            user.setPhone((long) (1830000000+i));
+            user.setEmail("xxx@xx.com");
+            user.setUserName("user"+i);
+            try {
+                user.setUserPwd(SecurityUtil.md5("11111"+i));
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
+
+            user.setRemark("userxxx");
+
+            users.add(user);
+//            userRepository.save(user);
+            System.err.println(user);
+        }
+        userRepository.saveAll(users);
     }
 
     //删除一个用户（关系表和user表会更新，关联SRP不会被删除）
@@ -441,7 +532,7 @@ public class Jpatest {
         user.setRemark("xxxxx");
         user.setUserName("updUser111");
         user.setUserPwd("111111");
-        user.setPhone("18900000011");
+        user.setPhone(18900000011L);
 //        user.setUserId(10000036L);
 
 //        userRepository.save(user);
@@ -488,7 +579,7 @@ public class Jpatest {
             user.setUserId(Long.valueOf(String.valueOf(objects[0])));
             user.setEmail((String) objects[1]);
             user.setRole((Integer) objects[2]);
-            user.setPhone((String) objects[3]);
+            user.setPhone((Long) objects[3]);
             user.setUserPwd((String) objects[4]);
             user.setRemark((String) objects[5]);
             user.setSrpnames(String.valueOf(objects[6]));
