@@ -34,7 +34,7 @@ public class UserController {
     //登录
     @PostMapping("/")
     public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
-        User login = userService.Login(reqUser.getUserName());
+        User login = userService.Login(reqUser.getPhone());
 
         if(login==null )
         {
