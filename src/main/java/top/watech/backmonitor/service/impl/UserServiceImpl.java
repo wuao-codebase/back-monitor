@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.ReqUser;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
-import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
 import top.watech.backmonitor.util.SecurityUtil;
@@ -126,28 +125,10 @@ public class UserServiceImpl implements UserService {
     /*删除一个用户*/
     @Transactional
     @Override
-    public RespCode deleteById(Long userId) {
+    public void deleteById(Long userId) {
         User user = userRepository.findByUserId(userId);
-        if (user.getRole()==1){
-            RespCode respCode = RespCode.WARN;
-            respCode.setMsg("不能删除管理员用户");
-            respCode.setCode(2);
-            return respCode;
-        }
-        else {
-            if (user.getSrps()==null){
-                RespCode respCode = RespCode.WARN;
-                respCode.setCode(2);
-                userRepository.deleteById(userId);
-                return respCode;
-            }
-            else {
-                RespCode respCode = RespCode.WARN;
-                respCode.setMsg("此用户还管理有其他SRP，确认删除吗");
-                respCode.setCode(3);
-                userRepository.deleteById(userId);
-                return respCode;
-            }
+        if (user.getRole()!=1){
+            userRepository.deleteById(userId);
         }
     }
 

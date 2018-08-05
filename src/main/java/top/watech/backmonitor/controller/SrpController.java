@@ -145,10 +145,10 @@ public class SrpController {
     /*删除一个SRP*/
     @DeleteMapping("/delSrpById")
     public RespEntity deleteSrpById(@RequestParam("srpId") Long srpId){
-        RespCode respCode1 = srpService.deleteById(srpId);
+        srpService.deleteById(srpId);
 
         if(srpRepository.findBySrpId(srpId)==null){
-            return new RespEntity(respCode1);
+            return new RespEntity(RespCode.SUCCESS);
         }
         else {
             RespCode respCode = RespCode.WARN;

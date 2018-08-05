@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
-import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.UserRepository;
@@ -135,13 +134,10 @@ public class SRPServiceImpl implements SRPService {
     /*删除一个srp*/
     @Transactional
     @Override
-    public RespCode deleteById(Long srpId) {
+    public void deleteById(Long srpId) {
         SRP srp = srpRepository.findBySrpId(srpId);
         if (srp!=null) {
             if (srp.getUsers()!=null) {
-                RespCode respCode = RespCode.WARN;
-                respCode.setMsg("此SRP还关联有其他用户");
-                respCode.setCode(-2);
                 List<User> users = userService.getUserBySrpId(srpId);
                 for (User user : users) {
                     user.getSrps().remove(srp);
@@ -150,16 +146,11 @@ public class SRPServiceImpl implements SRPService {
                 srp.getUsers().clear();
                 srpRepository.save(srp);
                 srpRepository.deleteById(srpId);
-                return respCode;
             }
             else {
-                RespCode respCode = RespCode.WARN;
-                respCode.setCode(-3);
                 srpRepository.deleteById(srpId);
-                return respCode;
             }
         }
-        return null;
     }
 
     /*删除多个srp*/

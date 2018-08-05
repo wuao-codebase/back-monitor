@@ -2,7 +2,6 @@ package top.watech.backmonitor.service;
 
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
-import top.watech.backmonitor.enums.RespCode;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public interface SRPService {
     int userSub(Long srpId, Long userId);
 
     /*删除一个SRP*/
-    RespCode deleteById(Long srpId);
+    void deleteById(Long srpId);
 
     /*删除多个SRP*/
     void deleteSrplist(List<Long> srpIDs);

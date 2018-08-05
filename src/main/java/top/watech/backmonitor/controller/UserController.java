@@ -146,10 +146,10 @@ public class UserController {
     /*删除一个用户*/
     @DeleteMapping("/delUserById")
     public RespEntity deleteUserById(@RequestParam("userId") Long userId){
-        RespCode respCode1 = userService.deleteById(userId);
+        userService.deleteById(userId);
         User user = userRepository.findByUserId(userId);
         if(user==null){
-            return new RespEntity(respCode1);
+            return new RespEntity(RespCode.SUCCESS);
         }
         else {
             RespCode respCode = RespCode.WARN;

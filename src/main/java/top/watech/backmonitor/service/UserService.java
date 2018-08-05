@@ -3,7 +3,6 @@ package top.watech.backmonitor.service;
 
 import top.watech.backmonitor.entity.ReqUser;
 import top.watech.backmonitor.entity.User;
-import top.watech.backmonitor.enums.RespCode;
 
 import java.util.List;
 
@@ -28,7 +27,7 @@ public interface UserService {
     User userUpdate(ReqUser user);
 
     /*删除一个用户*/
-    RespCode deleteById(Long Long);
+    void deleteById(Long Long);
 
     /*删除多个用户*/
     void deleteUserlist(List<Long> userIDs);
