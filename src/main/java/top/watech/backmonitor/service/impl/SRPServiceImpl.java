@@ -79,12 +79,25 @@ public class SRPServiceImpl implements SRPService {
 
     /*SRP新增*/
     @Transactional
-    public SRP srpInsert(SRP srp){
-        for( User user :srp.getUsers()){
-            srp.getUsers().add(user);
+    public SRP srpInsert(SRP srp,List<Long> userIds){
+        SRP srp1 = new SRP();
+        srp1.setSrpName(srp.getSrpName());
+        srp1.setDescription(srp.getDescription());
+        srp1.setSwitchs(srp.isSwitchs());
+        srp1.setFreq(srp.getFreq());
+
+        for (Long userId : userIds){
+            User user = userRepository.findByUserId(userId);
+            srp1.getUsers().add(user);
             user.getSrps().add(srp);
+            userRepository.saveAndFlush(user);
         }
-        SRP save = srpRepository.save(srp);
+
+//        for( User user :srp.getUsers()){
+//            srp.getUsers().add(user);
+//            user.getSrps().add(srp);
+//        }
+        SRP save = srpRepository.save(srp1);
         return save;
     }
 
@@ -109,6 +122,7 @@ public class SRPServiceImpl implements SRPService {
                 srp.getUsers().add(user);
                 user.getSrps().add(srp);
                 userRepository.save(user);
+
             }
         }
         srpRepository.save(srp);

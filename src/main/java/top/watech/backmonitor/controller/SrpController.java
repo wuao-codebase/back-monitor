@@ -81,9 +81,9 @@ public class SrpController {
     }
 
     /*SRP新增*/
-    @PostMapping("/srpInsert")
-    public RespEntity srpInsert(@RequestBody SRP srp){
-        SRP srp1 = srpService.srpInsert(srp);
+    @PostMapping("/srpInsert/{userIds}")
+    public RespEntity srpInsert(@RequestBody SRP srp,@PathVariable List<Long> userIds){
+        SRP srp1 = srpService.srpInsert(srp, userIds);
 
         if (srp1!=null){
             return new RespEntity(RespCode.SUCCESS,srp1);

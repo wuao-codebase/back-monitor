@@ -142,7 +142,7 @@ public class User {
     }
 
 //    @JsonBackReference
-    @ManyToMany(cascade=CascadeType.REFRESH,fetch = FetchType.EAGER)
+    @ManyToMany(cascade=CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(name = "user_srp",
             joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "userId")},
             inverseJoinColumns = {@JoinColumn(name = "srp_id",referencedColumnName = "srpId")})

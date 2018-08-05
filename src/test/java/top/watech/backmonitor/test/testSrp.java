@@ -87,6 +87,40 @@ public class testSrp {
         }
     }
 
+    @Test
+    public void testSrpInsert3(){
+        SRP srp = new SRP();
+
+        User user1 = userRepository.findByUserId(51L);
+        User user2 = userRepository.findByUserId(52L);
+        User user3 = userRepository.findByUserId(53L);
+
+        srp.setSrpName("srpsrp3");
+        srp.setDescription("XXXXXXXXXXyayayaXXXXXXXXXXXXX");
+        srp.setSwitchs(true);
+        srp.setFreq(20);
+
+        user1.getSrps().add(srp);
+        user2.getSrps().add(srp);
+        user3.getSrps().add(srp);
+
+        srp.getUsers().add(user1);
+        srp.getUsers().add(user2);
+        srp.getUsers().add(user3);
+
+//        Set<User> users = new HashSet<>();
+//        users.add(user1);
+//        users.add(user2);
+//        users.add(user3);
+//        srp.setUsers(users);
+
+        userRepository.saveAndFlush(user1);
+        userRepository.saveAndFlush(user2);
+        userRepository.saveAndFlush(user3);
+
+        srpRepository.save(srp);
+    }
+
     //SRP更新
     @Test
     public void testSrpUpdate() {

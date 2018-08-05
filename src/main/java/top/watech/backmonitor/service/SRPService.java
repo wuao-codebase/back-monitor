@@ -18,7 +18,7 @@ public interface SRPService {
     SRP getSrpById(Long srpId);
 
     //新增SRP
-    SRP srpInsert(SRP srp);
+    SRP srpInsert(SRP srp,List<Long> userIds);
 
     //更新SRP
     SRP srpUpdate(SRP srp);

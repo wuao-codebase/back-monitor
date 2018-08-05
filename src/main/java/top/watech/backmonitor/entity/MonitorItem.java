@@ -126,7 +126,7 @@ public class MonitorItem {
 
     @JsonBackReference
     @JoinColumn(name = "srp_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public SRP getSrp() {
         return srp;
     }
