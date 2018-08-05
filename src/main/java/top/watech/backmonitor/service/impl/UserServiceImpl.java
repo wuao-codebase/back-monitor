@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
             user.setUserId(Long.valueOf(String.valueOf(objects[0])));
             user.setEmail((String)objects[1]);
             user.setRole((Integer)objects[2]);
-            user.setPhone((Long) objects[3]);
+            user.setPhone(Long.valueOf(String.valueOf(objects[3])));
             user.setUserPwd((String)objects[4]);
             user.setRemark((String)objects[5]);
             user.setSrpnames(String.valueOf(objects[6]));
@@ -89,13 +89,6 @@ public class UserServiceImpl implements UserService {
             user1.setPhone(user.getPhone());
             user1.setEmail(user.getEmail());
             user1.setRemark(user.getRemark());
-            if(user.getUserPwd()!=null){
-                try {
-                    user1.setUserPwd(SecurityUtil.md5(user.getUserPwd()));
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
-            }
             return userRepository.saveAndFlush(user1);
         }
        else {

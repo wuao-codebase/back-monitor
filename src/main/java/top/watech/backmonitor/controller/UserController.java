@@ -144,8 +144,8 @@ public class UserController {
     }
 
     /*重置用户密码*/
-    @PostMapping ("/upsetUserpwd")
-    public RespEntity upsetUserpwd(@RequestParam Long userId, @RequestParam String userPwd){
+    @PostMapping ("/upsetUserpwd/{userId}/{userPwd}")
+    public RespEntity upsetUserpwd(@PathVariable Long userId, @PathVariable String userPwd){
         User user1 = userService.upsetUserpwd(userId, userPwd);
         return new RespEntity(RespCode.SUCCESS,user1);
     }
