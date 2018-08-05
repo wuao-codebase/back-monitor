@@ -113,7 +113,7 @@ public class SrpController {
     }
 
     /*给SRP加所属用户*/
-    @PostMapping("/userAdd")
+    @PostMapping("/userAdd/{srpId}/{userIds}")
     public RespEntity userAdd(@PathVariable Long srpId, @PathVariable List<Long> userIds){
         int userCount = srpService.userAdd(srpId, userIds);
         if (userCount>0){
@@ -128,8 +128,8 @@ public class SrpController {
     }
 
     /*给SRP减所属用户*/
-    @PostMapping("/userSub")
-    public RespEntity userSub(@PathVariable Long srpId, Long userId){
+    @PostMapping("/userSub/{srpId}/{userId}")
+    public RespEntity userSub(@PathVariable Long srpId, @PathVariable Long userId){
         int userCount = srpService.userSub(srpId,userId);
         if (userCount<0){
             return new RespEntity(RespCode.SUCCESS,userCount);
@@ -159,8 +159,8 @@ public class SrpController {
     }
 
     /*删除多个SRP*/
-    @DeleteMapping("/delSrpList")
-    public RespEntity deleteUserlist(@RequestParam("srpIds") List<Long> srpIds){
+    @DeleteMapping("/delSrpList/{srpIds}")
+    public RespEntity deleteUserlist(@PathVariable List<Long> srpIds){
         srpService.deleteSrplist(srpIds);
         return new RespEntity(RespCode.SUCCESS);
     }
@@ -197,7 +197,7 @@ public class SrpController {
     }
 
     /*给SRP加监控项*/
-    @PostMapping("/monitorItemAdd")
+    @PostMapping("/monitorItemAdd/{srpId}/{monitorItemId}")
     public RespEntity monitorItemAdd(@PathVariable Long srpId, @PathVariable Long monitorItemId){
         SRP srp = srpService.monitorItemAdd(srpId, monitorItemId);
 
