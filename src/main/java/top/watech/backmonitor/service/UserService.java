@@ -35,8 +35,14 @@ public interface UserService {
     /*更新用户密码*/
     User updateUserpwd(Long userId,String oldPwd, String userPwd);
 
+    /*重置用户密码*/
+    User upsetUserpwd(Long userId, String userPwd);
+
     //根据srpId获取user列表,包括关联srp信息name等
     List<User> getUserBySrpId(Long srpId);
+
+    /*判断当前手机号是否已存在（是否已有对应用户）*/
+    User isPhoneRepet(Long phone);
 
     void saveUsers(List<User> users) throws Exception;
 

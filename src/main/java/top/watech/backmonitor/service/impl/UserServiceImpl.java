@@ -110,9 +110,9 @@ public class UserServiceImpl implements UserService {
         User user1 = userRepository.findByUserId(userId);
         if(userPwd!=null && !"".equals(userPwd)) { //如果没有输入密码，则不修改
             try {
-                if(user1!=null && SecurityUtil.md5(user1.getUserName(), oldPwd).equals(user1.getUserPwd())) {
+                if(user1!=null && SecurityUtil.md5(oldPwd).equals(user1.getUserPwd())) {
                     user1.setUserId(userId);
-                    user1.setUserPwd(SecurityUtil.md5(user1.getUserName(),userPwd));
+                    user1.setUserPwd(SecurityUtil.md5(userPwd));
                     User user = userRepository.saveAndFlush(user1);
                     return user;
                 }
@@ -122,6 +122,25 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+
+    /*重置用户密码*/
+    @Transactional
+    @Override
+    public User upsetUserpwd(Long userId, String userPwd) {
+        User user = userRepository.findByUserId(userId);
+        try {
+            if (user!=null){
+                user.setUserId(userId);
+                user.setUserPwd(SecurityUtil.md5(userPwd));
+                User user1 = userRepository.saveAndFlush(user);
+                return user1;
+            }
+        } catch (NoSuchAlgorithmException e) {
+        e.printStackTrace();
+        }
+        return null;
+    }
+
     /*删除一个用户*/
     @Transactional
     @Override
@@ -151,6 +170,13 @@ public class UserServiceImpl implements UserService {
             }
         });
         return users;
+    }
+
+    /*判断当前手机号是否已存在（是否已有对应用户）*/
+    @Override
+    public User isPhoneRepet(Long phone) {
+        User user = userRepository.findByPhone(phone);
+        return user;
     }
 
     //保存所有用户

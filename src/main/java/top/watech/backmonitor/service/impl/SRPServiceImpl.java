@@ -80,6 +80,10 @@ public class SRPServiceImpl implements SRPService {
     /*SRP新增*/
     @Transactional
     public SRP srpInsert(SRP srp){
+        for( User user :srp.getUsers()){
+            srp.getUsers().add(user);
+            user.getSrps().add(srp);
+        }
         SRP save = srpRepository.save(srp);
         return save;
     }
