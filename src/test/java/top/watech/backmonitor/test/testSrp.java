@@ -55,6 +55,15 @@ public class testSrp {
         }
     }
 
+    //根据srpId获取SRPname(可用在某SRP接收者列表)
+    @Test
+    public void testFindSrps1() {
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(91L);
+
+        System.err.println(srp);
+
+    }
+
     //获取所有SRP列表
     @Test
     public void testAllSrps() {
@@ -138,7 +147,7 @@ public class testSrp {
 
         User user1 = userRepository.findByUserId(59L);
 
-        srp.setSrpName("srpzzz");
+        srp.setSrpName("srpxyz111");
         srp.setDescription("XXXXXXXXXXyayayaXXXXXXXXXXXXX");
         srp.setSwitchs(true);
         srp.setFreq(20);
@@ -149,12 +158,14 @@ public class testSrp {
         userRepository.saveAndFlush(user1);
 
         srpRepository.save(srp);
+
+        System.err.println(srp);
     }
 
     //SRP更新
     @Test
     public void testSrpUpdate() {
-        SRP srp1 = srpRepository.findBySrpId(18L);
+        SRP srp1 = srpRepository.findBySrpIdOrderBySrpId(18L);
 
         srp1.setDescription("ddddddddddddddddddd");
         srpRepository.saveAndFlush(srp1);
@@ -183,7 +194,7 @@ public class testSrp {
         User u1 = userRepository.findByUserId(10000053L);
         User u2 = userRepository.findByUserId(10000054L);
 
-        SRP srpnew = srpRepository.findBySrpId(49L);
+        SRP srpnew = srpRepository.findBySrpIdOrderBySrpId(49L);
 
         srpnew.getUsers().addAll(Arrays.asList(u1, u2));
 //        srpnew.getUsers().add(u1);
@@ -216,13 +227,13 @@ public class testSrp {
     //给SRP加监控项
     @Test
     public void testItemAdd() {
-        SRP srp = srpRepository.findBySrpId(48L);
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(66L);
         MonitorItem monitorItem3 = new MonitorItem();
         MonitorItem monitorItem2 = new MonitorItem();
 //        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(1L);
 //        MonitorItem monitorItem4 = monitorItemRepository.findByMonitorId(3L);
 
-        monitorItem2.setMonitorName("API");
+        monitorItem2.setMonitorName("APIssssssssssss");
         monitorItem2.setRemark("API111111111111");
         monitorItem2.setUrl("http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone");
         monitorItem2.setRequestType(1);
@@ -235,7 +246,7 @@ public class testSrp {
                 "    \"statusCode\":\"200\"\n" +
                 "}");
 
-        monitorItem3.setMonitorName("API");
+        monitorItem3.setMonitorName("APIwwwwwwwwwwww");
         monitorItem3.setRemark("AP33333333333333333");
         monitorItem3.setUrl("http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone");
         monitorItem3.setRequestType(1);
@@ -270,7 +281,7 @@ public class testSrp {
     //给SRP清空监控项
     @Test
     public void testItemClear() {
-        SRP srp = srpRepository.findBySrpId(16L);
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(16L);
 
         srp.getMonitorItems().clear();
         srpRepository.saveAndFlush(srp);

@@ -10,6 +10,7 @@ import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.UserRepository;
+import top.watech.backmonitor.service.MonitorItemService;
 import top.watech.backmonitor.service.SRPService;
 import top.watech.backmonitor.service.UserService;
 
@@ -31,6 +32,10 @@ public class SRPServiceImpl implements SRPService {
     UserRepository userRepository;
     @Autowired
     MonitorItemRepository monitorItemRepository;
+    @Autowired
+    MonitorItemService monitorItemService;
+    @Autowired
+    SRPService srpService;
 
 
 
@@ -74,30 +79,20 @@ public class SRPServiceImpl implements SRPService {
     /*根据srpId获取SRP*/
     @Override
     public SRP getSrpById(Long srpId) {
-        return srpRepository.findBySrpId(srpId);
+        return srpRepository.findBySrpIdOrderBySrpId(srpId);
     }
 
     /*SRP新增*/
     @Transactional
     public SRP srpInsert(SRP srp,List<Long> userIds){
-        SRP srp1 = new SRP();
-        srp1.setSrpName(srp.getSrpName());
-        srp1.setDescription(srp.getDescription());
-        srp1.setSwitchs(srp.isSwitchs());
-        srp1.setFreq(srp.getFreq());
 
+        SRP save = srpRepository.save(srp);
         for (Long userId : userIds){
             User user = userRepository.findByUserId(userId);
-            srp1.getUsers().add(user);
+            srp.getUsers().add(user);
             user.getSrps().add(srp);
             userRepository.saveAndFlush(user);
         }
-
-//        for( User user :srp.getUsers()){
-//            srp.getUsers().add(user);
-//            user.getSrps().add(srp);
-//        }
-        SRP save = srpRepository.save(srp1);
         return save;
     }
 
@@ -114,7 +109,7 @@ public class SRPServiceImpl implements SRPService {
     @Transactional
     @Override
     public int userAdd(Long srpId, List<Long> userIds) {
-        SRP srp = srpRepository.findBySrpId(srpId);
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(srpId);
         int oldsize = srp.getUsers().size();
         for (Long userId : userIds){
             User user = userRepository.findByUserId(userId);
@@ -134,7 +129,7 @@ public class SRPServiceImpl implements SRPService {
     @Transactional
     @Override
     public int userSub(Long srpId, Long userId) {
-        SRP srp = srpRepository.findBySrpId(srpId);
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(srpId);
         User user1 = userRepository.findByUserId(userId);
 
         int oldsize = srp.getUsers().size();
@@ -153,7 +148,7 @@ public class SRPServiceImpl implements SRPService {
     @Transactional
     @Override
     public void deleteById(Long srpId) {
-        SRP srp = srpRepository.findBySrpId(srpId);
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(srpId);
         if (srp!=null) {
             if (srp.getUsers()!=null) {
                 List<User> users = userService.getUserBySrpId(srpId);
@@ -183,14 +178,17 @@ public class SRPServiceImpl implements SRPService {
     /*给SRP加监控项*/
     @Transactional
     @Override
-    public SRP monitorItemAdd(Long srpId,Long monitorItemId) {
-        SRP srp = srpRepository.findBySrpId(srpId);
-        MonitorItem monitorItem = monitorItemRepository.findByMonitorId(monitorItemId);
-        srp.getMonitorItems().add(monitorItem);
-        monitorItem.setSrp(srp);
+    public SRP monitorItemAdd(Long srpId,MonitorItem monitorItem) {
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(srpId);
+        MonitorItem monitorItem1 = monitorItemService.monitorItemInsert(monitorItem);
+//        MonitorItem monitorItem1 = monitorItemRepository.save(monitorItem);
+
+        monitorItem1.setSrpId(srpId);
+        srp.getMonitorItems().add(monitorItem1);
+        monitorItem1.setSrp(srp);
 
         SRP srp1 = srpRepository.saveAndFlush(srp);
-        monitorItemRepository.saveAndFlush(monitorItem);
+        monitorItemRepository.saveAndFlush(monitorItem1);
         return srp1;
     }
 
