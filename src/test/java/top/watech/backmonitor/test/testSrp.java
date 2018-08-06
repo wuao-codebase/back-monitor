@@ -19,7 +19,9 @@ import top.watech.backmonitor.service.SRPService;
 import top.watech.backmonitor.service.UserService;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wuao.tp on 2018/7/20.
@@ -100,23 +102,51 @@ public class testSrp {
         srp.setSwitchs(true);
         srp.setFreq(20);
 
+//        user1.getSrps().add(srp);
+//        user2.getSrps().add(srp);
+//        user3.getSrps().add(srp);
+//
+//        srp.getUsers().add(user1);
+//        srp.getUsers().add(user2);
+//        srp.getUsers().add(user3);
+
+        Set<User> users = new HashSet<>();
+        users.add(user1);
+        users.add(user2);
+        users.add(user3);
+        srp.setUsers(users);
+
         user1.getSrps().add(srp);
         user2.getSrps().add(srp);
         user3.getSrps().add(srp);
 
-        srp.getUsers().add(user1);
-        srp.getUsers().add(user2);
-        srp.getUsers().add(user3);
-
-//        Set<User> users = new HashSet<>();
-//        users.add(user1);
-//        users.add(user2);
-//        users.add(user3);
-//        srp.setUsers(users);
-
         userRepository.saveAndFlush(user1);
         userRepository.saveAndFlush(user2);
         userRepository.saveAndFlush(user3);
+
+        srpRepository.save(srp);
+    }
+
+    @Test
+    public void testSrpInsert4(){
+        SRP srp = new SRP();
+
+//        User user1 = new User();
+//        user1.setUserName("yyy");
+//        user1.setUserPwd("123456");
+//        user1.setPhone(13700000001L);
+
+        User user1 = userRepository.findByUserId(59L);
+
+        srp.setSrpName("srpzzz");
+        srp.setDescription("XXXXXXXXXXyayayaXXXXXXXXXXXXX");
+        srp.setSwitchs(true);
+        srp.setFreq(20);
+
+        user1.getSrps().add(srp);
+        srp.getUsers().add(user1);
+
+        userRepository.saveAndFlush(user1);
 
         srpRepository.save(srp);
     }
