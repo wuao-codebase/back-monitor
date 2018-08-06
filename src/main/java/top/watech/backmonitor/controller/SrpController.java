@@ -131,7 +131,7 @@ public class SrpController {
     }
 
     /*给SRP减所属用户*/
-    @PostMapping("/userSub/{srpId}/{userId}")
+    @DeleteMapping ("/userSub/{srpId}/{userId}")
     public RespEntity userSub(@PathVariable Long srpId, @PathVariable Long userId){
         int userCount = srpService.userSub(srpId,userId);
         if (userCount<0){

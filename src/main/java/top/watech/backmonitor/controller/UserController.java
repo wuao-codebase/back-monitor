@@ -129,9 +129,10 @@ public class UserController {
     }
 
     /*更新用户密码*/
-    @PutMapping ("/updateUserpwd")
-    public RespEntity updateUserpwd(@RequestBody ReqUser reqUser, @RequestParam String oldPwd, @RequestParam String userPwd){
-        User user = userService.updateUserpwd(reqUser.getUserId(), oldPwd, userPwd);
+    @PutMapping ("/updateUserpwd/{UserId}/{oldPwd}/{userPwd}")
+    public RespEntity updateUserpwd(@PathVariable Long  UserId, @PathVariable String oldPwd, @PathVariable String userPwd){
+        System.err.println(UserId+oldPwd+userPwd);
+        User user = userService.updateUserpwd(UserId, oldPwd, userPwd);
         if (user!=null){
             return new RespEntity(RespCode.SUCCESS,user);
         }
@@ -190,8 +191,8 @@ public class UserController {
     }
 
     /*判断当前手机号是否已存在（是否已有对应用户）*/
-    @GetMapping("/isPhoneRepet")
-    public RespEntity isPhoneRepet(@RequestParam Long phone){
+    @GetMapping("/isPhoneRepet/{phone}")
+    public RespEntity isPhoneRepet(@PathVariable Long phone){
         User user = userService.isPhoneRepet(phone);
         if (user==null){
             return new RespEntity(RespCode.SUCCESS);

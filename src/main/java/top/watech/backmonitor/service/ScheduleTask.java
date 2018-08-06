@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class ScheduleTask  {
     private  static int time =0;
+
+
     @Scheduled(fixedRate = 1000)  //一秒
     public void reportCurrentTime(){
         time=(time+10)%60;
