@@ -101,9 +101,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUserpwd(Long userId,String oldPwd, String userPwd) {
         User user1 = userRepository.findByUserId(userId);
-        if(userPwd!=null && !"".equals(userPwd)) { //如果没有输入密码，则不修改
             try {
-                if(user1!=null && SecurityUtil.md5(oldPwd).equals(user1.getUserPwd())) {
+                if(SecurityUtil.md5(oldPwd).equals(user1.getUserPwd())) {
                     user1.setUserId(userId);
                     user1.setUserPwd(SecurityUtil.md5(userPwd));
                     User user = userRepository.saveAndFlush(user1);
@@ -112,7 +111,6 @@ public class UserServiceImpl implements UserService {
             } catch (NoSuchAlgorithmException e) {
                 e.printStackTrace();
             }
-        }
         return null;
     }
 
