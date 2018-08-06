@@ -15,11 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.MonitorItem;
-import top.watech.backmonitor.repository.MonitorItemRepository;
-import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.service.MonitorItemService;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +60,10 @@ public class testMonitor {
 
             JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
 
+            int statusCodeValue = responseEntity.getStatusCodeValue();
+            String statusCodeValue1 = String.valueOf(statusCodeValue);
+            JSONObject statusjsonObject = JSON.parseObject(statusCodeValue1);
+
             System.err.println(monitorItem.getMonitorName());
             System.err.println(resJsonObject);
             System.err.println(monitorItem.getAsserts());
@@ -81,8 +82,15 @@ public class testMonitor {
 
                     System.err.println("等号");
 
-                    if(resJsonObject.get(assJsonObject1.get("key")).equals(assJsonObject1.get("value")))
+//                    if(resJsonObject.get(assJsonObject1.get("key")).equals(assJsonObject1.get("value")))
+
+                    System.err.println(asserts);
+
+                    if(statusjsonObject.equals(assJsonObject1.get("value"))){
+                        System.err.println("200");
+
                         code=(code & 0);//成功
+                    }
                     code=(code & 1);//失败
                 }
                 else if(assJsonObject1.get("status").equals("1")){
@@ -90,6 +98,9 @@ public class testMonitor {
                     System.err.println("不等号");
 
                     if(!resJsonObject.get(assJsonObject1.get("key")).equals(assJsonObject1.get("value")))
+
+                        System.err.println("另一个条件");
+
                         code=(code & 0);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
                     code &= 1;
                 }
