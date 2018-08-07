@@ -43,7 +43,7 @@ public interface SRPService {
     List<User> getUserList();
 
     /*给SRP加监控项*/
-    SRP monitorItemAdd(Long srpId,MonitorItem monitorItem);
+    SRP monitorItemAdd(MonitorItem monitorItem);
 
     /*给SRP减监控项*/
     void monitorItemSub(Long monitorItemId);

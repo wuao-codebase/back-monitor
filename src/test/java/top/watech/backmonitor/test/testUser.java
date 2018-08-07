@@ -197,4 +197,9 @@ public class testUser {
         System.out.println("当前页面的 List: " + page.getContent());
         System.out.println("当前页面的记录数: " + page.getNumberOfElements());
     }
+
+    @Test
+    public void testxx(){
+        System.out.println(1&0);
+    }
 }

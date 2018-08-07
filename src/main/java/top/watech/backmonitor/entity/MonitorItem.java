@@ -18,7 +18,7 @@ public class MonitorItem {
 
     private String requestBody;     //请求体
     private String asserts;         //断言(预期返回结果)
-    private String remark;  //备注
+    private String remark;          //备注
 
     private Integer classify;//分类：1、平台登陆 2、平台接口 3、SRP登陆 4、SRP接口
 
@@ -107,15 +107,6 @@ public class MonitorItem {
     public void setClassify(Integer classify) {
         this.classify = classify;
     }
-
-
-//    public Long getSrp_id() {
-//        return srp_id;
-//    }
-//
-//    public void setSrp_id(Long srp_id) {
-//        this.srp_id = srp_id;
-//    }
 
     @Column(name="srp_id",insertable=false,updatable=false)
     public Long getSrpId() {

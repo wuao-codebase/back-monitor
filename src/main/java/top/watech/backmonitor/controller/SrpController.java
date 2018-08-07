@@ -200,11 +200,11 @@ public class SrpController {
     }
 
     /*给SRP加监控项*/
-    @PostMapping("/monitorItemAdd/{srpId}")
-    public RespEntity monitorItemAdd(@PathVariable Long srpId, @RequestBody MonitorItem monitorItem){
+    @PostMapping("/monitorItemAdd")
+    public RespEntity monitorItemAdd(@RequestBody MonitorItem monitorItem){
 //        SRP srp = srpService.monitorItemAdd(srpId, monitorItem);
         System.err.println(monitorItem);
-        SRP srp = srpService.monitorItemAdd(srpId, monitorItem);
+        SRP srp = srpService.monitorItemAdd(monitorItem);
         System.err.println(srp);
         if (srp!=null){
             return new RespEntity(RespCode.SUCCESS,srp);

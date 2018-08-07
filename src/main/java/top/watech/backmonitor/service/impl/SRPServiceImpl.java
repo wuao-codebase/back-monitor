@@ -178,12 +178,12 @@ public class SRPServiceImpl implements SRPService {
     /*给SRP加监控项*/
     @Transactional
     @Override
-    public SRP monitorItemAdd(Long srpId,MonitorItem monitorItem) {
-        SRP srp = srpRepository.findBySrpIdOrderBySrpId(srpId);
+    public SRP monitorItemAdd(MonitorItem monitorItem) {
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(monitorItem.getSrpId());
         MonitorItem monitorItem1 = monitorItemService.monitorItemInsert(monitorItem);
 //        MonitorItem monitorItem1 = monitorItemRepository.save(monitorItem);
 
-        monitorItem1.setSrpId(srpId);
+//        monitorItem1.setSrpId(srpId);
         srp.getMonitorItems().add(monitorItem1);
         monitorItem1.setSrp(srp);
 
