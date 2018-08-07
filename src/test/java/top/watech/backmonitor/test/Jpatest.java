@@ -172,7 +172,7 @@ public class Jpatest {
     //SRP更新
     @Test
     public void testSrpUpdate() {
-        SRP srp1 = srpRepository.findBySrpId(18L);
+        SRP srp1 = srpRepository.findBySrpIdOrderBySrpId(18L);
 
 //        srp1.setSrpName("updateName");
         srp1.setDescription("ddddddddddddddddddd");
@@ -187,7 +187,7 @@ public class Jpatest {
         User u1 = userRepository.findByUserId(10000053L);
         User u2 = userRepository.findByUserId(10000054L);
 
-        SRP srpnew = srpRepository.findBySrpId(49L);
+        SRP srpnew = srpRepository.findBySrpIdOrderBySrpId(49L);
 
         srpnew.getUsers().addAll(Arrays.asList(u1, u2));
 //        srpnew.getUsers().add(u1);
@@ -206,7 +206,7 @@ public class Jpatest {
     public void testSrpUserSub() {
         User uu = userRepository.findByUserId(10000021L);
 
-        SRP srpsub = srpRepository.findBySrpId(23L);
+        SRP srpsub = srpRepository.findBySrpIdOrderBySrpId(23L);
 
 //        srpsub.getUsers().clear();
 //        uu.getSrps().clear();
@@ -276,7 +276,7 @@ public class Jpatest {
     //给SRP加监控项
     @Test
     public void testItemAdd() {
-        SRP srp = srpRepository.findBySrpId(48L);
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(48L);
         MonitorItem monitorItem3 = new MonitorItem();
 //        MonitorItem monitorItem3 = monitorItemRepository.findByMonitorId(1L);
 //        MonitorItem monitorItem4 = monitorItemRepository.findByMonitorId(3L);
@@ -335,7 +335,7 @@ public class Jpatest {
     //给SRP清空监控项
     @Test
     public void testItemClear() {
-        SRP srp = srpRepository.findBySrpId(16L);
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(16L);
 
         srp.getMonitorItems().clear();
         srpRepository.saveAndFlush(srp);
@@ -362,7 +362,7 @@ public class Jpatest {
 
 //        User user = userRepository.findByUserId(10000036L);
 //        User user1 = userRepository.findByUserId(10000041L);
-        SRP srp = srpRepository.findBySrpId(25L);
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(25L);
 //
 //        user.getSrps().remove(srp);
 //        user1.getSrps().remove(srp);
@@ -393,7 +393,7 @@ public class Jpatest {
 
             User user = userRepository.findByUserId(10000023L);
             User user1 = userRepository.findByUserId(10000036L);
-            SRP srp = srpRepository.findBySrpId(16L);
+            SRP srp = srpRepository.findBySrpIdOrderBySrpId(16L);
 
             user.getSrps().remove(srp);
             user1.getSrps().remove(srp);
@@ -423,7 +423,7 @@ public class Jpatest {
     @Test
     public void testDelSrp3() {
         User user = userRepository.findByUserId(10000036L);
-        SRP srp = srpRepository.findBySrpId(16L);
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(16L);
 
         user.getSrps().remove(srp);
 //        user.getSrps().clear();

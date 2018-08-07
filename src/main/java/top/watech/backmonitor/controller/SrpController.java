@@ -9,6 +9,7 @@ import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
+import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.MonitorItemService;
 import top.watech.backmonitor.service.SRPService;
 import top.watech.backmonitor.service.UserService;
@@ -30,6 +31,8 @@ public class SrpController {
     SrpRepository srpRepository;
     @Autowired
     UserService userService;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     MonitorItemService monitorItemService;
     @Autowired
@@ -66,9 +69,9 @@ public class SrpController {
 
     }
     /*根据srpId获取SRP*/
-    @GetMapping("/getSrpById")
+    @GetMapping("/getSrpById/{srpId}")
     public RespEntity getUserById(@RequestParam("srpId") Long srpId) throws Exception {
-        SRP srp = srpService.getSrpById(srpId);
+            SRP srp = srpService.getSrpById(srpId);
         if (srp!=null){
             return new RespEntity(RespCode.SUCCESS,srp);
         }
@@ -147,7 +150,7 @@ public class SrpController {
     public RespEntity deleteSrpById(@RequestParam("srpId") Long srpId){
         srpService.deleteById(srpId);
 
-        if(srpRepository.findBySrpId(srpId)==null){
+        if(srpRepository.findBySrpIdOrderBySrpId(srpId)==null){
             return new RespEntity(RespCode.SUCCESS);
         }
         else {
@@ -168,7 +171,7 @@ public class SrpController {
     /*显示用户列表（给SRP加用户时选用户）*/
     @GetMapping("/users")
     public RespEntity getAllUsers() throws Exception {
-        List<User> users = srpService.getUserList();
+        List<User> users = srpService. getUserList();
         if(users.size()!=0){
             return new RespEntity(RespCode.SUCCESS, users);
         }
@@ -197,10 +200,12 @@ public class SrpController {
     }
 
     /*给SRP加监控项*/
-    @PostMapping("/monitorItemAdd/{srpId}/{monitorItemId}")
-    public RespEntity monitorItemAdd(@PathVariable Long srpId, @PathVariable Long monitorItemId){
-        SRP srp = srpService.monitorItemAdd(srpId, monitorItemId);
-
+    @PostMapping("/monitorItemAdd/{srpId}")
+    public RespEntity monitorItemAdd(@PathVariable Long srpId, @RequestBody MonitorItem monitorItem){
+//        SRP srp = srpService.monitorItemAdd(srpId, monitorItem);
+        System.err.println(monitorItem);
+        SRP srp = srpService.monitorItemAdd(srpId, monitorItem);
+        System.err.println(srp);
         if (srp!=null){
             return new RespEntity(RespCode.SUCCESS,srp);
         }

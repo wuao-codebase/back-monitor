@@ -65,7 +65,7 @@ public class MonitorItemController {
         }
     }
 
-    /*监控项新增*/
+    /*监控项新增(可能用不着，因为监控项不能在脱离SRP的情况下新增)*/
     @PostMapping("/monitorItemInsert")
     public RespEntity monitorItemInsert(@RequestBody  String monitorItem){
         JSONObject parse =(JSONObject) JSON.parse(monitorItem);
@@ -107,7 +107,7 @@ public class MonitorItemController {
         }
     }
 
-    /*删除一个监控项*/
+    /*删除一个监控项（相当于给SRP减监控项那个接口）*/
     @DeleteMapping("/deletemonitorItemById")
     public RespEntity deletemonitorItemById(@RequestParam("monitorItemId") Long monitorItemId){
         monitorItemService.deleteById(monitorItemId);
