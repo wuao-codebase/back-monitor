@@ -1,5 +1,7 @@
 package top.watech.backmonitor.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.watech.backmonitor.entity.MonitorItem;
@@ -65,8 +67,20 @@ public class MonitorItemController {
 
     /*监控项新增*/
     @PostMapping("/monitorItemInsert")
-    public RespEntity monitorItemInsert(@RequestBody  MonitorItem monitorItem){
-        MonitorItem monitorItem1 = monitorItemService.monitorItemInsert(monitorItem);
+    public RespEntity monitorItemInsert(@RequestBody  String monitorItem){
+        JSONObject parse =(JSONObject) JSON.parse(monitorItem);
+        System.err.println(parse);
+        MonitorItem monitorItem2 = new MonitorItem();
+        monitorItem2.setSrpId(Long.valueOf(parse.get("srpId").toString()));
+        monitorItem2.setClassify(Integer.valueOf(parse.get("classify").toString()));
+        monitorItem2.setAsserts(parse.get("asserts").toString());
+        monitorItem2.setMonitorName(parse.get("monitorName").toString());
+        monitorItem2.setMonitorType(Integer.valueOf(parse.get("monitorType").toString()));
+        monitorItem2.setRemark(parse.get("remark").toString());
+        monitorItem2.setUrl(parse.get("url").toString());
+        monitorItem2.setRequestType(Integer.valueOf(parse.get("requestType").toString()));
+        monitorItem2.setRequestBody(parse.get("requestBody").toString());
+        MonitorItem monitorItem1 = monitorItemService.monitorItemInsert(monitorItem2);
         if (monitorItem1!=null){
             return new RespEntity(RespCode.SUCCESS,monitorItem1);
         }
