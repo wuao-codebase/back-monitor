@@ -1,6 +1,7 @@
 package top.watech.backmonitor.service;
 
 import top.watech.backmonitor.entity.MonitorItem;
+import top.watech.backmonitor.entity.SRP;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface MonitorItemService {
     MonitorItem getMonitorItemListById(Long monitorItemId);
 
     /*新增监控项*/
-    MonitorItem monitorItemInsert(MonitorItem monitorItem);
+    SRP monitorItemInsert(MonitorItem monitorItem);
 
     /*更新监控项*/
     MonitorItem monitorItemUpdate(MonitorItem monitorItem);
