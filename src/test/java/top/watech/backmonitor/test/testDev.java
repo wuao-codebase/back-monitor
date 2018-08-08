@@ -15,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.MonitorItem;
-import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.MonitorItemRepository;
-import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.MonitorItemService;
 
 import java.util.HashMap;
@@ -88,7 +86,6 @@ public class testDev {
          * 将取到的id拼到 /device/detail?groupid=3&userid=1 下，生成新的URL
          * 然后取新接口的结果，判断linked
          */
-
 //        String data = (String) resJsonObject.get("data");
 //        JSONArray devGroup = JSON.parseArray(data); //data转成的json数组
 
@@ -129,7 +126,7 @@ public class testDev {
             System.err.println("所有设备工作正常");
         }else {
             System.out.println("***********************************************");
-            System.err.println("设备信息获取接口工作异常");
+            System.err.println("************设备信息获取接口工作异常***********");
         }
     }
 

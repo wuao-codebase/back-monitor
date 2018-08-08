@@ -155,7 +155,8 @@ public class testMonitor {
     public void videoMonitor(MonitorItem monitorItem){
         //1、测试视频相关所有接口
         //2、测试视频文件获取
-        System.out.println(monitorItem.getMonitorName()+":"+"不知道");
+        System.err.println(monitorItem.getMonitorName()+":"+"不知道");
+        System.err.println("*******************************************");
     }
 
     //处理页面类型，最后结果是code，成功还是失败
@@ -196,11 +197,9 @@ public class testMonitor {
      */
     @Test
     public void monitorLogic(){
-        System.err.println("start1");
         //SRP的所有监控项（sort by classify）
-
         List<MonitorItem> monitorItems = monitorItemService.getMonitTtemListBySrpId(66L);
-
+        System.err.println("start!");
         for (MonitorItem monitorItem:monitorItems){
             //平台登录
             if (monitorItem.getClassify()==1){
