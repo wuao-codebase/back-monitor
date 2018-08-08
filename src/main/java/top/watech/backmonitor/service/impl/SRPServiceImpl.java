@@ -180,17 +180,17 @@ public class SRPServiceImpl implements SRPService {
     @Transactional
     @Override
     public SRP monitorItemAdd(MonitorItem monitorItem) {
-        SRP srp = srpRepository.findBySrpIdOrderBySrpId(monitorItem.getSrpId());
-        MonitorItem monitorItem1 = monitorItemService.monitorItemInsert(monitorItem);
-//        MonitorItem monitorItem1 = monitorItemRepository.save(monitorItem);
-
-//        monitorItem1.setSrpId(srpId);
-        srp.getMonitorItems().add(monitorItem1);
-        monitorItem1.setSrp(srp);
-
-        SRP srp1 = srpRepository.saveAndFlush(srp);
-        monitorItemRepository.saveAndFlush(monitorItem1);
-        return srp1;
+//        SRP srp = srpRepository.findBySrpIdOrderBySrpId(monitorItem.getSrpId());
+//        MonitorItem monitorItem1 = monitorItemService.monitorItemInsert(monitorItem);
+////        MonitorItem monitorItem1 = monitorItemRepository.save(monitorItem);
+//
+////        monitorItem1.setSrpId(srpId);
+//        srp.getMonitorItems().add(monitorItem1);
+//        monitorItem1.setSrp(srp);
+//
+//        SRP srp1 = srpRepository.saveAndFlush(srp);
+//        monitorItemRepository.saveAndFlush(monitorItem1);
+        return null;
     }
 
     /*给SRP减监控项*/

@@ -1,11 +1,10 @@
 package top.watech.backmonitor.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.RespEntity;
+import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.enums.RespCode;
 import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
@@ -65,32 +64,9 @@ public class MonitorItemController {
 
     /*监控项新增(可能用不着，因为监控项不能在脱离SRP的情况下新增)*/
     @PostMapping("/monitorItemInsert")
-    public RespEntity monitorItemInsert(@RequestBody String monitorItem) {
-        JSONObject parse = (JSONObject) JSON.parse(monitorItem);
-        System.err.println(parse);
-        MonitorItem monitorItem2 = new MonitorItem();
-        monitorItem2.setSrpId(Long.valueOf(parse.get("srpId").toString()));
-        monitorItem2.setMonitorName(parse.get("monitorName").toString());
-        monitorItem2.setUrl(parse.get("url").toString());
-        if (parse.containsKey("monitorType")) {
-            monitorItem2.setMonitorType(Integer.valueOf(parse.get("monitorType").toString()));
-        }
-        if (parse.containsKey("classify")) {
-            monitorItem2.setClassify(Integer.valueOf(parse.get("classify").toString()));
-        }
-        if (parse.containsKey("requestType")) {
-            monitorItem2.setRequestType(Integer.valueOf(parse.get("requestType").toString()));
-        }
-        if (parse.containsKey("asserts")) {
-            monitorItem2.setAsserts(parse.get("asserts").toString());
-        }
-        if (parse.containsKey("remark")) {
-            monitorItem2.setRemark(parse.get("remark").toString());
-        }
-        if (parse.containsKey("requestBody")) {
-            monitorItem2.setRequestBody(parse.get("requestBody").toString());
-        }
-        MonitorItem monitorItem1 = monitorItemService.monitorItemInsert(monitorItem2);
+    public RespEntity monitorItemInsert(@RequestBody MonitorItem monitorItem) {
+
+        SRP monitorItem1 = monitorItemService.monitorItemInsert(monitorItem);
         if (monitorItem1 != null) {
             return new RespEntity(RespCode.SUCCESS, monitorItem1);
         } else {

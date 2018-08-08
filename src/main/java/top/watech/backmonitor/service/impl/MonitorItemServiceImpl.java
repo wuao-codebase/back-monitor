@@ -46,9 +46,18 @@ public class MonitorItemServiceImpl implements MonitorItemService {
     /*新增监控项*/
     @Transactional
     @Override
-    public MonitorItem monitorItemInsert(MonitorItem monitorItem) {
-        MonitorItem save = monitorItemRepository.save(monitorItem);
-        return save;
+    public SRP monitorItemInsert(MonitorItem monitorItem) {
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(monitorItem.getSrpId());
+        MonitorItem monitorItem1 = monitorItemRepository.save(monitorItem);
+//        MonitorItem monitorItem1 = monitorItemRepository.save(monitorItem);
+
+//        monitorItem1.setSrpId(monitorItem.getSrpId());
+        srp.getMonitorItems().add(monitorItem1);
+        monitorItem1.setSrp(srp);
+
+        SRP srp1 = srpRepository.saveAndFlush(srp);
+        monitorItemRepository.saveAndFlush(monitorItem1);
+        return srp1;
     }
 
     /*更新监控项*/
