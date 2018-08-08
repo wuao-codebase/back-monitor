@@ -22,10 +22,17 @@ public class MonitorItemServiceImpl implements MonitorItemService {
     @Autowired
     SrpRepository srpRepository;
 
-    /*根据srpId查所有监控项，并根据classify排序(显示srp的监控项列表)*/
+    /*根据srpId查所有监控项，并根据classify排序(监控逻辑用)*/
     @Override
     public List<MonitorItem> getMonitTtemListBySrpId(Long srpId) {
         List<MonitorItem> monitorItemList = monitorItemRepository.findBySrpIdOrderByClassify(srpId);
+        return monitorItemList;
+    }
+
+    /*根据srpId查所有监控项，并根据MonitorType排序(显示srp的监控项列表)*/
+    @Override
+    public List<MonitorItem> getMonitTtemListBySrpIdOrder(Long srpId) {
+        List<MonitorItem> monitorItemList = monitorItemRepository.findBySrpIdOrderByMonitorType(srpId);
         return monitorItemList;
     }
 

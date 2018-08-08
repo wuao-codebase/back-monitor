@@ -20,8 +20,18 @@ public interface SrpRepository extends JpaRepository<SRP,Long> ,JpaSpecification
     //根据userId获取srp列表
 //    List<SRP> findSRPSByuserId(Long userId);
 
+    //获取所有SRP，并根据id排序
+//    List<SRP> findSRPBySrpIdExistsOrderBySrpId();
+    List<SRP> findBySrpIdGreaterThanOrderBySrpId(Long min);
+
+
+
+
+//    findBySalaryGreaterThan(int min)
+
     /*根据id获取srp*/
     SRP findBySrpIdOrderBySrpId(Long srpId);
+
 
     @Modifying
     @Query(value = "delete from SRP s where s.srpId = :srpId ")

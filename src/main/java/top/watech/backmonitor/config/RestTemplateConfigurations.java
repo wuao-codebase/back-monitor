@@ -1,4 +1,4 @@
-package top.watech.backmonitor.service;
+package top.watech.backmonitor.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,9 +8,10 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by wuao.tp on 2018/7/20.
+ * 设置RestTemplete请求超时时间
  */
 @Configuration
-public class RestTemplateConfig {
+public class RestTemplateConfigurations {
 
     @Bean
     public RestTemplate restTemplate(ClientHttpRequestFactory factory){
@@ -20,8 +21,8 @@ public class RestTemplateConfig {
     @Bean
     public ClientHttpRequestFactory simpleClientHttpRequestFactory(){
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setReadTimeout(5000);//单位为ms
-        factory.setConnectTimeout(5000);//单位为ms
+        factory.setReadTimeout(20000);//单位为ms
+        factory.setConnectTimeout(20000);//单位为ms
         return factory;
     }
 }

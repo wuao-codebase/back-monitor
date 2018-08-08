@@ -55,12 +55,14 @@ public class testMonitor {
 
         Map requestBody = new HashMap();
 
+        ResponseEntity<String> responseEntity = null;
+
         //POST型，登录生成token
         if(requestType==1){
             requestBody = (Map) JSON.parse(requestBodyStr);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
 
             JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
 
@@ -68,6 +70,7 @@ public class testMonitor {
             if (statusCodeValue!=200){
                 //程序终止，退出
                 System.err.println("退出");
+                return null;
             }
 
             JSONArray assertsArraysJsonObject = JSON.parseArray(asserts);//传来的断言的json对象数组
@@ -76,7 +79,7 @@ public class testMonitor {
             for ( Object assJsonObject : assertsArraysJsonObject){
                 JSONObject assJsonObject1 = (JSONObject) assJsonObject;
 
-                //status为0是等号，为1是不等号
+                //ststus为0是等号，为1是不等号
                 if(assJsonObject1.get("ststus").equals("0")){
                     if(resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))){
                         code=(code & 1);//成功
@@ -111,9 +114,16 @@ public class testMonitor {
 
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
 
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+            responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
 
             JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
+
+            int statusCodeValue = responseEntity.getStatusCodeValue();
+            if (statusCodeValue!=200){
+                //程序终止，退出
+                System.err.println("退出");
+                return null;
+            }
 
             JSONArray assertsArraysJsonObject = JSON.parseArray(asserts);//传来的断言的json对象数组
 
@@ -138,7 +148,15 @@ public class testMonitor {
                 }
             }
         }
-        System.err.println(monitorItem.getMonitorName()+":"+code);
+        if (code ==1){
+            System.err.println(monitorItem.getMonitorName()+":"+"工作正常");
+            System.err.println("*******************************************");
+        }
+        else {
+            System.err.println(monitorItem.getMonitorName()+":"+"工作异常");
+            System.err.println("错误信息："+responseEntity.getBody());
+            System.err.println("*******************************************");
+        }
         return code;
     }
 
@@ -161,7 +179,7 @@ public class testMonitor {
             //平台登录
             if (monitorItem.getClassify()==1){
 
-                System.out.println(testPageAndApi(monitorItem));
+                testPageAndApi(monitorItem);
             }
             //平台接口
             else if (monitorItem.getClassify()==2){
@@ -173,7 +191,7 @@ public class testMonitor {
                 }
                 //页面或接口类型
                 else{
-                    System.out.println(testPageAndApi(monitorItem));
+                    testPageAndApi(monitorItem);
                 }
             }
 
@@ -191,10 +209,9 @@ public class testMonitor {
                 }
                 //页面或接口类型
                 else{
-                    System.out.println(testPageAndApi(monitorItem));
+                    testPageAndApi(monitorItem);
                 }
             }
         }
-
     }
 }

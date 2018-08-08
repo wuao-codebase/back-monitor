@@ -1,6 +1,7 @@
 package top.watech.backmonitor.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,11 +43,11 @@ public class SRPServiceImpl implements SRPService {
     /*获取SRP列表*/
     @Override
     public List<SRP> getsrpList() {
-        List<SRP> srpList = srpRepository.findAll();
+        List<SRP> srpList = srpRepository.findBySrpIdGreaterThanOrderBySrpId(0L);
         return srpList;
     }
 
-    //根据userId获取SRP列表
+    //根据userId获取SRP列表, Sort sort
     @Override
     public List<SRP> findByUserId(Long userId) {
         List<SRP> srpList = srpRepository.findAll(new Specification<SRP>() {

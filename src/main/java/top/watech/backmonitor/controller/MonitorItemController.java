@@ -48,10 +48,10 @@ public class MonitorItemController {
         }
     }
 
-    /*根据srpId查所有监控项，并根据classify排序(显示srp的监控项列表)*/
+    /*根据srpId查所有监控项，并根据MonitorType排序(显示srp的监控项列表)*/
     @GetMapping("/getMonitorsBySrpId")
     public RespEntity getMonitorsBySrpId(@RequestParam("srpId") Long srpId) {
-        List<MonitorItem> monitTtemListBySrpId = monitorItemService.getMonitTtemListBySrpId(srpId);
+        List<MonitorItem> monitTtemListBySrpId = monitorItemService.getMonitTtemListBySrpIdOrder(srpId);
 
         if (monitTtemListBySrpId != null) {
             return new RespEntity(RespCode.SUCCESS, monitTtemListBySrpId);

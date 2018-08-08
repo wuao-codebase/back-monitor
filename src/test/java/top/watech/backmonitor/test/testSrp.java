@@ -207,6 +207,23 @@ public class testSrp {
         userRepository.save(u2);
     }
 
+    //给SRP加所属用户
+    @Test
+    public void testSrpUserInsert2() {
+        User u1 = new User();
+        u1.setUserName("fanyaXX");
+        u1.setUserPwd("123456");
+        u1.setPhone(13900000000L);
+
+        SRP srpnew = srpRepository.findBySrpIdOrderBySrpId(66L);
+
+        srpnew.getUsers().add(u1);
+        u1.getSrps().add(srpnew);
+
+        srpRepository.save(srpnew);
+        userRepository.save(u1);
+    }
+
     //给SRP减所属用户(解除关系)
     @Test
     public void testSrpUserSub3() {
