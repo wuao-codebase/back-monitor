@@ -24,12 +24,12 @@ public class RestTemplateConfigurations {
         ResponseErrorHandler responseErrorHandler = new ResponseErrorHandler() {
             @Override
             public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {
-                System.err.println("配置配置配置");
+//                System.err.println("配置配置配置");
                 return true;
             }
             @Override
             public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
-                System.err.println("配置配置配置");
+//                System.err.println("配置配置配置");
             }
         };
         restTemplate.setErrorHandler(responseErrorHandler);

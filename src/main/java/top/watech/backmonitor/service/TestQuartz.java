@@ -152,7 +152,7 @@ public class TestQuartz extends QuartzJobBean {
         } else {
             System.err.println(monitorItem.getMonitorName() + ":" + "工作异常");
             try {
-                System.err.println("错误信息：" + responseEntity.getBody());
+                System.err.println("错误信息：xxxxxxxxxxx" + responseEntity.getBody());
             } catch (Exception e) {
                 System.err.print("");
             }
@@ -256,7 +256,7 @@ public class TestQuartz extends QuartzJobBean {
         System.err.println("监控项总个数："+monitorItems.size());
         System.err.println("监控项成功个数："+sucCount);
         System.err.println("*******************************************");
-
+        sucCount = 0 ;
         testDev();
 
         //结束时间

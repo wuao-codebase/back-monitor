@@ -1,16 +1,12 @@
 package top.watech.backmonitor.config;
 
 import org.quartz.*;
-import org.quartz.impl.JobDetailImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.service.TestQuartz;
-
-import java.util.Date;
 
 
 /**
@@ -34,13 +30,13 @@ public class QuartzConfig {
     @Bean
     public Trigger testQuartTrigger(){
         SRP srp = srpRepository.findBySrpIdOrderBySrpId(66L);
-//        int freq = srp.getFreq();
+        int freq = (int) srp.getFreq();
         //设置开始时间为1分钟后
 //        long startAtTime = System.currentTimeMillis() + 1000 * 20;
         SimpleScheduleBuilder simpleScheduleBuilder
                 = SimpleScheduleBuilder
                 .simpleSchedule()
-                .withIntervalInMinutes(1)
+                .withIntervalInMinutes(freq)
                 .repeatForever();
         return TriggerBuilder
                 .newTrigger()
