@@ -41,7 +41,6 @@ public class SrpController {
     /*获取SRP列表*/
     @PostMapping ("/srpList")
     public RespEntity getsrpList(@RequestBody User user) {
-        System.err.println(user);
         if (user.getRole()==1){
             List<SRP> srpList = srpService.getsrpList();
             if(srpList!=null){

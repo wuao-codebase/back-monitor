@@ -1,15 +1,17 @@
 package top.watech.backmonitor.entity;
 
+import lombok.ToString;
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
-import javax.xml.crypto.Data;
-import java.sql.Date;
-import java.sql.Time;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by fhm on 2018/7/24.
  */
 @Entity
+@ToString
 @Table(name = "total_report")
 public class TotalReport {
 
@@ -19,13 +21,13 @@ public class TotalReport {
     private Integer monitorNum; //监控项个数
     private Integer errorCount; //失败数
 
-    private Date startTime;     //复合主键,监控开始执行时间
+    private Date startTime;
     private Date endTime;
 
     private List<DetailReport> detailReports;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     @Column(length = 100)
     public String getUuid() {
         return uuid;
