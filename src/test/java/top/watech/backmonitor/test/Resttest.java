@@ -111,7 +111,7 @@ public class Resttest {
     }
 
     @Test
-    public void testIndex(){
+     public void testIndex(){
         String url ="http://portal-pataciot-acniotsense.wise-paas.com.cn";
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Authorization","Bearer "+testFanYa());

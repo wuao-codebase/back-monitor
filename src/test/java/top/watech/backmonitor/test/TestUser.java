@@ -24,7 +24,7 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @EnableAutoConfiguration
-public class testUser {
+public class TestUser {
 
     @Autowired
     UserRepository userRepository;

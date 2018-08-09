@@ -1,9 +1,16 @@
 package top.watech.backmonitor.config;
 
 import org.quartz.*;
+import org.quartz.impl.JobDetailImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+import top.watech.backmonitor.entity.SRP;
+import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.service.TestQuartz;
+
+import java.util.Date;
 
 
 /**
@@ -12,16 +19,52 @@ import top.watech.backmonitor.service.TestQuartz;
 
 @Configuration
 public class QuartzConfig {
+    @Autowired
+    SrpRepository srpRepository;
 
     @Bean
     public JobDetail testQuartDetail(){
-        return JobBuilder.newJob(TestQuartz.class).withIdentity("testQuart").storeDurably().build();
+        return JobBuilder
+                .newJob(TestQuartz.class)
+                .withIdentity("testQuart")
+                .storeDurably().build();
     }
+
 
     @Bean
     public Trigger testQuartTrigger(){
-        SimpleScheduleBuilder simpleScheduleBuilder = SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(1000).repeatForever();
-        return TriggerBuilder.newTrigger().forJob(testQuartDetail()).withIdentity("testQuart").withSchedule(simpleScheduleBuilder).build();
-
+        SRP srp = srpRepository.findBySrpIdOrderBySrpId(66L);
+//        int freq = srp.getFreq();
+        //设置开始时间为1分钟后
+//        long startAtTime = System.currentTimeMillis() + 1000 * 20;
+        SimpleScheduleBuilder simpleScheduleBuilder
+                = SimpleScheduleBuilder
+                .simpleSchedule()
+                .withIntervalInMinutes(1)
+                .repeatForever();
+        return TriggerBuilder
+                .newTrigger()
+                .forJob(testQuartDetail())
+                .withIdentity("testQuart")      //.startAt(new Date(startAtTime))
+                .withSchedule(simpleScheduleBuilder)
+                .build();
     }
+
+//    /*对Scheduer进行重新配置设置Scheduler的JobFactory使用我们自己创建的JobFactory*/
+//    @Autowired
+//    private JobFactory jobFactory;
+//
+//    @Bean(name = "schedulerFactoryBean")
+//    public SchedulerFactoryBean createSchedulerFactoryBean(){
+//        SchedulerFactoryBean schedulerFactoryBean=new SchedulerFactoryBean();
+//        schedulerFactoryBean.setOverwriteExistingJobs(true);
+//        schedulerFactoryBean.setJobFactory(jobFactory);
+//        return schedulerFactoryBean;
+//    }
+//
+//    @Bean
+//    public JobDetailImpl createJobDetailsImpl(){
+//        return new JobDetailImpl();
+//    }
+
 }
