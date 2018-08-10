@@ -2,6 +2,7 @@ package top.watech.backmonitor.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.ToString;
+import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -10,6 +11,7 @@ import java.util.Set;
 /**
  * Created by fhm on 2018/7/24.
  */
+@Component
 @Entity
 @ToString
 @Table(name = "srps")
@@ -17,7 +19,7 @@ public class SRP {
     private Long srpId;
     private String srpName;
     private String description;    //描述
-    private boolean switchs;//开关
+    private boolean switchs;//开关  0开，1关
     private double freq;    //频率
     private String remark;  //备注
 
