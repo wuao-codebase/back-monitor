@@ -53,6 +53,8 @@ public class SRPServiceImpl implements SRPService {
         List<SRP> srpList = srpRepository.findAll(new Specification<SRP>() {
             public Predicate toPredicate(Root<SRP> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Join<SRP, User> userJoin = root.join("users", JoinType.LEFT);
+//                cb.gt(root.get("srpId").as(Long.class), srpId);
+//                query.orderBy(cb.desc(root.get("srpId").as(Long.class)));
                 return cb.equal(userJoin.get("userId"), userId);
             }
         });
