@@ -29,7 +29,7 @@ import java.util.Set;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @EnableAutoConfiguration
-public class testSrp {
+public class TestSrp {
 
     @Autowired
     UserRepository userRepository;

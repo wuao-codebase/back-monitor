@@ -5,7 +5,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import top.watech.backmonitor.util.JwtFilter;
 
 import java.util.List;
@@ -25,7 +24,7 @@ public class BackMonitorApplication {
         registrationBean.setFilter(new JwtFilter());
         //添加需要拦截的url
         List<String> urlPatterns = Lists.newArrayList();
-        urlPatterns.add("/article/insert");
+        urlPatterns.add("/user/insert");
         registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
         return registrationBean;
     }
