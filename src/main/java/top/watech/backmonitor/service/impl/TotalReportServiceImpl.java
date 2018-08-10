@@ -13,6 +13,7 @@ import top.watech.backmonitor.service.TotalReportService;
 
 import javax.persistence.criteria.*;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,21 +31,42 @@ public class TotalReportServiceImpl implements TotalReportService {
         return totalReportRepository.findByStartTime(createTime);
     }
     @Override
-    public PageEntity getTOList(int pageNo) {
+    public PageEntity getTOList(int pageNo,int role,TotalReport totalReport) {
         Page<TotalReport> pages = totalReportRepository.findAll(new Specification<TotalReport>() {
             @Nullable
             @Override
             public Predicate toPredicate(Root<TotalReport> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicate = new ArrayList<>();
+                Path srpId = root.get("srpId");
                 Path errorCount = root.get("errorCount");
-                Predicate predicate1 = criteriaBuilder.equal(errorCount, 0);
+                Path time = root.get("startTime");
 
-                Path startTime = root.get("startTime");
-                Predicate predicate2 = criteriaBuilder.equal(errorCount, 0);
-                return null;
+                if (totalReport.getSrpId()!=null){
+                    predicate.add(criteriaBuilder.equal(srpId, totalReport.getSrpId()));
+
+                }
+                if (totalReport.getErrorCount()!=null&&totalReport.getErrorCount()==1){
+                    predicate.add(criteriaBuilder.equal(errorCount, 0));
+                }
+                if (totalReport.getErrorCount()!=null&&totalReport.getErrorCount()==2){
+                    predicate.add(criteriaBuilder.gt(errorCount, 0));
+                }
+
+                if (totalReport.getStartTime()!=null&& totalReport.getEndTime()!=null){
+
+                        predicate.add(criteriaBuilder.between(time,totalReport.getStartTime(),totalReport.getEndTime()));
+                    }
+
+                Predicate[] pre = new Predicate[predicate.size()];
+                return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
             }
-        }, PageRequest.of(pageNo, 15));
+        }, PageRequest.of(pageNo-1, 15));
+
+        for (TotalReport page : pages) {
+            page.setSrpName(page.getSrp().getSrpName());
+        }
         PageEntity pageEntity = new PageEntity();
-        pageEntity.setTotal(pages.getTotalPages());
+        pageEntity.setTotal((int) pages.getTotalElements());
         pageEntity.setData(pages.getContent());
         return pageEntity;
     }

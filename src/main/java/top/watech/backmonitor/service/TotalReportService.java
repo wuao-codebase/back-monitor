@@ -12,5 +12,5 @@ import java.util.List;
 
 public interface TotalReportService {
     List<TotalReport> getTotalReportList(Time createTime);
-    PageEntity getTOList(int pageNo );
+    PageEntity getTOList(int pageNo,int role,TotalReport totalReport);
 }

@@ -74,24 +74,28 @@ public class Monitest {
             public Predicate toPredicate(Root<TotalReport> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicate = new ArrayList<>();
                 Path errorCount = root.get("errorCount");
+                Path time = root.get("startTime");
+
                 predicate.add(criteriaBuilder.equal(errorCount, 0));
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Date time = null;
                 try {
-                    time = sdf.parse("2018-08-09 14:19:45.0");
+                    Date   starttime = sdf.parse("2018-08-09 14:19:45.0");
+                    Date   endtime = sdf.parse("2018-08-09 14:25:45.0");
+                    predicate.add(criteriaBuilder.between(time,starttime,endtime));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
-                Path startTime = root.get("startTime");
-                predicate.add(criteriaBuilder.equal(startTime,time));
                 Predicate[] pre = new Predicate[predicate.size()];
                 return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
             }
         }, PageRequest.of(0, 15));
         for (TotalReport report : all) {
             System.err.println("report = " + report);
+//            String resultJson = JSONObject.toJSONString(report);
+
+            System.err.println("report = " + report.getSrp());
         }
 
     }

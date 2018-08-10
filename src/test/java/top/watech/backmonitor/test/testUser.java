@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit4.SpringRunner;
+import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.User;
 import top.watech.backmonitor.repository.UserRepository;
 import top.watech.backmonitor.service.UserService;
@@ -17,6 +18,7 @@ import top.watech.backmonitor.util.SecurityUtil;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by wuao.tp on 2018/7/20.
@@ -115,10 +117,13 @@ public class testUser {
     @Test
     public void updateUser() {
 
-//        User user = userRepository.findByUserId(10000032L);
-//        if (user!=null){
-//            userService.updateUserpwd(10000032L,"zhangsan");
-//        }
+        User user = userRepository.findByUserId(62L);
+        Set<SRP> srps = user.getSrps();
+        for (SRP srp : srps) {
+            System.out.println( srp.getMonitorItems());
+            System.out.println( srp.getTotalReports());
+        }
+
     }
 
     //更新某用户信息

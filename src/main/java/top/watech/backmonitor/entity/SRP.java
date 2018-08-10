@@ -25,6 +25,8 @@ public class SRP {
 
     private Set<MonitorItem> monitorItems = new HashSet<MonitorItem>();
 
+    private Set<TotalReport> totalReports = new HashSet<TotalReport>();
+
     @Id
     @Column(name = "srpId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -87,6 +89,7 @@ public class SRP {
         this.users = users;
     }
 
+
     @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade = CascadeType.REMOVE)
     public Set<MonitorItem> getMonitorItems() {
         return monitorItems;
@@ -96,11 +99,14 @@ public class SRP {
         this.monitorItems = monitorItems;
     }
 
-    public SRP() {
+
+    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade = CascadeType.REMOVE)
+    public Set<TotalReport> getTotalReports() {
+        return totalReports;
     }
 
-    public SRP(String srpName) {
-        this.srpName = srpName;
+    public void setTotalReports(Set<TotalReport> totalReports) {
+        this.totalReports = totalReports;
     }
 
     @Override

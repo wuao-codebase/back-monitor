@@ -1,5 +1,7 @@
 package top.watech.backmonitor.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -20,9 +22,14 @@ public class TotalReport {
     private Long srpId;     //
     private Integer monitorNum; //监控项个数
     private Integer errorCount; //失败数
-
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startTime;
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endTime;
+
+    private SRP srp;
+
+    private String srpName;
 
     private List<DetailReport> detailReports;
 
@@ -38,7 +45,7 @@ public class TotalReport {
     }
 
     //    @Id
-    @Column(name = "srp_id")
+    @Column(name = "srp_id",insertable=false,updatable=false)
     public Long getSrpId() {
         return srpId;
     }
@@ -83,6 +90,27 @@ public class TotalReport {
     public void setErrorCount(Integer errorCount) {
         this.errorCount = errorCount;
     }
+
+    @Transient
+    public String getSrpName() {
+        return srpName;
+    }
+
+    public void setSrpName(String srpName) {
+        this.srpName = srpName;
+    }
+
+    @JsonBackReference
+    @JoinColumn(name = "srp_id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    public SRP getSrp() {
+        return srp;
+    }
+
+    public void setSrp(SRP srp) {
+        this.srp = srp;
+    }
+
 
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "totalReport")
     public List<DetailReport> getDetailReports() {
