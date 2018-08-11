@@ -3,11 +3,8 @@ package top.watech.backmonitor.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.watech.backmonitor.entity.DetailReport;
-import top.watech.backmonitor.entity.TotalReport;
 import top.watech.backmonitor.repository.DetailReportRepository;
-import top.watech.backmonitor.repository.TotalReportRepository;
 import top.watech.backmonitor.service.DetailReportService;
-import top.watech.backmonitor.service.TotalReportService;
 
 import java.sql.Time;
 import java.util.List;
@@ -25,6 +22,12 @@ public class DetailReportServiceImpl implements DetailReportService {
     @Override
     public List<DetailReport> getDetailReportList(Time createTime) {
         return detailReportRepository.findByCreateTime(createTime);
+    }
+
+    @Override
+    public List<DetailReport> getDetailReportByUuid(String uuid) {
+        List<DetailReport> byUuid = detailReportRepository.findByUuid(uuid);
+        return byUuid;
     }
 
 //    @Transactional

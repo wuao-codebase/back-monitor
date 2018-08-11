@@ -1,8 +1,6 @@
 package top.watech.backmonitor.service;
 
-import org.springframework.stereotype.Service;
 import top.watech.backmonitor.entity.DetailReport;
-import top.watech.backmonitor.entity.TotalReport;
 
 import java.sql.Time;
 import java.util.List;
@@ -13,4 +11,6 @@ import java.util.List;
 
 public interface DetailReportService {
     List<DetailReport> getDetailReportList(Time createTime);
+
+    List<DetailReport> getDetailReportByUuid(String uuid);
 }

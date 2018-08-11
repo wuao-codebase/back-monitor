@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
 import org.springframework.test.context.junit4.SpringRunner;
+import top.watech.backmonitor.entity.DetailReport;
 import top.watech.backmonitor.entity.TotalReport;
+import top.watech.backmonitor.repository.DetailReportRepository;
 import top.watech.backmonitor.repository.TotalReportRepository;
 
 import javax.persistence.criteria.*;
@@ -32,6 +34,8 @@ public class Monitest {
 
     @Autowired
     private TotalReportRepository totalReportRepository;
+    @Autowired
+    private DetailReportRepository detailReportRepository;
 
     @Test
     public void testData() throws ParseException {
@@ -99,14 +103,20 @@ public class Monitest {
         }
 
     }
-//    @Test
-//    public void findallDynamic(){
-//        Monitest monitest = new Monitest();
-//        Page<TotalReport> allwhere = monitest.findAllwhere(null, 15, 0);
-//        for (TotalReport report : allwhere) {
-//            System.out.println("report = " + report);
+
+    @Test
+public void detail(){
+    List<DetailReport> byUuid = detailReportRepository.findByUuid("2c95d496651d565201651d5666360000");
+
+    for (DetailReport detailReport : byUuid) {
+        System.err.println("detailReport = " + detailReport);
+    }
+//        List<DetailReport> all = detailReportRepository.findAll();
+//        for (DetailReport detailReport : all) {
+//            System.err.println("detailReport = " + detailReport);
 //        }
-//    }
+    }
+
 
 }
 

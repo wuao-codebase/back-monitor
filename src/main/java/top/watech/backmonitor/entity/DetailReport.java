@@ -1,5 +1,6 @@
 package top.watech.backmonitor.entity;
 
+import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -13,6 +14,7 @@ import java.sql.Time;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
+@ToString
 @Table(name = "detail_report")
 @IdClass(MonitorItemTimeMultiKey.class)
 public class DetailReport {
@@ -76,7 +78,7 @@ public class DetailReport {
     }
 
     @JoinColumn(name = "uuid")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     public TotalReport getTotalReport() {
         return totalReport;
     }

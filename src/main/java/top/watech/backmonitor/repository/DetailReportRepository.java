@@ -11,6 +11,11 @@ import java.util.List;
  * Created by fhm on 2018/7/24.
  */
 public interface DetailReportRepository extends JpaRepository<DetailReport,MonitorItemTimeMultiKey>{
+
+    List<DetailReport> findByUuid(String uuid);
+
+
+
     // monitorId,找出所有详细监控报告
     List<DetailReport> findByMonitorId(Long monitorId);
 
