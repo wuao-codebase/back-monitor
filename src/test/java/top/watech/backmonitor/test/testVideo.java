@@ -6,9 +6,8 @@ package top.watech.backmonitor.test;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-import org.w3c.dom.Document;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -85,6 +83,18 @@ public class testVideo {
     }
 
     @Test
+    public void video( ) {
+        String url ="http://i201230b25.51mypc.cn:16086/temp//11781204946186116094/temp//11781204946186116094//live-video-sd.mp4";
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.setContentType(MediaType.valueOf("application/video+mp4"));
+        //HttpEntity
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(null, requestHeaders);
+        //post
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+        System.err.println(responseEntity.getBody().length());
+    }
+
+    @Test
     public void  main(){
         String domain="i201230b25.51mypc.cn:12791";
         String  IVSID ="IVS-C4-00-AD-03-65-E4";
@@ -95,20 +105,27 @@ public class testVideo {
         System.out.println("mpdurl = " + mpdurl);
         String mpd = MPD(mpdurl);
         System.out.println("mpd = " + mpd);
+        String initurl=null;
         try {
             Document document = DocumentHelper.parseText(mpd);
-            Element employees = document.getRootElement();    //获得根节点
-            for(Iterator i = employees.elementIterator(); i.hasNext();){
-                Element employee = (Element) i.next();
-                for(Iterator j = employee.elementIterator(); j.hasNext();){
-                    Element node=(Element) j.next();
-                    System.out.println(node.getName()+":"+node.getText());
-                }}
-
+            initurl=  dom4jList(document.getRootElement());
         } catch (DocumentException e) {
             e.printStackTrace();
         }
 
     }
+    public  String dom4jList(Element element) {                    //遍历XML文件
 
+        //获取文件中父元素的名称和文本内容
+if (element.getName().equals("SegmentTemplate")){
+    Attribute genderAttr = element.attribute("initialization");
+    return StringUtils.trim(genderAttr.getValue());
+}
+        Iterator iterator = element.elementIterator();
+        while (iterator.hasNext()) {
+            Element e = (Element) iterator.next();
+            dom4jList(e);
+        }
+        return null;
+    }
 }
