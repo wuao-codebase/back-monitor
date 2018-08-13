@@ -6,7 +6,9 @@ package top.watech.backmonitor.test;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import jdk.internal.org.xml.sax.InputSource;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import org.w3c.dom.Document;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.StringReader;
+import java.util.Iterator;
 import java.util.Map;
 
 
@@ -95,12 +95,19 @@ public class testVideo {
         System.out.println("mpdurl = " + mpdurl);
         String mpd = MPD(mpdurl);
         System.out.println("mpd = " + mpd);
-        StringReader sr = new StringReader(mpd);
-        InputSource is = new InputSource(sr);
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder=factory.newDocumentBuilder();
-        Document doc = builder.parse(is);
-        strToXml.LoadXml(strXml);
+        try {
+            Document document = DocumentHelper.parseText(mpd);
+            Element employees = document.getRootElement();    //获得根节点
+            for(Iterator i = employees.elementIterator(); i.hasNext();){
+                Element employee = (Element) i.next();
+                for(Iterator j = employee.elementIterator(); j.hasNext();){
+                    Element node=(Element) j.next();
+                    System.out.println(node.getName()+":"+node.getText());
+                }}
+
+        } catch (DocumentException e) {
+            e.printStackTrace();
+        }
 
     }
 
