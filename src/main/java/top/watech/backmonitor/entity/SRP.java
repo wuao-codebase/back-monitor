@@ -23,6 +23,8 @@ public class SRP {
     private double freq;    //频率
     private String remark;  //备注
 
+    private String cron;
+
     private Set<User> users = new HashSet<User>();
 
     private Set<MonitorItem> monitorItems = new HashSet<MonitorItem>();
@@ -81,6 +83,15 @@ public class SRP {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    @Column(length = 100)
+    public String getCron() {
+        return cron;
+    }
+
+    public void setCron(String cron) {
+        this.cron = cron;
     }
 
     @JsonBackReference

@@ -28,39 +28,39 @@ public class QuartzConfigration {
 
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
 
-        try {
+//        try {
 
-            schedulerFactoryBean.setQuartzProperties(quartzProperties());
+//            schedulerFactoryBean.setQuartzProperties(quartzProperties());
 
             schedulerFactoryBean.setJobFactory(myJobFactory);
 
-        } catch (IOException e) {
-
-            // TODO Auto-generated catch block
-
-            e.printStackTrace();
-
-        }
+//        } catch (IOException e) {
+//
+//            // TODO Auto-generated catch block
+//
+//            e.printStackTrace();
+//
+//        }
 
         return schedulerFactoryBean;
 
     }
 
 //指定quartz.properties
-
-    @Bean
-
-    public Properties quartzProperties() throws IOException {
-
-        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
-
-        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
-
-        propertiesFactoryBean.afterPropertiesSet();
-
-        return propertiesFactoryBean.getObject();
-
-    }
+//
+//    @Bean
+//
+//    public Properties quartzProperties() throws IOException {
+//
+//        PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+//
+//        propertiesFactoryBean.setLocation(new ClassPathResource("/quartz.properties"));
+//
+//        propertiesFactoryBean.afterPropertiesSet();
+//
+//        return propertiesFactoryBean.getObject();
+//
+//    }
 
 
 
@@ -70,6 +70,7 @@ public class QuartzConfigration {
 
     public Scheduler scheduler() {
 
+//        System.err.println(schedulerFactoryBean().getScheduler());
         return schedulerFactoryBean().getScheduler();
 
     }

@@ -22,6 +22,119 @@
 //    static SrpRepository srpRepository;
 //
 //
+////    public static void main(String[] args) throws Exception {
+////        QuartzConfig q= new QuartzConfig();
+////        List<SRP> srpList = srpRepository.findAll();
+////        for (SRP srp : srpList) {
+////            if (srp.isSwitchs()) {
+////                q.testQuartDetail(srp);
+////                q.testQuartTrigger(srp);
+////            }
+////        }
+////    }
+//////
+//////    public SRP srpSel(){
+//////
+//////        return null;
+//////    }
+////
+////    @Bean
+////    public JobDetail testQuartDetail(SRP srp) {
+//////
+//////        List<SRP> srpList = srpRepository.findAll();
+//////        List<Long> srpIdList=null;
+//////        for (SRP srp : srpList) {
+//////            if (srp.isSwitchs()) {
+//////                srpIdList.add(srp.getSrpId());
+//////            }
+//////        }
+//////        String s = srpIdList.toString();
+//////        System.err.println(s);
+////
+////        JobDetail jobDetail = JobBuilder
+////                        .newJob(TestQuartz.class)
+////                        .withIdentity("testQuart")//.withIdentity("srpId")
+////
+////                        .usingJobData("srpId", srp.getSrpId())
+//////                        .usingJobData("freq", srp.getFreq())
+////                        .storeDurably()
+////                        .build();
+////                return jobDetail;
+////
+//////        return null;
+////
+////    }
+//
+////    @Bean
+//    public void testQuartTrigger() {
+//
+//        List<SRP> srpList = srpRepository.findAll();
+//        for (SRP srp : srpList) {
+//            if (srp.isSwitchs()) {
+//                JobDetail jobDetail = JobBuilder
+//                        .newJob(TestQuartz.class)
+//                        .withIdentity("testQuart")//.withIdentity("srpId")
+//
+//                        .usingJobData("srpId", srp.getSrpId())
+////                        .usingJobData("freq", srp.getFreq())
+//                        .storeDurably()
+//                        .build();
+//                int freq = (int) srp.getFreq();
+//                SimpleTrigger trigger = TriggerBuilder
+//                        .newTrigger()
+//                        .forJob(jobDetail)
+//                        .withIdentity("testQuart")      //.startAt(new Date(startAtTime))
+////                .withSchedule(simpleScheduleBuilder) //这个可以换cron表达式的形式
+//                        .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+//                                .withIntervalInSeconds(freq)
+//                                .withRepeatCount(0)
+//                        )
+//                        .build();
+//            }
+//        }
+//
+//
+////        SRP srp = srpRepository.findBySrpIdOrderBySrpId(66L);
+//
+//        //设置开始时间为1分钟后
+////        long startAtTime = System.currentTimeMillis() + 1000 * 20;
+////        SimpleScheduleBuilder simpleScheduleBuilder
+////                = SimpleScheduleBuilder
+////                .simpleSchedule()
+////                .withIntervalInMinutes(freq)
+////                .repeatForever();
+//    }
+//
+////    /*对Scheduer进行重新配置设置Scheduler的JobFactory使用我们自己创建的JobFactory*/
+////    @Autowired
+////    private JobFactory jobFactory;
+////
+////    @Bean(name = "schedulerFactoryBean")
+////    public SchedulerFactoryBean createSchedulerFactoryBean(){
+////        SchedulerFactoryBean schedulerFactoryBean=new SchedulerFactoryBean();
+////        schedulerFactoryBean.setOverwriteExistingJobs(true);
+////        schedulerFactoryBean.setJobFactory(jobFactory);
+////        return schedulerFactoryBean;
+////    }
+////
+////    @Bean
+////    public JobDetailImpl createJobDetailsImpl(){
+////        return new JobDetailImpl();
+////    }
+//
+//}
+
+
+///**
+// * Created by fhm on 2018/7/24.
+// */
+//
+//@Configuration
+//public class QuartzConfig {
+//    @Autowired
+//    static SrpRepository srpRepository;
+//
+//
 //    public static void main(String[] args) throws Exception {
 //        QuartzConfig q= new QuartzConfig();
 //        List<SRP> srpList = srpRepository.findAll();
@@ -37,7 +150,7 @@
 ////
 ////        return null;
 ////    }
-//
+
 //    @Bean
 //    public JobDetail testQuartDetail(SRP srp) {
 ////

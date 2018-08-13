@@ -43,7 +43,8 @@ public class Resttest {
     }
 
 
-    public String testSSO(){
+    @Test
+    public void testSSO(){
         String url ="http://portal-sso.wise-paas.com.cn/v1.3/auth/native";
         HttpHeaders requestHeaders = new HttpHeaders();
 //        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -56,42 +57,42 @@ public class Resttest {
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST, requestEntity, String.class);
         System.out.println(responseEntity.getBody());
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
-//        System.out.println();
-        return parse.get("accessToken").toString();
+        System.out.println(parse.get("accessToken").toString());
+//        return parse.get("accessToken").toString();
 
     }
 
 
-    @Test
-    public void testVCM(){
-        String url ="https://api-vcm-acniotsense-patac.wise-paas.com.cn/vcm/vcm?enterprise_id=3";
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.add("Authorization","Bearer "+testSSO());
-        Map<String, Object> requestBody = new HashMap<String, Object>();
-        //HttpEntity
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
-        System.out.println("*************************************");
-        System.out.println(responseEntity);
-        System.out.println("*************************************");
-
-    }
-
-    @Test
-    public void testRMM(){
-        String url ="https://portal-rmm-acniotsense-patac.wise-paas.com.cn/rmm/v1/data/devices/5/latestdata_by_opts?agentId=00000001-0000-0000-0000-C400AD0365D7&plugin=Modbus_Handler&sensorId=/Platform/Connection";
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.add("Authorization","Bearer "+testSSO());
-        Map<String, Object> requestBody = new HashMap<String, Object>();
-        //HttpEntity
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
-        System.out.println("*************************************");
-        System.out.println(responseEntity);
-        System.out.println("*************************************");
-    }
+//    @Test
+//    public void testVCM(){
+//        String url ="https://api-vcm-acniotsense-patac.wise-paas.com.cn/vcm/vcm?enterprise_id=3";
+//        HttpHeaders requestHeaders = new HttpHeaders();
+//        requestHeaders.add("Authorization","Bearer "+testSSO());
+//        Map<String, Object> requestBody = new HashMap<String, Object>();
+//        //HttpEntity
+//        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+//
+//        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+//        System.out.println("*************************************");
+//        System.out.println(responseEntity);
+//        System.out.println("*************************************");
+//
+//    }
+//
+//    @Test
+//    public void testRMM(){
+//        String url ="https://portal-rmm-acniotsense-patac.wise-paas.com.cn/rmm/v1/data/devices/5/latestdata_by_opts?agentId=00000001-0000-0000-0000-C400AD0365D7&plugin=Modbus_Handler&sensorId=/Platform/Connection";
+//        HttpHeaders requestHeaders = new HttpHeaders();
+//        requestHeaders.add("Authorization","Bearer "+testSSO());
+//        Map<String, Object> requestBody = new HashMap<String, Object>();
+//        //HttpEntity
+//        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+//
+//        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+//        System.out.println("*************************************");
+//        System.out.println(responseEntity);
+//        System.out.println("*************************************");
+//    }
 
     public String testFanYa(){
         String url ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone";

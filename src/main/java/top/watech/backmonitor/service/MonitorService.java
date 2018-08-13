@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * Created by fhm on 2018/7/26.
  * 1、SSO登录监控。POST，取参数，RestTemplete，判断连接，取状态码判断是否200，
- *      取tooken判断是否为null，是就往下继续走判断接口，否就返回
+ * 取tooken判断是否为null，是就往下继续走判断接口，否就返回
  * 2、SSO下接口
  */
 @Service
@@ -30,6 +30,9 @@ public class MonitorService {
     MonitorItemService monitorItemService;
     @Autowired
     FanyaDevService fanyaDevService;
+
+    @Autowired
+    MonitorItemRepository monitorItemRepository;
 
     //tooken
     public static String token;
@@ -148,7 +151,7 @@ public class MonitorService {
         if (code == 1) {
             System.err.println(monitorItem.getMonitorName() + ":" + "工作正常");
             System.err.println("*******************************************");
-            sucCount = sucCount+1;
+            sucCount = sucCount + 1;
         } else {
             System.err.println(monitorItem.getMonitorName() + ":" + "工作异常");
             try {
@@ -167,7 +170,7 @@ public class MonitorService {
         //2、测试视频文件获取
         System.err.println(monitorItem.getMonitorName() + ":" + "不知道");
         System.err.println("*******************************************");
-        sucCount = sucCount+1;
+        sucCount = sucCount + 1;
     }
 
     //处理页面类型，最后结果是code，成功还是失败 throws RestClientException
@@ -191,7 +194,7 @@ public class MonitorService {
             code = 1;//成功
             System.err.println(monitorItem.getMonitorName() + ":" + "工作正常");
             System.err.println("*******************************************");
-            sucCount = sucCount+1;
+            sucCount = sucCount + 1;
         } catch (Exception e) {
             code = 0;//失败
             System.err.println(monitorItem.getMonitorName() + ":" + "工作异常");
@@ -205,63 +208,67 @@ public class MonitorService {
      * 1、SSO登录。2、平台接口。3、SRP登录。4、SRP下接口。
      */
     public void monitorLogic(Long srpId) {
-        //开始时间
-        System.err.println("开始时间:" + new Date());
 
-        //SRP的所有监控项（sort by classify）
-        List<MonitorItem> monitorItems = monitorItemService.getMonitTtemListBySrpId(srpId);
-        System.err.println("start!");
-        for (MonitorItem monitorItem : monitorItems) {
-            //平台登录
-            if (monitorItem.getClassify() == 1) {
+        synchronized (this) {
+            //开始时间
+            System.err.println("开始时间:" + new Date());
 
-                apiMonitor(monitorItem);
-            }
-            //平台接口
-            else if (monitorItem.getClassify() == 2) {
-                //视频类型的监控项
-                if (monitorItem.getMonitorType() == 2) {
-                    videoMonitor(monitorItem);
-                }
-                //接口类型
-                else if (monitorItem.getMonitorType() == 1) {
+            //SRP的所有监控项（sort by classify）
+            List<MonitorItem> monitorItems = monitorItemService.getMonitTtemListBySrpId(srpId);
+            System.err.println("start!");
+            for (MonitorItem monitorItem : monitorItems) {
+                //平台登录
+                if (monitorItem.getClassify() == 1) {
+
                     apiMonitor(monitorItem);
                 }
-                //页面监控
-                else {
-                    pageMonitor(monitorItem);
+                //平台接口
+                else if (monitorItem.getClassify() == 2) {
+                    //视频类型的监控项
+                    if (monitorItem.getMonitorType() == 2) {
+                        videoMonitor(monitorItem);
+                    }
+                    //接口类型
+                    else if (monitorItem.getMonitorType() == 1) {
+                        apiMonitor(monitorItem);
+                    }
+                    //页面监控
+                    else {
+                        pageMonitor(monitorItem);
+                    }
                 }
-            }
 
-            //SRP登录
-            if (monitorItem.getClassify() == 3) {
-                apiMonitor(monitorItem);
-            }
-            //SRP接口
-            else if (monitorItem.getClassify() == 4) {
-                //视频类型的监控项
-                if (monitorItem.getMonitorType() == 2) {
-                    videoMonitor(monitorItem);
-                }
-                //接口类型
-                else if (monitorItem.getMonitorType() == 1) {
+                //SRP登录
+                if (monitorItem.getClassify() == 3) {
                     apiMonitor(monitorItem);
                 }
-                //页面监控
-                else {
-                    pageMonitor(monitorItem);
+                //SRP接口
+                else if (monitorItem.getClassify() == 4) {
+                    //视频类型的监控项
+                    if (monitorItem.getMonitorType() == 2) {
+                        videoMonitor(monitorItem);
+                    }
+                    //接口类型
+                    else if (monitorItem.getMonitorType() == 1) {
+                        apiMonitor(monitorItem);
+                    }
+                    //页面监控
+                    else {
+                        pageMonitor(monitorItem);
+                    }
                 }
             }
-        }
-        System.err.println("监控项总个数："+monitorItems.size());
-        System.err.println("监控项成功个数："+sucCount);
-        System.err.println("*******************************************");
-        sucCount = 0 ;
-        if (srpId == 66L){
-            fanyaDevService.testDev();
-        }
+            System.err.println("监控项总个数：" + monitorItems.size());
+            System.err.println("监控项成功个数：" + sucCount);
+            System.err.println("*******************************************");
+            sucCount = 0;
+            if (srpId == 66L) {
+                MonitorItem monitorItem = monitorItemRepository.findByMonitorId(3L);
+                fanyaDevService.testDev();
+            }
 
-        //结束时间
-        System.err.println("结束时间:" + new Date());
+            //结束时间
+            System.err.println("结束时间:" + new Date());
+        }
     }
 }
