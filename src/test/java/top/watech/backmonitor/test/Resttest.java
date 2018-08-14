@@ -82,7 +82,7 @@ public class Resttest {
 //        HttpHeaders requestHeaders = new HttpHeaders();
 //        requestHeaders.add("Authorization","Bearer "+testSSO());
 //        Map<String, Object> requestBody = new HashMap<String, Object>();
-//        //HttpEntity
+//        //HttpEntitys
 //        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
 //
 //        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
