@@ -61,7 +61,7 @@ public class QuartzConfigration {
 
 //创建schedule
 //
-//    @Bean(name = "scheduler")
+    @Bean(name = "scheduler")
 
     public Scheduler scheduler() {
 

@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.repository.MonitorItemRepository;
-import top.watech.backmonitor.service.MonitorItemService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -113,7 +111,7 @@ public class FanyaDevService {
                             "]的设备:[" + devInfoJsonObject1.get("devicename") +
                             "]:工作异常";
                     String s2 = "错误信息：" + responseEntity1.getBody();
-                    devMsg = devMsg + s1 + "\n" + s2 + "\n";
+                    devMsg = devMsg + s1 ;
                     System.err.println(s1);
                     System.err.println(s2);
                     totalCode = totalCode & devInfoCode ;
