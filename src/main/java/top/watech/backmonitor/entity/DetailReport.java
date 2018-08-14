@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.sql.Time;
+import java.util.Date;
 
 /**
  * Created by fhm on 2018/7/24.
@@ -24,7 +25,7 @@ public class DetailReport {
     private Boolean code;   //成功、失败
     private String message; //报警信息
 
-    private Time createTime;//复合主键,数据插入时间
+    private Date createTime;//复合主键,数据插入时间
 
     private String uuid;    //外键
     private TotalReport totalReport;
@@ -43,11 +44,11 @@ public class DetailReport {
     @Id
     @Column(name = "create_time")
     @CreatedDate
-    public Time getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Time createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
@@ -59,7 +60,7 @@ public class DetailReport {
         this.code = code;
     }
 
-    @Column(length = 100)
+    @Column//(length = 100)
     public String getMessage() {
         return message;
     }

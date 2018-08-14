@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import top.watech.backmonitor.util.JwtFilter;
 
@@ -12,7 +13,7 @@ import java.util.List;
 
 @SpringBootApplication
 @EnableScheduling
-//@EnableJpaAuditing
+@EnableJpaAuditing
 public class BackMonitorApplication {
 
     public static void main(String[] args) {
