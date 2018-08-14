@@ -2,13 +2,14 @@ package top.watech.backmonitor.entity;
 
 import java.io.Serializable;
 import java.sql.Time;
+import java.util.Date;
 
 /**
  * Created by fhm on 2018/7/24.
  */
 public class MonitorItemTimeMultiKey implements Serializable{
     private Long monitorId;
-    private Time createTime;
+    private Date createTime;
 
     public MonitorItemTimeMultiKey() {
     }
@@ -26,11 +27,11 @@ public class MonitorItemTimeMultiKey implements Serializable{
         this.monitorId = monitorId;
     }
 
-    public Time getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Time createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 

@@ -22,6 +22,7 @@ public class ReportController {
     @Autowired
     private DetailReportService detailReportService;
 
+    /*取监控列表*/
     @PostMapping("/toatalList/{pageNo}/{role}/{userId}")
     public RespEntity gettotalList(@RequestBody TotalReport totalReport, @PathVariable int pageNo , @PathVariable int role,Long userId) {
         System.err.println(totalReport);
@@ -41,6 +42,7 @@ public class ReportController {
         }
     }
 
+    /*取详细监控报告列表*/
     @GetMapping("/detailList/{uuid}")
     public RespEntity getdetailList(@PathVariable String uuid) {
         List<DetailReport> detailReportByUuid = detailReportService.getDetailReportByUuid(uuid);

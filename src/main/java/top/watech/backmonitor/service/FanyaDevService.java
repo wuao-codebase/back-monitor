@@ -37,7 +37,11 @@ public class FanyaDevService {
 
     //tooken
     public static String token;
-    public static int devInfoCode = 1;
+    public static boolean devInfoCode = true;
+    public static boolean totalCode = true;
+    public static String devMsg = "";
+    public static boolean devConn = true;
+
 
     //生成token
     public void teToken() {
@@ -98,25 +102,39 @@ public class FanyaDevService {
             for (Object devInfoJsonObject : data) {
                 JSONObject devInfoJsonObject1 = (JSONObject) devInfoJsonObject;
                 if (devInfoJsonObject1.get("connected").equals(true)) {
-                    devInfoCode = 1;
+                    devInfoCode = true;
                     System.err.println("[" + devInfoJsonObject1.get("position") +
                             "]的设备:[" + devInfoJsonObject1.get("devicename") + "]:工作正常");
+                    totalCode = totalCode & devInfoCode ;
+                    devConn = devConn || devInfoCode;
                 } else {
-                    devInfoCode = 0;
-                    System.err.println("[" + devInfoJsonObject1.get("position") +
+                    devInfoCode = false;
+                    String s1 = "[" + devInfoJsonObject1.get("position") +
                             "]的设备:[" + devInfoJsonObject1.get("devicename") +
-                            "]:工作异常");
-                    System.err.println("错误信息：" + responseEntity1.getBody());
+                            "]:工作异常";
+                    String s2 = "错误信息：" + responseEntity1.getBody();
+                    devMsg = devMsg + s1 + "\n" + s2 + "\n";
+                    System.err.println(s1);
+                    System.err.println(s2);
+                    totalCode = totalCode & devInfoCode ;
+                    devConn = devConn || devInfoCode;
                 }
             }
-            devInfoCode &= 1;
         }
-        if (devInfoCode == 1) {
+        if (totalCode == true) {
             System.out.println("***********************************************");
             System.err.println("************所有设备工作正常***********");
-        } else {
+            devMsg = "所有设备工作正常";
+        }
+        else if (devConn == false){
+            System.out.println("***********************************************");
+            System.err.println("************所有设备已掉线***********");
+            devMsg = "所有设备已掉线";
+        }
+        else {
             System.out.println("***********************************************");
             System.err.println("************设备信息获取接口工作异常***********");
+            devMsg += "";
         }
     }
 

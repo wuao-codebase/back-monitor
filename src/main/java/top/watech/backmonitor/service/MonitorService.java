@@ -10,10 +10,16 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import top.watech.backmonitor.entity.DetailReport;
 import top.watech.backmonitor.entity.MonitorItem;
+import top.watech.backmonitor.entity.SRP;
+import top.watech.backmonitor.entity.TotalReport;
+import top.watech.backmonitor.repository.DetailReportRepository;
 import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
+import top.watech.backmonitor.repository.TotalReportRepository;
 
+import java.sql.Time;
 import java.util.*;
 
 /**
@@ -33,6 +39,13 @@ public class MonitorService {
 
     @Autowired
     MonitorItemRepository monitorItemRepository;
+    @Autowired
+    SrpRepository srpRepository;
+
+    @Autowired
+    DetailReportRepository detailReportRepository;
+    @Autowired
+    TotalReportRepository totalReportRepository;
 
     //tooken
     public static String token;
@@ -43,14 +56,18 @@ public class MonitorService {
     //成功总数
     public static int sucCount;
 
+    //监控项结果
+    boolean code = true;   //0为失败，1为成功
+    String msg;
+
     //处理接口类型（RestTemplete）
     //取结果与断言比对，最后结果为code，成功还是失败
-    public Integer apiMonitor(MonitorItem monitorItem) {
+    public boolean apiMonitor(MonitorItem monitorItem) {
         String url = monitorItem.getUrl();
         Integer requestType = monitorItem.getRequestType();
         String asserts = monitorItem.getAsserts();
 
-        int code = 1;   //0为失败，1为成功
+        code = true;   //0为失败，1为成功
 
         HttpHeaders requestHeaders = new HttpHeaders();
         String requestBodyStr = monitorItem.getRequestBody();
@@ -65,24 +82,24 @@ public class MonitorService {
                 responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
             } catch (Exception e) {
                 if (monitorItem.getClassify() == 1) {
-                    System.err.println("SSO登录出错！");
+                    String str = "SSO登录出错！";
+                    System.err.println(str);
                     System.err.println("错误信息：" + e.getMessage());
-                    System.exit(0);
+                    msg = str + e.getMessage();
+                    code = false;
+                    return Boolean.parseBoolean(null);
+//                    System.exit(0);
                 } else {
-                    System.err.println("SRP登录出错！");
+                    String str = "SRP登录出错！";
+                    System.err.println(str);
                     System.err.println("错误信息：" + e.getMessage());
-                    System.exit(0);
+                    msg = str + e.getMessage();
+                    code = false;
+                    return Boolean.parseBoolean(null);
+//                    System.exit(0);
                 }
             }
             JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
-
-            int statusCodeValue = responseEntity.getStatusCodeValue();
-            if (statusCodeValue != 200) {
-                //登录一旦不成功，程序终止，退出
-                System.err.println("退出");
-                return null;
-            }
-
             JSONArray assertsArraysJsonObject = JSON.parseArray(asserts);//传来的断言的json对象数组
 
             //断言数组循环判断,与监控项返回的JSON对象比对
@@ -92,15 +109,15 @@ public class MonitorService {
                 //ststus为0是等号，为1是不等号
                 if (assJsonObject1.get("ststus").equals("0")) {
                     if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
-                        code = (code & 1);//成功
+                        code = (code & true);//成功
                     } else {
-                        code = (code & 0);//失败
+                        code = (code & false);//失败
                     }
                 } else {
                     if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
-                        code = (code & 1);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
+                        code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
                     else {
-                        code &= 0;
+                        code &= false;
                     }
                     if (monitorItem.getClassify() == 1) {
                         accessToken = (String) resJsonObject.get(assJsonObject1.get("akey"));
@@ -113,8 +130,14 @@ public class MonitorService {
         //GET请求，携带token访问
         else if (requestType == 2) {
             if (monitorItem.getClassify() == 2) {
+                if (accessToken == null){
+                    return Boolean.parseBoolean(null);
+                }
                 requestHeaders.add("Authorization", "Bearer " + accessToken);
             } else if (monitorItem.getClassify() == 4) {
+                if (token == null){
+                    return Boolean.parseBoolean(null);
+                }
                 requestHeaders.add("Authorization", "Bearer " + token);
             }
 
@@ -131,31 +154,34 @@ public class MonitorService {
                         //接口返回的对应asserts中value的值
                         String revalue = resJsonObject.get(assJsonObject1.get("akey")).toString();
                         if (revalue.equals(assJsonObject1.get("value")))
-                            code = (code & 1);//成功
+                            code = (code & true);//成功
                         else {
-                            code = (code & 0);//失败
+                            code = (code & false);//失败
                         }
                     } else {
                         if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
-                            code = (code & 1);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
+                            code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
                         else {
-                            code = (code & 0);
+                            code = (code & false);
                         }
                     }
                 }
             } catch (Exception e) {
                 System.err.println("错误信息：" + e.getMessage());
-                code = 0;
+                msg = e.getMessage();
+                code = false;
             }
         }
-        if (code == 1) {
+        if (code == true) {
             System.err.println(monitorItem.getMonitorName() + ":" + "工作正常");
             System.err.println("*******************************************");
+            msg = "工作正常";
             sucCount = sucCount + 1;
         } else {
             System.err.println(monitorItem.getMonitorName() + ":" + "工作异常");
             try {
-                System.err.println("错误信息：xxxxxxxxxxx" + responseEntity.getBody());
+                System.err.println("错误信息：" + responseEntity.getBody());
+                msg = responseEntity.getBody();
             } catch (Exception e) {
                 System.err.print("");
             }
@@ -171,11 +197,13 @@ public class MonitorService {
         System.err.println(monitorItem.getMonitorName() + ":" + "不知道");
         System.err.println("*******************************************");
         sucCount = sucCount + 1;
+        msg = "工作正常";
+        code = true ;
     }
 
     //处理页面类型，最后结果是code，成功还是失败 throws RestClientException
     public void pageMonitor(MonitorItem monitorItem) {
-        int code = 1;   //0为失败，1为成功
+        code = true;   //0为失败，1为成功
 
         String url = monitorItem.getUrl();
         HttpHeaders requestHeaders = new HttpHeaders();
@@ -191,14 +219,16 @@ public class MonitorService {
         ResponseEntity<String> responseEntity = null;
         try {
             responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
-            code = 1;//成功
+            code = true;//成功
             System.err.println(monitorItem.getMonitorName() + ":" + "工作正常");
             System.err.println("*******************************************");
+            msg = "工作正常";
             sucCount = sucCount + 1;
         } catch (Exception e) {
-            code = 0;//失败
+            code = false;//失败
             System.err.println(monitorItem.getMonitorName() + ":" + "工作异常");
             System.err.println("错误信息：" + e.getMessage());
+            msg = e.getMessage();
             System.err.println("*******************************************");
         }
     }
@@ -210,8 +240,12 @@ public class MonitorService {
     public void monitorLogic(Long srpId) {
 
         synchronized (this) {
+            //总的监控报告
+            TotalReport totalReport = new TotalReport();
+            totalReportRepository.save(totalReport);
             //开始时间
-            System.err.println("开始时间:" + new Date());
+            Date startTime = new Date();
+            System.err.println("开始时间:" + startTime);
 
             //SRP的所有监控项（sort by classify）
             List<MonitorItem> monitorItems = monitorItemService.getMonitTtemListBySrpId(srpId);
@@ -219,11 +253,18 @@ public class MonitorService {
             for (MonitorItem monitorItem : monitorItems) {
                 //平台登录
                 if (monitorItem.getClassify() == 1) {
-
                     apiMonitor(monitorItem);
+
+                    //详细监控报告
+                    DetailReport detailReport = new DetailReport();
+                    detailReport.setCode(code);
+                    detailReport.setMessage(msg);
+                    detailReport.setMonitorId(monitorItem.getMonitorId());
+                    detailReport.setTotalReport(totalReport);
+                    detailReportRepository.save(detailReport);
                 }
                 //平台接口
-                else if (monitorItem.getClassify() == 2) {
+                else if (monitorItem.getClassify() == 2 && code == true) {
                     //视频类型的监控项
                     if (monitorItem.getMonitorType() == 2) {
                         videoMonitor(monitorItem);
@@ -236,14 +277,28 @@ public class MonitorService {
                     else {
                         pageMonitor(monitorItem);
                     }
+                    //详细监控报告
+                    DetailReport detailReport = new DetailReport();
+                    detailReport.setCode(code);
+                    detailReport.setMessage(msg);
+                    detailReport.setMonitorId(monitorItem.getMonitorId());
+                    detailReport.setTotalReport(totalReport);
+                    detailReportRepository.save(detailReport);
                 }
 
                 //SRP登录
                 if (monitorItem.getClassify() == 3) {
                     apiMonitor(monitorItem);
+                    //详细监控报告
+                    DetailReport detailReport = new DetailReport();
+                    detailReport.setCode(code);
+                    detailReport.setMessage(msg);
+                    detailReport.setMonitorId(monitorItem.getMonitorId());
+                    detailReport.setTotalReport(totalReport);
+                    detailReportRepository.save(detailReport);
                 }
                 //SRP接口
-                else if (monitorItem.getClassify() == 4) {
+                else if (monitorItem.getClassify() == 4 && code == true) {
                     //视频类型的监控项
                     if (monitorItem.getMonitorType() == 2) {
                         videoMonitor(monitorItem);
@@ -256,19 +311,48 @@ public class MonitorService {
                     else {
                         pageMonitor(monitorItem);
                     }
+                    //详细监控报告
+                    DetailReport detailReport = new DetailReport();
+                    detailReport.setCode(code);
+                    detailReport.setMessage(msg);
+                    detailReport.setMonitorId(monitorItem.getMonitorId());
+                    detailReport.setTotalReport(totalReport);
+                    detailReportRepository.save(detailReport);
+                }
+                else if (monitorItem.getClassify() == 5){
+                    continue;
                 }
             }
             System.err.println("监控项总个数：" + monitorItems.size());
             System.err.println("监控项成功个数：" + sucCount);
             System.err.println("*******************************************");
-            sucCount = 0;
+
             if (srpId == 66L) {
-                MonitorItem monitorItem = monitorItemRepository.findByMonitorId(3L);
                 fanyaDevService.testDev();
+                //详细监控报告
+                DetailReport detailReport = new DetailReport();
+                detailReport.setCode(FanyaDevService.totalCode);
+                detailReport.setMessage(FanyaDevService.devMsg);
+                detailReport.setMonitorId(42L);
+                detailReport.setTotalReport(totalReport);
+                detailReportRepository.save(detailReport);
             }
 
             //结束时间
-            System.err.println("结束时间:" + new Date());
+            Date endTime = new Date();
+            System.err.println("结束时间:" + endTime);
+
+            //总的监控报告
+            totalReport.setStartTime(startTime);
+            totalReport.setEndTime(endTime);
+            totalReport.setMonitorNum(monitorItems.size());
+            SRP srp = srpRepository.findBySrpId(srpId);
+            totalReport.setSrp(srp);
+            int errorCount = monitorItems.size() - sucCount;
+            totalReport.setErrorCount(errorCount);
+            totalReportRepository.saveAndFlush(totalReport);
+
+            sucCount = 0;
         }
     }
 }
