@@ -66,7 +66,6 @@ public class testVideo {
         } catch (Exception e) {
             System.err.println("SSO登陆失败");
             System.err.println("错误信息：" + e.getMessage());
-            System.exit(0);
         }
 
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
@@ -92,11 +91,10 @@ public class testVideo {
         } catch (Exception e) {
             System.err.println("VCM请求出错");
             System.err.println("错误信息：" + e.getMessage());
-            System.exit(0);
         }
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
         if (parse.get("dashinfo")!=null){
-            System.out.println("dashinfo获取成功");
+            System.err.println("dashinfo获取成功");
             return parse.get("dashinfo").toString();
         }else {
             System.err.println("dashinfo获取为空");
@@ -123,14 +121,14 @@ public class testVideo {
         } catch (Exception e) {
             System.err.println(vmsname+"获取sessionID请求出错！");
             System.err.println("错误信息：" + e.getMessage());
-            System.exit(0);
+            return null;
         }
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
         if (parse.get("result")!=null){
             JSONObject result = (JSONObject) parse.get("result");
             if (result.get("SessionID") != null) {
                 System.err.println(vmsname+"获取sessionID成功");
-                return parse.get("SessionID").toString();
+                return result.get("SessionID").toString();
             }else {
                 System.err.println(vmsname+"获取sessionID为空");
             }
@@ -155,46 +153,78 @@ public class testVideo {
             responseEntity =  restTemplate.exchange(LiveStreamurl, HttpMethod.PUT, requestEntity, String.class);
 
         } catch (Exception e) {
-            System.err.println(vmsname+"   通道："+channel+"   Online请求出错！");
+            System.err.println(vmsname+"   通道："+channel+"   实时Online请求出错！");
             System.err.println("错误信息：" + e.getMessage());
-            System.exit(0);
+            return null;
         }
         //post
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
         if (parse.get("result")!=null){
             JSONObject result = (JSONObject) parse.get("result");
             if (result.get("mpd") != null) {
-                System.err.println(vmsname+"   通道："+channel+"获取MPD地址成功");
-                return parse.get("SessionID").toString();
+                System.err.println(vmsname+"   通道："+channel+"获取实时MPD地址成功");
+                return result.get("mpd").toString();
             }else {
-                System.err.println(vmsname+"   通道："+channel+"获取MPD地址为空");
+                System.err.println(vmsname+"   通道："+channel+"获取实时MPD地址为空");
             }
         }
         return null;
     }
 
-    public String MPD(String mpdurl) {
+    public String MPD(String mpdurl,String vmsname , String channel,String msg) {
         String url = mpdurl;
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.valueOf("application/dash+xml"));
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(null, requestHeaders);
         //post
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
-        return responseEntity.getBody().toString();
 
+        ResponseEntity<String> responseEntity=null;
+        try {
+            responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+
+
+        } catch (Exception e) {
+            System.err.println(vmsname+"   通道："+channel+ ",  "+msg+"获取mpd文件请求出错！");
+            System.err.println("错误信息：" + e.getMessage());
+            return null;
+        }
+        //post
+        String body = responseEntity.getBody();
+        if (body!=null){
+                System.err.println(vmsname+"   通道："+channel+",  "+msg+"获取mpd文件成功！");
+                return body;
+            }else {
+                System.err.println(vmsname+"   通道："+channel+",  "+msg+"获取mpd文件为空！");
+        }
+        return null;
     }
 
-    public void video(String url) {
+    public void video(String url,String vmsname , String channel,String msg) {
         HttpHeaders requestHeaders = new HttpHeaders();
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(null, requestHeaders);
         //post
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
-        System.err.println(responseEntity.getBody().length());
+        ResponseEntity<String> responseEntity=null;
+        try {
+            responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+
+        } catch (Exception e) {
+            System.err.println(vmsname+"   通道："+channel+ ",  "+msg+"视频请求出错！");
+            System.err.println("错误信息：" + e.getMessage());
+            return;
+        }
+        //post
+        String body = responseEntity.getBody();
+        if (body!=null && body.length()>500){
+            System.err.println(vmsname+"   通道："+channel+",  "+msg+"获取视频文件成功！");
+            System.out.println(body.length());
+        }else {
+            System.err.println(vmsname+"   通道："+channel+",  "+msg+"获取视频文件失败！");
+        }
     }
 
-    public String PlaybackStream(String domain, String sessionID, String IVSID, String channel) {
+    public String PlaybackStream(String domain, String sessionID, String IVSID,String vmsname , String channel) {
         Calendar now = Calendar.getInstance();
         now.add(Calendar.DATE, -1);
         long starttime = now.getTimeInMillis() / 1000;
@@ -212,74 +242,84 @@ public class testVideo {
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         //post
-        ResponseEntity<String> responseEntity = restTemplate.exchange(LiveStreamurl, HttpMethod.PUT, requestEntity, String.class);
+        ResponseEntity<String> responseEntity=null;
+        try {
+           responseEntity = restTemplate.exchange(LiveStreamurl, HttpMethod.PUT, requestEntity, String.class);
+
+        } catch (Exception e) {
+            System.err.println(vmsname+"   通道："+channel+"   历史Online请求出错！");
+            System.err.println("错误信息：" + e.getMessage());
+            return null;
+        }
+        //post
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
-        JSONObject result = (JSONObject) parse.get("result");
-        return result.get("mpd").toString();
+        if (parse.get("result")!=null){
+            JSONObject result = (JSONObject) parse.get("result");
+            if (result.get("mpd") != null) {
+                System.err.println(vmsname+"   通道："+channel+"获取历史MPD地址成功");
+                return result.get("mpd").toString();
+            }else {
+                System.err.println(vmsname+"   通道："+channel+"获取历史MPD地址为空");
+            }
+        }
+        return null;
     }
 
     public void monite(String domain ,String username,String password,String IVSID,String channelnum,String vmsname) {
 
         String sessionID = sessionID(domain,username,password,vmsname);
         if ( sessionID==null) return;
-        System.out.println("sessionID = " + sessionID);
         int channel = Integer.valueOf(channelnum) ;
         for (int i = 1; i < channel+1; i++) {
             //实时
-            String nowmpdurl = LiveStream(domain, sessionID, IVSID, vmsname,String.valueOf(i))+"?_="+System.currentTimeMillis()
-            System.out.println("mpdurl = " + nowmpdurl);
+            String nowmpdurl = LiveStream(domain, sessionID, IVSID, vmsname,String.valueOf(i));
+            if ( nowmpdurl==null) continue;
+            nowmpdurl=   nowmpdurl +"?_="+System.currentTimeMillis();
             String video1 = StringUtils.substringBeforeLast(nowmpdurl, "/");
-            String mpd = MPD(nowmpdurl);
-            System.out.println("mpd = " + mpd);
+            String mpd = MPD(nowmpdurl,vmsname,String.valueOf(i),"实时");
+            if ( mpd==null) continue;
             String tempurl = null;
             try {
                 Document document = DocumentHelper.parseText(mpd);
                 tempurl = dom4jList(document.getRootElement());
-                System.err.println(tempurl);
             } catch (DocumentException e) {
                 e.printStackTrace();
             }
             String[] split = tempurl.split("&");
             String starturl = video1 + "/" + split[0];
-            video(starturl);
+            video(starturl,vmsname,String.valueOf(i),"实时");
             String url1 = video1 + "/" + split[1].replace("$Number$", "1") + "?_=" + System.currentTimeMillis();
-            ;
-            System.out.println("url1 = " + url1);
-            video(url1);
+            video(url1,vmsname,String.valueOf(i),"实时");
 
+
+        }
+
+        for (int i = 1; i < channel+1; i++) {
             //历史视频
-            String backmpdurl = PlaybackStream(domain, sessionID, IVSID, channel,);
-            System.out.println("backmpdurl = " + backmpdurl);
+            String backmpdurl = PlaybackStream(domain, sessionID, IVSID, vmsname,String.valueOf(i));
             String backvideo1 = StringUtils.substringBeforeLast(backmpdurl, "/");
-            String backmpd = MPD(backmpdurl);
-            System.out.println("mpd = " + backmpd);
+            String backmpd = MPD(backmpdurl,vmsname,String.valueOf(i),"历史");
             String backtempurl = null;
             try {
                 Document document = DocumentHelper.parseText(backmpd);
                 backtempurl = dom4jList(document.getRootElement());
-                System.err.println(backtempurl);
             } catch (DocumentException e) {
                 e.printStackTrace();
             }
             String[] backsplit = backtempurl.split("&");
             String backstarturl = backvideo1 + "/" + backsplit[0];
-            video(backstarturl);
+            video(backstarturl,vmsname,String.valueOf(i),"历史");
             String backurl1 = backvideo1 + "/" + backsplit[1].replace("$Number$", "1") + "?_=" + System.currentTimeMillis();
-            ;
-            System.out.println("backurl1 = " + backurl1);
-            video(backurl1);
+            video(backurl1,vmsname,String.valueOf(i),"历史");
         }
-
 
     }
 
     @Test
     public  void main() {
         String  token = SSO();
-        System.out.println("token = " + token);
         if ( token==null) return;
         String dashinfo = VCM(token);
-        System.out.println("dashinfo = " + dashinfo);
         if ( dashinfo==null) return;
         JSONArray parses = (JSONArray) JSONArray.parse(dashinfo);
         for (Object pars : parses) {
