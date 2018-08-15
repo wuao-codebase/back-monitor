@@ -30,6 +30,8 @@ public class testVideo {
     @Autowired
     private RestTemplate restTemplate;
 
+    private Map<String,String> map = new HashMap<String,String>();
+
     @Test
     public void testdate() {
         Calendar now = Calendar.getInstance();
@@ -100,6 +102,40 @@ public class testVideo {
             System.err.println("dashinfo获取为空");
         }
         return  null;
+    }
+
+    public String FanYa(){
+        String url ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone";
+        HttpHeaders requestHeaders = new HttpHeaders();
+//        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+        Map<String, Object> requestBody = new HashMap<String, Object>();
+        requestBody.put("password", "123456");
+        requestBody.put("phone","13900000000");
+        requestBody.put("tokenTs", 20160);
+        //HttpEntity
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST,requestEntity,String.class);
+        JSONObject parse = JSON.parseObject(responseEntity.getBody());
+        return parse.get("token").toString();
+    }
+
+    public void SheBeiXinxi(String token){
+        String url ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?userid=1";
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.add("Authorization","Bearer "+token);
+        Map<String, Object> requestBody = new HashMap<String, Object>();
+        //HttpEntity
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+        System.out.println(responseEntity);
+        JSONObject parse = JSON.parseObject(responseEntity.getBody());
+        JSONArray data = (JSONArray) JSONArray.parse(parse.getString("data"));
+        for (Object datum : data) {
+            JSONObject parse1 = (JSONObject) JSONObject.parse(datum.toString());
+            if(parse1.getString("agentid").trim().length()>0 && parse1.getString("position").trim().length()>0 && parse1.getString("devicename").trim().length()>0){
+                map.put(parse1.getString("agentid"),parse1.getString("position")+parse1.getString("devicename"));
+            }
+        }
     }
 
     public String sessionID(String domain,String username,String password,String vmsname) {
@@ -265,7 +301,7 @@ public class testVideo {
         return null;
     }
 
-    public void monite(String domain ,String username,String password,String IVSID,String channelnum,String vmsname) {
+    public void monite(String domain ,String username,String password,String IVSID,String channelnum,String vmsname,String deviceid) {
 
         String sessionID = sessionID(domain,username,password,vmsname);
         if ( sessionID==null) return;
@@ -317,23 +353,34 @@ public class testVideo {
 
     @Test
     public  void main() {
+        String fanYa = FanYa();
+        SheBeiXinxi(fanYa);
         String  token = SSO();
         if ( token==null) return;
         String dashinfo = VCM(token);
+        System.out.println("dashinfo = " + dashinfo);
         if ( dashinfo==null) return;
         JSONArray parses = (JSONArray) JSONArray.parse(dashinfo);
         for (Object pars : parses) {
             JSONObject temp = (JSONObject) pars;
             String domain= temp.get("domain")+":"+temp.get("apiport");
-            String username = temp.get("username").toString();
-            String password = temp.get("password").toString();
+            String username = temp.getString("username");
+            String password = temp.getString("password");
+            String deviceid = temp.getString("deviceid");
+            if(map.containsKey(StringUtils.trim(deviceid))){
+                System.err.println("********************");
+                System.err.println(map.get(StringUtils.trim(deviceid))+":开始检测视频监控");
+            }else {
+                System.out.println();
+                System.err.println(StringUtils.trim(deviceid)+":开始检测视频监控");
+            }
             JSONArray dash = (JSONArray) JSONArray.parse(temp.get("vmsinfo").toString());
             for (Object o : dash) {
                 JSONObject vms = (JSONObject) o;
                 String ivsid = vms.get("ivsid").toString();
                 String channelcount = vms.get("channelcount").toString();
                 String vmsname = vms.get("vmsname").toString();
-                monite(domain,username,password,ivsid,channelcount,vmsname);
+                monite(domain,username,password,ivsid,channelcount,vmsname,deviceid);
             }
         }
 
