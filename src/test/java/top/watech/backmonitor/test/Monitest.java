@@ -66,7 +66,7 @@ public class Monitest {
         Page<TotalReport> pages = totalReportRepository.findAll(pageable);
         List<TotalReport> content = pages.getContent();
         for (TotalReport totalReport : content) {
-            System.out.println(totalReport);
+            System.out.println(totalReport.getSrp().getSrpName());
         }
     }
 

@@ -1,11 +1,11 @@
 package top.watech.backmonitor.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.sql.Time;
 import java.util.Date;
 
 /**
@@ -78,6 +78,7 @@ public class DetailReport {
         this.uuid = uuid;
     }
 
+    @JsonBackReference
     @JoinColumn(name = "uuid")
     @ManyToOne(fetch = FetchType.EAGER)
     public TotalReport getTotalReport() {

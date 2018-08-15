@@ -1,11 +1,12 @@
 package top.watech.backmonitor.service;
 
-import org.quartz.*;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.SimpleTrigger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import top.watech.backmonitor.repository.SrpRepository;
-
-import java.util.Date;
 
 @Component
 public class MyTask1 implements Job {
@@ -32,7 +33,7 @@ public class MyTask1 implements Job {
 //            System.out.println("quart task-当前时间："+new Date());
             String jobName = context.getTrigger().getKey().getName();
             Long srpId = Long.valueOf(jobName);
-            monitorService.monitorLogic(srpId);
+       //     monitorService.monitorLogic(srpId);
         }
         catch (Exception e){
             System.err.println(e.getMessage());
