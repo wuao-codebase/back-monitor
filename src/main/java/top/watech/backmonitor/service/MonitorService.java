@@ -19,14 +19,21 @@ import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.TotalReportRepository;
 
-import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
  * Created by fhm on 2018/7/26.
- * 1、SSO登录监控。POST，取参数，RestTemplete，判断连接，取状态码判断是否200，
- * 取tooken判断是否为null，是就往下继续走判断接口，否就返回
- * 2、SSO下接口
+ * 1、按classify取SRP所有监控项，getMonitTtemListBySrpId
+ * 2、监控流程
+ *      ①SSO登录监控。POST，取参数，RestTemplete，判断连接，取状态码判断是否200，
+ *      取tooken判断是否为null，是就往下继续走判断接口，否就返回
+ *      ②SSO下接口
+ *      ③SRP登录
+ *      ④SRP下接口登录
+ * 3、监控项结果写入数据库（详细监控报告 + 总监控报告）
+ * 4、出现异常，微信推送
  */
 @Service
 public class MonitorService {
@@ -36,12 +43,10 @@ public class MonitorService {
     MonitorItemService monitorItemService;
     @Autowired
     FanyaDevService fanyaDevService;
-
     @Autowired
-    MonitorItemRepository monitorItemRepository;
+    WeixinSendService weixinSendService;
     @Autowired
     SrpRepository srpRepository;
-
     @Autowired
     DetailReportRepository detailReportRepository;
     @Autowired
@@ -54,7 +59,7 @@ public class MonitorService {
     public static String accessToken;
 
     //成功总数
-    public static int sucCount;
+    public static int sucCount = 0;
 
     //监控项结果
     boolean code = true;   //0为失败，1为成功
@@ -88,7 +93,6 @@ public class MonitorService {
                     msg = str + e.getMessage();
                     code = false;
                     return Boolean.parseBoolean(null);
-//                    System.exit(0);
                 } else {
                     String str = "SRP登录出错！";
                     System.err.println(str);
@@ -96,7 +100,6 @@ public class MonitorService {
                     msg = str + e.getMessage();
                     code = false;
                     return Boolean.parseBoolean(null);
-//                    System.exit(0);
                 }
             }
             JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
@@ -243,14 +246,25 @@ public class MonitorService {
             //总的监控报告
             TotalReport totalReport = new TotalReport();
             totalReportRepository.save(totalReport);
+
+            //格式化时间
+            SimpleDateFormat str =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             //开始时间
-            Date startTime = new Date();
+            Date start = new Date();
+            String startTime1 = str.format(start);
+            Date startTime = null;
+            try {
+                startTime = str.parse(startTime1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             System.err.println("开始时间:" + startTime);
 
             //SRP的所有监控项（sort by classify）
             List<MonitorItem> monitorItems = monitorItemService.getMonitTtemListBySrpId(srpId);
             System.err.println("start!");
             for (MonitorItem monitorItem : monitorItems) {
+                Integer classify = monitorItem.getClassify();
                 //平台登录
                 if (monitorItem.getClassify() == 1) {
                     apiMonitor(monitorItem);
@@ -264,7 +278,7 @@ public class MonitorService {
                     detailReportRepository.save(detailReport);
                 }
                 //平台接口
-                else if (monitorItem.getClassify() == 2 && code == true) {
+                else if (monitorItem.getClassify() == 2 && accessToken != null) {
                     //视频类型的监控项
                     if (monitorItem.getMonitorType() == 2) {
                         videoMonitor(monitorItem);
@@ -298,7 +312,7 @@ public class MonitorService {
                     detailReportRepository.save(detailReport);
                 }
                 //SRP接口
-                else if (monitorItem.getClassify() == 4 && code == true) {
+                else if (monitorItem.getClassify() == 4 && token != null) {
                     //视频类型的监控项
                     if (monitorItem.getMonitorType() == 2) {
                         videoMonitor(monitorItem);
@@ -336,10 +350,21 @@ public class MonitorService {
                 detailReport.setMonitorId(42L);
                 detailReport.setTotalReport(totalReport);
                 detailReportRepository.save(detailReport);
+                FanyaDevService.devMsg = "";
+                if (FanyaDevService.totalCode){
+                    sucCount = sucCount + 1 ;
+                }
             }
 
             //结束时间
-            Date endTime = new Date();
+            Date end = new Date();
+            String endTime1 = str.format(end);
+            Date endTime = null;
+            try {
+                endTime = str.parse(endTime1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             System.err.println("结束时间:" + endTime);
 
             //总的监控报告
@@ -352,7 +377,16 @@ public class MonitorService {
             totalReport.setErrorCount(errorCount);
             totalReportRepository.saveAndFlush(totalReport);
 
+            /**
+             * 微信推送，出错才推
+             */
+            if (totalReport.getErrorCount() > 0){
+                weixinSendService.weixinSend(totalReport);
+                WeixinSendService.weixinErrmsg = "";
+            }
+
             sucCount = 0;
         }
     }
+
 }

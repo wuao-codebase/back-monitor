@@ -12,5 +12,6 @@ import java.util.List;
 public interface DetailReportService {
     List<DetailReport> getDetailReportList(Time createTime);
 
+    /*通过TotalReport的uuid获取其对应的DetailReport列表*/
     List<DetailReport> getDetailReportByUuid(String uuid);
 }
