@@ -63,7 +63,8 @@ public class TotalReportServiceImpl implements TotalReportService {
         }, PageRequest.of(pageNo-1, 15));
 
         for (TotalReport page : pages) {
-            page.setSrpName(page.getSrp().getSrpName());
+            if(page.getSrp().getSrpName()!=null){
+            page.setSrpName(page.getSrp().getSrpName());}
         }
         PageEntity pageEntity = new PageEntity();
         pageEntity.setTotal((int) pages.getTotalElements());

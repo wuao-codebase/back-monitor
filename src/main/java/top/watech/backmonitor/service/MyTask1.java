@@ -33,7 +33,7 @@ public class MyTask1 implements Job {
 //            System.out.println("quart task-当前时间："+new Date());
             String jobName = context.getTrigger().getKey().getName();
             Long srpId = Long.valueOf(jobName);
-//            monitorService.monitorLogic(srpId);
+       //     monitorService.monitorLogic(srpId);
         }
         catch (Exception e){
             System.err.println(e.getMessage());
