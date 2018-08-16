@@ -31,7 +31,7 @@ public class TotalReportServiceImpl implements TotalReportService {
         return totalReportRepository.findByStartTime(createTime);
     }
     @Override
-    public PageEntity getTOList(int pageNo,int role,TotalReport totalReport) {
+    public PageEntity getTOList(int pageNo,int role,TotalReport totalReport,Long userId) {
         Page<TotalReport> pages = totalReportRepository.findAll(new Specification<TotalReport>() {
             @Nullable
             @Override

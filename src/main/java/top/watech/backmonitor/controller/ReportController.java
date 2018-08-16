@@ -24,12 +24,12 @@ public class ReportController {
 
     /*取监控列表*/
     @PostMapping("/toatalList/{pageNo}/{role}/{userId}")
-    public RespEntity gettotalList(@RequestBody TotalReport totalReport, @PathVariable int pageNo , @PathVariable int role,Long userId) {
+    public RespEntity gettotalList(@RequestBody TotalReport totalReport, @PathVariable int pageNo , @PathVariable int role, @PathVariable Long userId) {
         System.err.println(totalReport);
         System.err.println(pageNo);
         System.err.println(role);  System.err.println(userId);
 
-      PageEntity toList = totalReportService.getTOList( pageNo, role, totalReport);
+      PageEntity toList = totalReportService.getTOList( pageNo, role, totalReport,userId);
 
         if(toList==null )
         {

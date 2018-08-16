@@ -112,7 +112,7 @@ public class TotalReport {
     }
 
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "totalReport")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "totalReport",cascade = CascadeType.REMOVE)
     public List<DetailReport> getDetailReports() {
         return detailReports;
     }
