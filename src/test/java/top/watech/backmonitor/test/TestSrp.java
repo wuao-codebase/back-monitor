@@ -191,20 +191,24 @@ public class TestSrp {
     //给SRP加所属用户
     @Test
     public void testSrpUserInsert() {
-        User u1 = userRepository.findByUserId(10000053L);
-        User u2 = userRepository.findByUserId(10000054L);
+        User u1 = userRepository.findByUserId(111L);
+//        User u2 = userRepository.findByUserId(10000054L);
 
-        SRP srpnew = srpRepository.findBySrpIdOrderBySrpId(49L);
+        SRP srpnew = srpRepository.findBySrpIdOrderBySrpId(66L);
+        SRP srpnew2 = srpRepository.findBySrpIdOrderBySrpId(65L);
 
-        srpnew.getUsers().addAll(Arrays.asList(u1, u2));
-//        srpnew.getUsers().add(u1);
+//        srpnew.getUsers().addAll(Arrays.asList(u1, u2));
+        srpnew.getUsers().add(u1);
+        srpnew2.getUsers().add(u1);
 //        srpnew.getUsers().add(u2);
         u1.getSrps().add(srpnew);
-        u2.getSrps().add(srpnew);
+        u1.getSrps().add(srpnew2);
+//        u2.getSrps().add(srpnew);
 //
-        srpRepository.save(srpnew);
-        userRepository.save(u1);
-        userRepository.save(u2);
+        srpRepository.saveAndFlush(srpnew);
+        srpRepository.saveAndFlush(srpnew2);
+        userRepository.saveAndFlush(u1);
+//        userRepository.save(u2);
     }
 
     //给SRP加所属用户
@@ -227,7 +231,7 @@ public class TestSrp {
     //给SRP减所属用户(解除关系)
     @Test
     public void testSrpUserSub3() {
-        User u1 = userRepository.findByUserId(10000054L);
+        User u1 = userRepository.findByUserId(111L);
 //        SRP srp = srpRepository.findBySrpId(48L);
         SRP srp = u1.getSrps().iterator().next();
 

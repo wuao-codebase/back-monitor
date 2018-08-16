@@ -56,7 +56,6 @@ public class FanyaDevService {
         JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
 
         token = resJsonObject.get("token").toString();
-//        return resJsonObject.get("token").toString();
     }
 
     public void testDev() {
@@ -109,7 +108,7 @@ public class FanyaDevService {
                     devInfoCode = false;
                     String s1 = "[" + devInfoJsonObject1.get("position") +
                             "]的设备:[" + devInfoJsonObject1.get("devicename") +
-                            "]:工作异常";
+                            "]:工作异常;\n";
                     String s2 = "错误信息：" + responseEntity1.getBody();
                     devMsg = devMsg + s1 ;
                     System.err.println(s1);
@@ -132,7 +131,6 @@ public class FanyaDevService {
         else {
             System.out.println("***********************************************");
             System.err.println("************设备信息获取接口工作异常***********");
-            devMsg += "";
         }
     }
 
