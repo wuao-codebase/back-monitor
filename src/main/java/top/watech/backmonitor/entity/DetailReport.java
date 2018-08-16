@@ -20,10 +20,13 @@ import java.util.Date;
 @IdClass(MonitorItemTimeMultiKey.class)
 public class DetailReport {
     private Long monitorId; //复合主键
-
+    private String monitorName;
 
     private Boolean code;   //成功、失败
     private String message; //报警信息
+
+    private String messageBody; //返回信息
+    private String pre;
 
     private Date createTime;//复合主键,数据插入时间
 
@@ -39,6 +42,15 @@ public class DetailReport {
 
     public void setMonitorId(Long monitorId) {
         this.monitorId = monitorId;
+    }
+
+    @Column(name = "monitor_name")
+    public String getMonitorName() {
+        return monitorName;
+    }
+
+    public void setMonitorName(String monitorName) {
+        this.monitorName = monitorName;
     }
 
     @Id
@@ -67,6 +79,24 @@ public class DetailReport {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    @Column(name = "msg_body")
+    public String getMessageBody() {
+        return messageBody;
+    }
+
+    public void setMessageBody(String messageBody) {
+        this.messageBody = messageBody;
+    }
+
+    @Column(length = 10)
+    public String getPre() {
+        return pre;
+    }
+
+    public void setPre(String pre) {
+        this.pre = pre;
     }
 
     @Column(name="uuid",insertable=false,updatable=false,length = 100)

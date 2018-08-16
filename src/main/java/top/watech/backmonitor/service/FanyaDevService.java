@@ -37,13 +37,14 @@ public class FanyaDevService {
     public static String token;
     public static boolean devInfoCode = true;
     public static boolean totalCode = true;
-    public static String devMsg = "";
+    public static String devMsg = "";//出错详情（出错信息 + 断言部分）
+    public static StringBuilder msgBody = new StringBuilder("") ;//返回体
     public static boolean devConn = true;
 
 
     //生成token
     public void teToken() {
-        MonitorItem fanyaLogin = monitorItemRepository.findByMonitorName("fanyaLogin");
+        MonitorItem fanyaLogin = monitorItemRepository.findByMonitorName("泛亚登录");
         String url = "http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone";
         HttpHeaders requestHeaders = new HttpHeaders();
         Map<String, Object> requestBody = new HashMap<String, Object>();
@@ -92,25 +93,28 @@ public class FanyaDevService {
 
             ResponseEntity<String> responseEntity1 = restTemplate.exchange(devUrl, HttpMethod.GET, requestEntity1, String.class);
             JSONObject respBody = JSON.parseObject(responseEntity1.getBody());
-//            System.err.println(respBody);
+
+            msgBody.append(responseEntity1.getBody());
 
             JSONArray data = (JSONArray) respBody.get("data");
             //断言数组循环判断,与监控项返回的JSON对象比对
             for (Object devInfoJsonObject : data) {
                 JSONObject devInfoJsonObject1 = (JSONObject) devInfoJsonObject;
-                if (devInfoJsonObject1.get("connected").equals(true)) {
-                    devInfoCode = true;
-                    System.err.println("[" + devInfoJsonObject1.get("position") +
-                            "]的设备:[" + devInfoJsonObject1.get("devicename") + "]:工作正常");
+                Object connectedResult = devInfoJsonObject1.get("connected");
+                if (connectedResult.equals(true)) {
+                    devInfoCode = true;// + devInfoJsonObject1.get("position") +"]的设备:["
+                    System.err.println("["+ devInfoJsonObject1.get("devicename") + "]:工作正常");
+//                    msgBody = "返回正常";
                     totalCode = totalCode & devInfoCode ;
                     devConn = devConn || devInfoCode;
                 } else {
-                    devInfoCode = false;
-                    String s1 = "[" + devInfoJsonObject1.get("position") +
-                            "]的设备:[" + devInfoJsonObject1.get("devicename") +
-                            "]:工作异常;\n";
+                    devInfoCode = false;// + devInfoJsonObject1.get("position") +"]的设备:["
+                    String s1 = "\n[" + devInfoJsonObject1.get("devicename") +
+                            "]异常：" + "connected = " + connectedResult + ";";
                     String s2 = "错误信息：" + responseEntity1.getBody();
                     devMsg = devMsg + s1 ;
+
+//                    msgBody = "connected = " + connectedResult;
                     System.err.println(s1);
                     System.err.println(s2);
                     totalCode = totalCode & devInfoCode ;
@@ -121,16 +125,17 @@ public class FanyaDevService {
         if (totalCode == true) {
             System.out.println("***********************************************");
             System.err.println("************所有设备工作正常***********");
-            devMsg = "所有设备工作正常";
+//            msgBody = "所有设备工作正常";
         }
         else if (devConn == false){
             System.out.println("***********************************************");
             System.err.println("************所有设备已掉线***********");
-            devMsg = "所有设备已掉线";
+//            msgBody = "所有设备已掉线";
         }
         else {
             System.out.println("***********************************************");
             System.err.println("************设备信息获取接口工作异常***********");
+//            devMsg = "设备信息获取接口工作异常";
         }
     }
 

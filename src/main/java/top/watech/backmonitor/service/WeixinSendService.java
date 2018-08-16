@@ -3,6 +3,7 @@ package top.watech.backmonitor.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +41,7 @@ public class WeixinSendService {
     //tooken
     public static String token;
     public static String weixinErrmsg = "";
+    public static String errorNotice = "";
 
     //微信token
     public void testToken(){
@@ -80,21 +82,38 @@ public class WeixinSendService {
         int i = 1 ;
         for (DetailReport detailReport : detailReportList){
             MonitorItem monitorItem = monitorItemRepository.findByMonitorId(detailReport.getMonitorId());
-
+            String monitorName = monitorItem.getMonitorName();
             if (!detailReport.getCode()){
-                String monitorName = monitorItem.getMonitorName();
                 String errMessage = detailReport.getMessage();
-                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + " | " + "返回结果：" + errMessage + "\n" ;
+                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + "接口,返回异常，返回结果：" + errMessage + "\n" ;
+                if (!"设备信息获取".equals(monitorName)){
+                    errorNotice = errorNotice + "\n" + monitorName + "接口异常" ;
+                }
+                else {
+                    String str = detailReport.getMessage();
+                    String[] strings = StringUtils.substringsBetween(str, "[", "]");
+//                    errorNotice = errorNotice + detailReport.getMessage() ;
+                    for (String s : strings){
+                        errorNotice = errorNotice + "\n[" + s + "]异常";
+                    }
+
+                }
+
+                i++;
+            }
+            else {
+                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + "接口,返回正常；\n" ;
                 i++;
             }
         }
 
-        String str = "【异常通知】\n\n·SRP名称：" + srp.getSrpName() + "\n" +
+        String str ="【异常通知】" + errorNotice + "\n\n【监控日志】\n·SRP名称：" + srp.getSrpName() + "\n" +
                 "·总测试项：" + monitorNum + "| " + "成功：" + sucCount + "| " + "失败：" + errorCount + "\n" +
                 "·测试开始时间：" + formatStartTime + "\n" +
-                "·测试失败监控项：" + "\n" +
+                "·各监控项状态：" + "\n" +
                 weixinErrmsg +
-                "·测试结束时间：" + formatEndTime + "\n"
+                "·测试结束时间：" + formatEndTime + "\n\n" +
+                "(详细监控信息请前往网页端查看)" + "\n"
                 ;
 
         //SRP所属用户全推送

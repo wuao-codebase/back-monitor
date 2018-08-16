@@ -15,7 +15,6 @@ import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.TotalReport;
 import top.watech.backmonitor.repository.DetailReportRepository;
-import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.TotalReportRepository;
 
@@ -63,7 +62,8 @@ public class MonitorService {
 
     //监控项结果
     boolean code = true;   //0为失败，1为成功
-    String msg;
+    String errMsg;  //工作正常  or  断言  (监控日志里用)
+    String msgBody; //接口返回体  or  e.getMessage
 
     //处理接口类型（RestTemplete）
     //取结果与断言比对，最后结果为code，成功还是失败
@@ -85,21 +85,34 @@ public class MonitorService {
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
             try {
                 responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+                msgBody = responseEntity.getBody();//取返回体
             } catch (Exception e) {
                 if (monitorItem.getClassify() == 1) {
-                    String str = "SSO登录出错！";
+                    String str = monitorItem.getMonitorName() + "接口，返回异常，返回信息：" + e.getMessage();
                     System.err.println(str);
-                    System.err.println("错误信息：" + e.getMessage());
-                    msg = str + e.getMessage();
+//                    System.err.println("错误信息：" + e.getMessage());
+                    errMsg = e.getMessage();
+                    msgBody = e.getMessage();//返回信息
+
                     code = false;
                     return Boolean.parseBoolean(null);
-                } else {
+                } else if (monitorItem.getClassify() == 3){
                     String str = "SRP登录出错！";
                     System.err.println(str);
                     System.err.println("错误信息：" + e.getMessage());
-                    msg = str + e.getMessage();
+                    errMsg = str + e.getMessage();
+
+                    msgBody = e.getMessage();//返回信息
+
                     code = false;
                     return Boolean.parseBoolean(null);
+                }
+                else {
+                    String str = monitorItem.getMonitorName() + "接口，返回异常，返回信息：" + e.getMessage();
+                    System.err.println(str);
+                    errMsg = e.getMessage();
+                    msgBody = e.getMessage();//返回信息
+                    code = false;
                 }
             }
             JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
@@ -115,12 +128,15 @@ public class MonitorService {
                         code = (code & true);//成功
                     } else {
                         code = (code & false);//失败
+                        errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey")) ;//断言，e.g. connect=false
+
                     }
                 } else {
                     if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
                         code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
                     else {
                         code &= false;
+                        errMsg = assJsonObject1.get("akey") + " = null" ;//断言，e.g. token=null
                     }
                     if (monitorItem.getClassify() == 1) {
                         accessToken = (String) resJsonObject.get(assJsonObject1.get("akey"));
@@ -147,6 +163,9 @@ public class MonitorService {
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
             try {
                 responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+
+                msgBody = responseEntity.getBody();//取返回体
+
                 JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
                 JSONArray assertsArraysJsonObject = JSON.parseArray(asserts);//传来的断言的json对象数组
 
@@ -160,31 +179,36 @@ public class MonitorService {
                             code = (code & true);//成功
                         else {
                             code = (code & false);//失败
+                            errMsg = assJsonObject1.get("akey") + " = " + revalue ;//断言，e.g. connect=false
                         }
                     } else {
                         if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
                             code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
                         else {
                             code = (code & false);
+                            errMsg = assJsonObject1.get("akey") + " = null" ;//断言，e.g. token=null
                         }
                     }
                 }
             } catch (Exception e) {
                 System.err.println("错误信息：" + e.getMessage());
-                msg = e.getMessage();
+                errMsg = e.getMessage();
+
+                msgBody = e.getMessage();//返回信息
+
                 code = false;
             }
         }
         if (code == true) {
             System.err.println(monitorItem.getMonitorName() + ":" + "工作正常");
             System.err.println("*******************************************");
-            msg = "工作正常";
+            errMsg = "";
             sucCount = sucCount + 1;
         } else {
             System.err.println(monitorItem.getMonitorName() + ":" + "工作异常");
             try {
                 System.err.println("错误信息：" + responseEntity.getBody());
-                msg = responseEntity.getBody();
+//                errMsg = responseEntity.getBody();
             } catch (Exception e) {
                 System.err.print("");
             }
@@ -200,7 +224,8 @@ public class MonitorService {
         System.err.println(monitorItem.getMonitorName() + ":" + "不知道");
         System.err.println("*******************************************");
         sucCount = sucCount + 1;
-        msg = "工作正常";
+        errMsg = "";
+        msgBody = "视频的接口返回体";
         code = true ;
     }
 
@@ -225,13 +250,19 @@ public class MonitorService {
             code = true;//成功
             System.err.println(monitorItem.getMonitorName() + ":" + "工作正常");
             System.err.println("*******************************************");
-            msg = "工作正常";
+            errMsg = "";
+
+            msgBody = responseEntity.getBody();//取返回体
+
             sucCount = sucCount + 1;
         } catch (Exception e) {
             code = false;//失败
             System.err.println(monitorItem.getMonitorName() + ":" + "工作异常");
             System.err.println("错误信息：" + e.getMessage());
-            msg = e.getMessage();
+            errMsg = e.getMessage();
+
+            msgBody = e.getMessage();//返回信息
+
             System.err.println("*******************************************");
         }
     }
@@ -272,8 +303,10 @@ public class MonitorService {
                     //详细监控报告
                     DetailReport detailReport = new DetailReport();
                     detailReport.setCode(code);
-                    detailReport.setMessage(msg);
+                    detailReport.setMessage(errMsg);
+                    detailReport.setMessageBody(msgBody);
                     detailReport.setMonitorId(monitorItem.getMonitorId());
+                    detailReport.setMonitorName(monitorItem.getMonitorName());
                     detailReport.setTotalReport(totalReport);
                     detailReportRepository.save(detailReport);
                 }
@@ -294,8 +327,10 @@ public class MonitorService {
                     //详细监控报告
                     DetailReport detailReport = new DetailReport();
                     detailReport.setCode(code);
-                    detailReport.setMessage(msg);
+                    detailReport.setMessage(errMsg);
+                    detailReport.setMessageBody(msgBody);
                     detailReport.setMonitorId(monitorItem.getMonitorId());
+                    detailReport.setMonitorName(monitorItem.getMonitorName());
                     detailReport.setTotalReport(totalReport);
                     detailReportRepository.save(detailReport);
                 }
@@ -306,8 +341,10 @@ public class MonitorService {
                     //详细监控报告
                     DetailReport detailReport = new DetailReport();
                     detailReport.setCode(code);
-                    detailReport.setMessage(msg);
+                    detailReport.setMessage(errMsg);
+                    detailReport.setMessageBody(msgBody);
                     detailReport.setMonitorId(monitorItem.getMonitorId());
+                    detailReport.setMonitorName(monitorItem.getMonitorName());
                     detailReport.setTotalReport(totalReport);
                     detailReportRepository.save(detailReport);
                 }
@@ -328,8 +365,10 @@ public class MonitorService {
                     //详细监控报告
                     DetailReport detailReport = new DetailReport();
                     detailReport.setCode(code);
-                    detailReport.setMessage(msg);
+                    detailReport.setMessage(errMsg);
+                    detailReport.setMessageBody(msgBody);
                     detailReport.setMonitorId(monitorItem.getMonitorId());
+                    detailReport.setMonitorName(monitorItem.getMonitorName());
                     detailReport.setTotalReport(totalReport);
                     detailReportRepository.save(detailReport);
                 }
@@ -347,7 +386,9 @@ public class MonitorService {
                 DetailReport detailReport = new DetailReport();
                 detailReport.setCode(FanyaDevService.totalCode);
                 detailReport.setMessage(FanyaDevService.devMsg);
+                detailReport.setMessageBody(String.valueOf(FanyaDevService.msgBody));
                 detailReport.setMonitorId(42L);
+                detailReport.setMonitorName("设备信息获取");
                 detailReport.setTotalReport(totalReport);
                 detailReportRepository.save(detailReport);
                 FanyaDevService.devMsg = "";
@@ -383,6 +424,7 @@ public class MonitorService {
             if (totalReport.getErrorCount() > 0){
                 weixinSendService.weixinSend(totalReport);
                 WeixinSendService.weixinErrmsg = "";
+                WeixinSendService.errorNotice = "";
             }
 
             sucCount = 0;
