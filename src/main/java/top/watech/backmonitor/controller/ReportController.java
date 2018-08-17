@@ -45,6 +45,7 @@ public class ReportController {
     /*取详细监控报告列表*/
     @GetMapping("/detailList/{uuid}")
     public RespEntity getdetailList(@PathVariable String uuid) {
+        System.err.println("uuid = " + uuid);
         List<DetailReport> detailReportByUuid = detailReportService.getDetailReportByUuid(uuid);
 
         if(detailReportByUuid==null )

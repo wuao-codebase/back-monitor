@@ -33,8 +33,8 @@ public class MonitorItemController {
 
 
     /*通过id获取监控项(监控项详细配置查看)*/
-    @GetMapping("/getMonitorById")
-    public RespEntity getMonitorById(@RequestParam("monitorItemId") Long monitorItemId) {
+    @GetMapping("/getMonitorById/{monitorId}")
+    public RespEntity getMonitorById(@PathVariable("monitorId") Long monitorItemId) {
         MonitorItem monitorItem = monitorItemService.getMonitorItemListById(monitorItemId);
 
         if (monitorItem != null) {
