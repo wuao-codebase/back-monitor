@@ -26,7 +26,8 @@ public class BackMonitorApplication {
         registrationBean.setFilter(new JwtFilter());
         //添加需要拦截的url
         List<String> urlPatterns = Lists.newArrayList();
-        urlPatterns.add("/user/insert");
+        urlPatterns.add("/**");
+        urlPatterns.remove("/");
         registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
         return registrationBean;
     }

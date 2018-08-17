@@ -149,5 +149,19 @@ public class Resttest {
         System.out.println("*************************************");
     }
 
+    @Test
+    public void devInfo(){
+        String url ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?userid=1";//?groupid=3&userid=1
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.add("Authorization","Bearer "+testFanYa());
+        Map<String, Object> requestBody = new HashMap<String, Object>();
+        //HttpEntity
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+        System.out.println("*************************************");
+        System.out.println(responseEntity);
+        System.out.println("*************************************");
+    }
+
 
 }

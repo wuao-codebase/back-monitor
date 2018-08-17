@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.DetailReport;
 import top.watech.backmonitor.entity.MonitorItem;
@@ -271,6 +272,7 @@ public class MonitorService {
      * SRP监控流程
      * 1、SSO登录。2、平台接口。3、SRP登录。4、SRP下接口。
      */
+    @Transactional
     public void monitorLogic(Long srpId) {
 
         synchronized (this) {
@@ -380,7 +382,7 @@ public class MonitorService {
             System.err.println("监控项成功个数：" + sucCount);
             System.err.println("*******************************************");
 
-            if (srpId == 66L) {
+            if (srpId == 66L && token!=null) {
                 fanyaDevService.testDev();
                 //详细监控报告
                 DetailReport detailReport = new DetailReport();

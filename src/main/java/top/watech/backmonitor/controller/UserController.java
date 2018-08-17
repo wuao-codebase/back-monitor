@@ -55,7 +55,7 @@ public class UserController {
                     login.getRole().toString(),
                     audience.getClientId(),
                     audience.getName(),
-                    audience.getExpiresSecond()*1000,
+                    audience.getExpiresSecond()*1000*60*20,
                     audience.getBase64Secret());
 
             String result_str = "bearer " + jwtToken;

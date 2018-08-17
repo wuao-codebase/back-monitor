@@ -39,8 +39,9 @@ public class JwtHelper {
      * 构建jwt
      */
     public static String createJWT(String name, Long userId, String role,
-                                   String audience, String issuer, long TTLMillis, String base64Security)
-    {
+                                   String audience, String issuer, long TTLMillis,
+                                   String base64Security){
+
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         long nowMillis = System.currentTimeMillis();
