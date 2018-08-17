@@ -94,8 +94,8 @@ public class SRP {
         this.cron = cron;
     }
 
-    @JsonBackReference
-    @ManyToMany(mappedBy = "srps",cascade = CascadeType.ALL,fetch = FetchType.EAGER)//,cascade=CascadeType.REFRESH
+    @JsonBackReference//,cascade = CascadeType.ALL
+    @ManyToMany(mappedBy = "srps",fetch = FetchType.EAGER)//,cascade=CascadeType.REFRESH
     public Set<User> getUsers() {
         return users;
     } public void setUsers(Set<User> users) {

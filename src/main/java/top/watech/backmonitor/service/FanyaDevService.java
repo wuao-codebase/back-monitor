@@ -94,7 +94,7 @@ public class FanyaDevService {
             ResponseEntity<String> responseEntity1 = restTemplate.exchange(devUrl, HttpMethod.GET, requestEntity1, String.class);
             JSONObject respBody = JSON.parseObject(responseEntity1.getBody());
 
-            msgBody.append(responseEntity1.getBody());
+            msgBody.append(respBody.toJSONString());//responseEntity1.getBody()
 
             JSONArray data = (JSONArray) respBody.get("data");
             //断言数组循环判断,与监控项返回的JSON对象比对
@@ -104,13 +104,25 @@ public class FanyaDevService {
                 if (connectedResult.equals(true)) {
                     devInfoCode = true;// + devInfoJsonObject1.get("position") +"]的设备:["
                     System.err.println("["+ devInfoJsonObject1.get("devicename") + "]:工作正常");
-//                    msgBody = "返回正常";
                     totalCode = totalCode & devInfoCode ;
                     devConn = devConn || devInfoCode;
                 } else {
                     devInfoCode = false;// + devInfoJsonObject1.get("position") +"]的设备:["
+                    int devStatus = (int)devInfoJsonObject1.get("status");
+                    //设备状态
+//                    String statusMsg = "";
+//                    switch (devStatus){
+//                        case 0:
+//                            statusMsg = "设备状态：未知，连线状态：离线；";
+//                        case 5:
+//                            statusMsg = "设备状态：工作中，连线状态：离线；";
+//                        case 6:
+//                            statusMsg = "设备状态：空闲，连线状态：离线；";
+//                        case 8:
+//                            statusMsg = "设备状态：停机，连线状态：离线；";
+//                    }
                     String s1 = "\n[" + devInfoJsonObject1.get("devicename") +
-                            "]异常：" + "connected = " + connectedResult + ";";
+                            "]异常-" + "设备状态：未知，连线状态：离线;" ;// + "connected = "connectedResult + ";"
                     String s2 = "错误信息：" + responseEntity1.getBody();
                     devMsg = devMsg + s1 ;
 
@@ -125,12 +137,12 @@ public class FanyaDevService {
         if (totalCode == true) {
             System.out.println("***********************************************");
             System.err.println("************所有设备工作正常***********");
-//            msgBody = "所有设备工作正常";
+//            devMsg = "所有设备工作正常";
         }
         else if (devConn == false){
             System.out.println("***********************************************");
             System.err.println("************所有设备已掉线***********");
-//            msgBody = "所有设备已掉线";
+//            devMsg = "所有设备已掉线";
         }
         else {
             System.out.println("***********************************************");
