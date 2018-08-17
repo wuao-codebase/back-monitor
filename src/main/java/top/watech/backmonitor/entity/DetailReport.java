@@ -1,6 +1,7 @@
 package top.watech.backmonitor.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -27,6 +28,7 @@ public class DetailReport {
 
     private String messageBody; //返回信息
     private String pre;
+
 
     private Date createTime;//复合主键,数据插入时间
 
@@ -56,6 +58,7 @@ public class DetailReport {
     @Id
     @Column(name = "create_time")
     @CreatedDate
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     public Date getCreateTime() {
         return createTime;
     }
