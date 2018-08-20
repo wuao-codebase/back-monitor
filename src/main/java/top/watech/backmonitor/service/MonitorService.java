@@ -3,6 +3,7 @@ package top.watech.backmonitor.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -36,6 +37,7 @@ import java.util.*;
  * 4、出现异常，微信推送
  */
 @Service
+@Slf4j
 public class MonitorService {
     @Autowired
     private RestTemplate restTemplate;
@@ -94,18 +96,17 @@ public class MonitorService {
 //                    System.err.println("错误信息：" + e.getMessage());
                     errMsg = e.getMessage();
                     msgBody = e.getMessage();//返回信息
-
                     code = false;
+                    log.error("监控SSO登录接口异常，在MonitorService的apiMonitor方法中，异常信息：",e);
                     return Boolean.parseBoolean(null);
                 } else if (monitorItem.getClassify() == 3){
                     String str = "SRP登录出错！";
                     System.err.println(str);
                     System.err.println("错误信息：" + e.getMessage());
                     errMsg = str + e.getMessage();
-
                     msgBody = e.getMessage();//返回信息
-
                     code = false;
+                    log.error("监控SRP登录接口异常，在MonitorService的apiMonitor方法中，异常信息：",e);
                     return Boolean.parseBoolean(null);
                 }
                 else {
@@ -114,6 +115,7 @@ public class MonitorService {
                     errMsg = e.getMessage();
                     msgBody = e.getMessage();//返回信息
                     code = false;
+                    log.error("监控post类型接口异常，在MonitorService的apiMonitor方法中，异常信息：",e);
                 }
             }
             JSONObject resJsonObject = JSON.parseObject(responseEntity.getBody());//接口返回内容的json对象
@@ -194,10 +196,9 @@ public class MonitorService {
             } catch (Exception e) {
                 System.err.println("错误信息：" + e.getMessage());
                 errMsg = e.getMessage();
-
                 msgBody = e.getMessage();//返回信息
-
                 code = false;
+                log.error("监控API类型接口异常，在MonitorService的apiMonitor方法中，异常信息：",e);
             }
         }
         if (code == true) {
@@ -212,7 +213,10 @@ public class MonitorService {
 //                errMsg = responseEntity.getBody();
             } catch (Exception e) {
                 System.err.print("");
+                log.error("监控API类型接口异常，在MonitorService的apiMonitor方法中，异常信息：",e);
             }
+
+
             System.err.println("*******************************************");
         }
         return code;
@@ -263,6 +267,7 @@ public class MonitorService {
             errMsg = e.getMessage();
 
             msgBody = e.getMessage();//返回信息
+            log.error("监控前端页面类型接口异常，在MonitorService的pageMonitor方法中，异常信息：",e);
 
             System.err.println("*******************************************");
         }
@@ -428,7 +433,6 @@ public class MonitorService {
                 WeixinSendService.weixinErrmsg = "";
                 WeixinSendService.errorNotice = "";
             }
-
             sucCount = 0;
         }
     }

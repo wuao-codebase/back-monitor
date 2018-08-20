@@ -3,6 +3,7 @@ package top.watech.backmonitor.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,6 +25,7 @@ import java.util.Map;
  * 取每个设备的linked，全为false则接口挂了
  * 个别设备为false则导出出错信息
  */
+@Slf4j
 @Service
 public class FanyaDevService {
     @Autowired
@@ -38,9 +40,9 @@ public class FanyaDevService {
     public static boolean devInfoCode = true;
     public static boolean totalCode = true;
     public static String devMsg = "";//出错详情（出错信息 + 断言部分）
-    public static StringBuilder msgBody = new StringBuilder("") ;//返回体
+//    public static StringBuilder msgBody = new StringBuilder("") ;//返回体
     public static boolean devConn = true;
-
+    public static JSONObject msgBody;
 
     //生成token
     public void teToken() {
@@ -59,12 +61,26 @@ public class FanyaDevService {
         token = resJsonObject.get("token").toString();
     }
 
-    public void testDev() {
-//        MonitorItem byMonitorId = monitorItemRepository.findByMonitorId(3L);
 
+    public void testDev() {
+        teToken();  //取token
+        /**
+         * 取所有设备信息
+         */
+        String url2 ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?userid=1";
+        HttpHeaders requestHeaders2 = new HttpHeaders();
+        requestHeaders2.add("Authorization","Bearer "+token);
+        Map<String, Object> requestBody2 = new HashMap<String, Object>();
+        //HttpEntity
+        HttpEntity<Map<String, Object>> requestEntity2 = new HttpEntity<Map<String, Object>>(requestBody2, requestHeaders2);
+        ResponseEntity<String> responseEntity2 = restTemplate.exchange(url2,HttpMethod.GET,requestEntity2,String.class);
+        msgBody = JSON.parseObject(responseEntity2.getBody());
+
+        /**
+         * 取逐个设备信息进行判断
+         */
         String url = "http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/group";
         HttpHeaders requestHeaders = new HttpHeaders();
-        teToken();
         requestHeaders.add("Authorization", "Bearer " + token);
 
         Map<String, Object> requestBody = new HashMap<String, Object>();
@@ -94,7 +110,7 @@ public class FanyaDevService {
             ResponseEntity<String> responseEntity1 = restTemplate.exchange(devUrl, HttpMethod.GET, requestEntity1, String.class);
             JSONObject respBody = JSON.parseObject(responseEntity1.getBody());
 
-            msgBody.append(respBody.toJSONString());//responseEntity1.getBody()
+//            msgBody.append(responseEntity1.getBody());//respBody.toJSONString()
 
             JSONArray data = (JSONArray) respBody.get("data");
             //断言数组循环判断,与监控项返回的JSON对象比对

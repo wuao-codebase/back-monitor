@@ -1,5 +1,6 @@
 package top.watech.backmonitor.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +15,15 @@ import top.watech.backmonitor.service.ScheduleTriggerService;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
+/**
+ * 定点触发定时任务（即更新cron表达式而不是更新频率值）
+ */
 
 @Service
-
+@Slf4j
 public class ScheduleTriggerServiceImpl implements ScheduleTriggerService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScheduleTriggerServiceImpl.class);
+//    private static final Logger logger = LoggerFactory.getLogger(ScheduleTriggerServiceImpl.class);
     @Autowired
     private Scheduler scheduler;
     @Autowired
@@ -73,7 +77,8 @@ public class ScheduleTriggerServiceImpl implements ScheduleTriggerService {
                 }
             }
         } catch (Exception e) {
-            logger.error("定时任务每日刷新触发器任务异常，在ScheduleTriggerServiceImpl的方法refreshTrigger中，异常信息：", e);
+//            logger.error("定时任务每日刷新触发器任务异常，在ScheduleTriggerServiceImpl的方法refreshTrigger中，异常信息：", e);
+            log.error("定时任务每日刷新触发器任务异常，在ScheduleTriggerServiceImpl的方法refreshTrigger中，异常信息：",e);
         }
     }
 }

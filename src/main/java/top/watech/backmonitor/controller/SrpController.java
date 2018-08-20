@@ -32,10 +32,6 @@ public class SrpController {
     @Autowired
     UserService userService;
     @Autowired
-    UserRepository userRepository;
-    @Autowired
-    MonitorItemService monitorItemService;
-    @Autowired
     MonitorItemRepository monitorItemRepository;
 
     /*获取SRP列表*/

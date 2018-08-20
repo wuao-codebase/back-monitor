@@ -21,7 +21,7 @@ public class VCMInfoController {
 
     /*取VCM信息列表*/
     @GetMapping("/VCMInfoList")
-    public RespEntity VCMInfoList() {
+    public RespEntity VCMInfoList() throws Exception {
         List<VCMInfo> vcmInfoList = vcmInfoService.getVCMInfoList();
         if (vcmInfoList != null) {
             return new RespEntity(RespCode.SUCCESS, vcmInfoList);

@@ -36,7 +36,7 @@ public class VCMInfoService {
     public static String accessToken;
 
     //生成accessToken
-    public void getaccessToken() {
+    public void getaccessToken() throws Exception{
         MonitorItem fanyaLogin = monitorItemRepository.findByMonitorName("SSO登录");
         String url = "http://portal-sso.wise-paas.com.cn/v1.3/auth/native";
         HttpHeaders requestHeaders = new HttpHeaders();
@@ -49,7 +49,7 @@ public class VCMInfoService {
         accessToken = resJsonObject.get("accessToken").toString();
     }
 
-    public void getVCMInfos() {
+    public void getVCMInfos() throws Exception{
         String url = "https://api-vcm-acniotsense-patac.wise-paas.com.cn/vcm/vcm?enterprise_id=3";
         HttpHeaders requestHeaders = new HttpHeaders();
         getaccessToken();
@@ -105,7 +105,7 @@ public class VCMInfoService {
     }
 
     /*取VCM信息列表*/
-    public List<VCMInfo> getVCMInfoList(){
+    public List<VCMInfo> getVCMInfoList() throws Exception {
         getVCMInfos();
         List<VCMInfo> vcmInfoList = vcmInfoRepository.findAll();
         return vcmInfoList;

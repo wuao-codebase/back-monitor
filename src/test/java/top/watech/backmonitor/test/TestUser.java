@@ -65,10 +65,10 @@ public class TestUser {
     public void testUserInsert() {
         User user = new User();
         user.setRole(1);
-        user.setPhone(18300000000L);
+        user.setPhone(18700000000L);
         user.setEmail("xxx@xx.com");
-        user.setUserName("wuao1234");
-        String usepwd = null;
+        user.setUserName("u187");
+//        String usepwd = null;
         try {
             user.setUserPwd(SecurityUtil.md5("123456"));
         } catch (NoSuchAlgorithmException e) {
