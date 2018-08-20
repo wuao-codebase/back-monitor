@@ -106,7 +106,7 @@ public class VCMInfoService {
 
     /*取VCM信息列表*/
     public List<VCMInfo> getVCMInfoList(){
-        getVCMInfos();
+//        getVCMInfos();
         List<VCMInfo> vcmInfoList = vcmInfoRepository.findAll();
         return vcmInfoList;
     }

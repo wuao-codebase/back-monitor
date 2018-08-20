@@ -42,7 +42,7 @@ public class Resttest {
 
     @Test
     public void testSSO(){
-        String url ="http://portal-sso.wise-paas.com.cn/v1.3/auth/native";
+        String url ="http://portal-sso.wise-paas.com.cn/v2.0/auth/native";
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> requestBody = new HashMap<String, Object>();
@@ -53,8 +53,8 @@ public class Resttest {
         //post
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST, requestEntity, String.class);
         System.out.println(responseEntity.getBody());
-        JSONObject parse = JSON.parseObject(responseEntity.getBody());
-        System.out.println(parse.get("accessToken").toString());
+//        JSONObject parse = JSON.parseObject(responseEntity.getBody());
+//        System.out.println(parse.get("accessToken").toString());
 //        return parse.get("accessToken").toString();
 
     }
