@@ -32,7 +32,7 @@ public class UserController {
     private Audience audience;
 
     //登录
-    @PostMapping("/user/login")
+    @PostMapping("/")
     public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
         User login = userService.Login(reqUser.getPhone());
 

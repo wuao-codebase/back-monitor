@@ -43,7 +43,7 @@ public class AVideoMmonit {
             responseEntity = restTemplate.exchange(sessionIDurl, HttpMethod.PUT, requestEntity, String.class);
 
         } catch (Exception e) {
-            msg.append("获取sessionID请求出错！\n");
+            msg.append("获取sessionID请求出错 \n");
             System.out.println("e = " + e);
             jsonBody.put("Online接口", e.getMessage());
             return null;
@@ -75,7 +75,7 @@ public class AVideoMmonit {
         try {
             responseEntity = restTemplate.exchange(LiveStreamurl, HttpMethod.PUT, requestEntity, String.class);
         } catch (Exception e) {
-            msg.append("实时LiveStream接口请求出错！\n");
+            msg.append("实时LiveStream接口请求出错 \n");
             jsonBody.put("LiveStream接口", e.getMessage());
             return null;
         }
@@ -101,7 +101,7 @@ public class AVideoMmonit {
         try {
             responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
         } catch (Exception e) {
-            msg.append("获取"+timemsg+"mpd文件接口请求出错！\n");
+            msg.append("获取"+timemsg+"mpd文件接口请求出错 \n");
             System.err.println(e.getMessage());
             System.err.println(e);
 
@@ -116,21 +116,21 @@ public class AVideoMmonit {
                 Document document = DocumentHelper.parseText(body);
                 backtempurl = dom4jList(document.getRootElement());
             } catch (DocumentException e) {
-                msg.append("解析"+timemsg+"视频地址失败！\n");
+                msg.append("解析"+timemsg+"视频地址失败 \n");
                 jsonBody.put("获取"+timemsg+"mpd文件接口", body);
                 return null;
             }
             if(backtempurl.length()>0){
-                msg.append("解析"+timemsg+"视频地址成功！\n");
+                msg.append("解析"+timemsg+"视频地址成功 \n");
                 jsonBody.put("获取"+timemsg+"mpd文件接口", body);
                 return backtempurl;
             }else {
-                msg.append("解析"+timemsg+"视频地址失败！\n");
+                msg.append("解析"+timemsg+"视频地址失败 \n");
                 jsonBody.put("获取"+timemsg+"mpd文件接口", body);
                 return null;
             }
         } else {
-            msg.append("获取"+timemsg+"mpd文件失败！\n");
+            msg.append("获取"+timemsg+"mpd文件失败 \n");
             jsonBody.put("获取"+timemsg+"mpd文件接口", body);
             return null;
         }
@@ -146,18 +146,18 @@ public class AVideoMmonit {
             responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
 
         } catch (Exception e) {
-            msg.append("获取"+timemsg+"视频接口请求出错！\n");
-            jsonBody.put("获取视频文件接口", e.getMessage());
+            msg.append("获取"+timemsg+"视频接口请求出错 \n");
+            jsonBody.put("获取"+timemsg+"视频文件接口", e.getMessage());
             code=false;
             return;
         }
         String body = responseEntity.getBody();
         if (body != null && body.length() > 100) {
-            msg.append("获取"+timemsg+"视频文件成功！\n");
-            jsonBody.put("获取视频文件接口","成功");
+            msg.append("获取"+timemsg+"视频文件成功 \n");
+            jsonBody.put("获取"+timemsg+"视频文件接口","成功");
         } else {
-            msg.append("获取"+timemsg+"视频文件失败！\n");
-            jsonBody.put("获取视频文件接口",body);
+            msg.append("获取"+timemsg+"视频文件失败 \n");
+            jsonBody.put("获取"+timemsg+"视频文件接口",body);
             code=false;
         }
     }
@@ -184,7 +184,7 @@ public class AVideoMmonit {
             responseEntity = restTemplate.exchange(LiveStreamurl, HttpMethod.PUT, requestEntity, String.class);
 
         } catch (Exception e) {
-            msg.append("历史backStream接口请求出错！\n");
+            msg.append("历史backStream接口请求出错 \n");
             jsonBody.put("backStream接口", e.getMessage());
             return null;
         }

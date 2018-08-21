@@ -9,9 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import top.watech.backmonitor.util.JwtFilter;
 
-import javax.servlet.ServletException;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @SpringBootApplication
 @EnableScheduling
@@ -30,8 +28,8 @@ public class BackMonitorApplication {
         List<String> urlPatterns = Lists.newArrayList();
 
 
-        urlPatterns.add("/*");
-        urlPatterns.add("/userList");
+//        urlPatterns.add("/*");
+        urlPatterns.add("/srp123");
 //        urlPatterns.add("/");
 //        urlPatterns.remove("/");
 //        registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
