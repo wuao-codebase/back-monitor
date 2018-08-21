@@ -21,7 +21,7 @@ import java.util.Map;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @EnableAutoConfiguration
-public class VideoMonit {
+public class VideoMonittest {
 
     @Autowired
     private RestTemplate restTemplate;

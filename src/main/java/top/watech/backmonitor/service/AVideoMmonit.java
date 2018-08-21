@@ -18,9 +18,9 @@ import java.util.Map;
  * Created by wuao.tp on 2018/8/21.
  */
 @Service
-public class VideoMmonit {
+public class AVideoMmonit {
     @Autowired
-    private RestTemplate restTemplate;
+    private  RestTemplate restTemplate;
 
     private DetailReport detailReport = new DetailReport();
     private JSONObject jsonBody= new JSONObject();
@@ -28,7 +28,6 @@ public class VideoMmonit {
     private boolean code=true;
 
     public String sessionID(String domain, String username, String password) {
-        System.out.println("sessionID");
         String sessionIDurl = domain + "/AdvStreamingService/Authority/Online";
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
@@ -45,6 +44,7 @@ public class VideoMmonit {
 
         } catch (Exception e) {
             msg.append("获取sessionID请求出错！\n");
+            System.out.println("e = " + e);
             jsonBody.put("Online接口", e.getMessage());
             return null;
         }
@@ -256,7 +256,8 @@ public class VideoMmonit {
             blacktime(domain, sessionID, IVSID, channel);}
             detailReport.setCode(code);
         detailReport.setMessage(new String(msg));
-        detailReport.setMessageBody(jsonBody.toString());
+        System.out.println(jsonBody);
+        detailReport.setMessageBody(String.valueOf(jsonBody));
         return detailReport;
     }
 }

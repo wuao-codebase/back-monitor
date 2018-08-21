@@ -46,6 +46,8 @@ public class MonitorService {
     @Autowired
     FanyaDevService fanyaDevService;
     @Autowired
+    AVideoMmonit aVideoMmonit;
+    @Autowired
     WeixinSendService weixinSendService;
     @Autowired
     SrpRepository srpRepository;
@@ -230,12 +232,16 @@ public class MonitorService {
         JSONObject params = (JSONObject) JSONObject.parse( monitorItem.getRequestBody());
         String ivsid= params.getString("ivsid");
         String channel= params.getString("channel");
-        VideoMmonit videoMmonit = new VideoMmonit();
-        DetailReport monite = videoMmonit.monite(domain, ivsid, channel);
-        sucCount = sucCount + 1;
+        System.out.println("channel = " + channel);
+        System.out.println("ivsid = " + ivsid);
+        System.out.println("domain = " + domain);
+        DetailReport monite = aVideoMmonit.monite(domain, ivsid, channel);
         errMsg = monite.getMessage();
         msgBody =monite.getMessageBody();
-        code = monite.getCode() ;
+//        code = monite.getCode() ;
+        if( monite.getCode().equals("true")){
+            sucCount = sucCount + 1;
+        }
     }
 
     //处理页面类型，最后结果是code，成功还是失败 throws RestClientException
