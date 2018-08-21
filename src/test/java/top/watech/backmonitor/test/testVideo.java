@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
+import top.watech.backmonitor.service.VideoMmonit;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -402,5 +403,11 @@ public class testVideo {
             initurl = dom4jList(e) + initurl;
         }
         return initurl;
+    }
+
+    @Test
+    public void  testes(){
+        VideoMmonit videoMmonit = new VideoMmonit();
+        videoMmonit.monite("http://i201230b25.51mypc.cn:12791","IVS-C4-00-AD-03-65-E4",String.valueOf(1));
     }
 }
