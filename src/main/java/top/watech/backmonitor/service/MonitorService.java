@@ -232,10 +232,12 @@ public class MonitorService {
         String channel= params.getString("channel");
         VideoMmonit videoMmonit = new VideoMmonit();
         DetailReport monite = videoMmonit.monite(domain, ivsid, channel);
-        sucCount = sucCount + 1;
+        code = monite.getCode() ;
         errMsg = monite.getMessage();
         msgBody =monite.getMessageBody();
-        code = monite.getCode() ;
+        if (code == true) {
+            sucCount = sucCount + 1;
+        }
     }
 
     //处理页面类型，最后结果是code，成功还是失败 throws RestClientException

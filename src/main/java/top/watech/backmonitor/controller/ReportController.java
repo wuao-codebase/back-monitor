@@ -23,7 +23,7 @@ public class ReportController {
     private DetailReportService detailReportService;
 
     /*取监控列表*/
-    @PostMapping("/toatalList/{pageNo}/{role}/{userId}")
+    @PostMapping("/filter/toatalList/{pageNo}/{role}/{userId}")
     public RespEntity gettotalList(@RequestBody TotalReport totalReport, @PathVariable int pageNo , @PathVariable int role, @PathVariable Long userId) {
         System.err.println(totalReport);
         System.err.println(pageNo);
@@ -43,7 +43,7 @@ public class ReportController {
     }
 
     /*取详细监控报告列表*/
-    @GetMapping("/detailList/{uuid}")
+    @GetMapping("/filter/detailList/{uuid}")
     public RespEntity getdetailList(@PathVariable String uuid) {
         System.err.println("uuid = " + uuid);
         List<DetailReport> detailReportByUuid = detailReportService.getDetailReportByUuid(uuid);

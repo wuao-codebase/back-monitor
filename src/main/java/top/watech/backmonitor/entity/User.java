@@ -141,8 +141,8 @@ public class User {
         this.remark = remark;
     }
 
-//    @JsonBackReferencecascade=CascadeType.ALL,
-    @ManyToMany(fetch = FetchType.EAGER)
+//    @JsonBackReferencecascade=CascadeType.ALL,(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "user_srp",
             joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "userId")},
             inverseJoinColumns = {@JoinColumn(name = "srp_id",referencedColumnName = "srpId")})

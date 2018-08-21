@@ -28,19 +28,8 @@ public class BackMonitorApplication {
         registrationBean.setFilter(new JwtFilter());
         //添加需要拦截的url
         List<String> urlPatterns = Lists.newArrayList();
-
-
-        urlPatterns.add("/*");
-        urlPatterns.add("/userList");
-//        urlPatterns.add("/");
-//        urlPatterns.remove("/");
-//        registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
+        urlPatterns.add("/filter/*");
         registrationBean.setUrlPatterns(urlPatterns);
-        registrationBean.addInitParameter("exclusions", "/user/*");
-
-//        registrationBean.addInitParameter("login", "/");
-        System.err.println(registrationBean.getInitParameters());
-        System.err.println(registrationBean.getUrlPatterns());
         return registrationBean;
 
     }

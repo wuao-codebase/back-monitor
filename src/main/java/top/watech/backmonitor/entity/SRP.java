@@ -94,16 +94,16 @@ public class SRP {
         this.cron = cron;
     }
 
-    @JsonBackReference//,cascade = CascadeType.ALL
-    @ManyToMany(mappedBy = "srps",fetch = FetchType.EAGER)//,cascade=CascadeType.REFRESH
+    @JsonBackReference//,cascade = CascadeType.ALL,fetch = FetchType.EAGER
+    @ManyToMany(mappedBy = "srps")
     public Set<User> getUsers() {
         return users;
     } public void setUsers(Set<User> users) {
         this.users = users;
     }
 
-
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade = CascadeType.REMOVE)
+    //fetch = FetchType.EAGER,
+    @OneToMany(mappedBy = "srp",cascade = CascadeType.REMOVE)
     public Set<MonitorItem> getMonitorItems() {
         return monitorItems;
     }
@@ -112,8 +112,8 @@ public class SRP {
         this.monitorItems = monitorItems;
     }
 
-
-    @OneToMany(fetch = FetchType.EAGER,mappedBy = "srp",cascade = CascadeType.REMOVE)
+    //fetch = FetchType.EAGER,
+    @OneToMany(mappedBy = "srp",cascade = CascadeType.REMOVE)
     public Set<TotalReport> getTotalReports() {
         return totalReports;
     }

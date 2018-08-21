@@ -117,7 +117,7 @@ public class MonitorItem {
 
     @JsonBackReference
     @JoinColumn(name = "srp_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne//(fetch = FetchType.EAGER)
     public SRP getSrp() {
         return srp;
     }

@@ -113,7 +113,7 @@ public class DetailReport {
 
     @JsonBackReference
     @JoinColumn(name = "uuid")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne//(fetch = FetchType.EAGER)
     public TotalReport getTotalReport() {
         return totalReport;
     }

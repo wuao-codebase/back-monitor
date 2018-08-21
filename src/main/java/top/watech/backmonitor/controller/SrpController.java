@@ -35,7 +35,7 @@ public class SrpController {
     MonitorItemRepository monitorItemRepository;
 
     /*获取SRP列表*/
-    @PostMapping ("/srpList")
+    @PostMapping ("/filter/srpList")
     public RespEntity getsrpList(@RequestBody User user) {
         if (user.getRole()==1){
             List<SRP> srpList = srpService.getsrpList();
@@ -64,7 +64,7 @@ public class SrpController {
 
     }
     /*根据srpId获取SRP*/
-    @GetMapping("/getSrpById/{srpId}")
+    @GetMapping("/filter/getSrpById")
     public RespEntity getUserById(@RequestParam("srpId") Long srpId) throws Exception {
             SRP srp = srpService.getSrpById(srpId);
         if (srp!=null){
@@ -79,7 +79,7 @@ public class SrpController {
     }
 
     /*SRP新增*/
-    @PostMapping("/srpInsert/{userIds}")
+    @PostMapping("/filter/srpInsert/{userIds}")
     public RespEntity srpInsert(@RequestBody SRP srp,@PathVariable List<Long> userIds){
         SRP srp1 = srpService.srpInsert(srp, userIds);
 
@@ -95,7 +95,7 @@ public class SrpController {
     }
 
     /*更新SRP信息*/
-    @PutMapping ("/srpUpdate")
+    @PutMapping ("/filter/srpUpdate")
     public RespEntity srpUpdate(@RequestBody SRP srp){
         SRP srp1 = srpService.srpUpdate(srp);
 
@@ -111,7 +111,7 @@ public class SrpController {
     }
 
     /*给SRP加所属用户*/
-    @PostMapping("/userAdd/{srpId}/{userIds}")
+    @PostMapping("/filter/userAdd/{srpId}/{userIds}")
     public RespEntity userAdd(@PathVariable Long srpId, @PathVariable List<Long> userIds){
         int userCount = srpService.userAdd(srpId, userIds);
         if (userCount>0){
@@ -126,7 +126,7 @@ public class SrpController {
     }
 
     /*给SRP减所属用户*/
-    @DeleteMapping ("/userSub/{srpId}/{userId}")
+    @DeleteMapping ("/filter/userSub/{srpId}/{userId}")
     public RespEntity userSub(@PathVariable Long srpId, @PathVariable Long userId){
         int userCount = srpService.userSub(srpId,userId);
         if (userCount<0){
@@ -141,7 +141,7 @@ public class SrpController {
     }
 
     /*删除一个SRP*/
-    @DeleteMapping("/delSrpById")
+    @DeleteMapping("/filter/delSrpById")
     public RespEntity deleteSrpById(@RequestParam("srpId") Long srpId){
         srpService.deleteById(srpId);
 
@@ -157,14 +157,14 @@ public class SrpController {
     }
 
     /*删除多个SRP*/
-    @DeleteMapping("/delSrpList/{srpIds}")
+    @DeleteMapping("/filter/delSrpList/{srpIds}")
     public RespEntity deleteUserlist(@PathVariable List<Long> srpIds){
         srpService.deleteSrplist(srpIds);
         return new RespEntity(RespCode.SUCCESS);
     }
 
     /*显示用户列表（给SRP加用户时选用户）*/
-    @GetMapping("/users")
+    @GetMapping("/filter/users")
     public RespEntity getAllUsers() throws Exception {
         List<User> users = srpService. getUserList();
         if(users.size()!=0){
@@ -179,7 +179,7 @@ public class SrpController {
     }
 
     /*根据srpId获取user列表*/
-    @PutMapping("/getUserBySrpId")
+    @PutMapping("/filter/getUserBySrpId")
     public RespEntity getUserBySrpId(@RequestParam("srpId") Long srpId){
         List<User> users = userService.getUserBySrpId(srpId);
 
@@ -195,7 +195,7 @@ public class SrpController {
     }
 
     /*给SRP加监控项*/
-    @PostMapping("/monitorItemAdd")
+    @PostMapping("/filter/monitorItemAdd")
     public RespEntity monitorItemAdd(@RequestBody MonitorItem monitorItem){
 //        SRP srp = srpService.monitorItemAdd(srpId, monitorItem);
         System.err.println(monitorItem);
@@ -213,7 +213,7 @@ public class SrpController {
     }
 
     /*给SRP减监控项*/
-    @DeleteMapping("/monitorItemSub")
+    @DeleteMapping("/filter/monitorItemSub")
     public RespEntity monitorItemSub(@RequestParam("monitorItemId") Long monitorItemId){
         srpService.monitorItemSub(monitorItemId);
         MonitorItem monitorItem = monitorItemRepository.findByMonitorId(monitorItemId);

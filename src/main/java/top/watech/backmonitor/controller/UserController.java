@@ -32,7 +32,7 @@ public class UserController {
     private Audience audience;
 
     //登录
-    @PostMapping("/user/login")
+    @PostMapping("/")
     public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
         User login = userService.Login(reqUser.getPhone());
 
@@ -66,7 +66,7 @@ public class UserController {
     }
 
     /*根据id取用户*/
-    @GetMapping("/getUserById")
+    @GetMapping("/filter/getUserById")
     public RespEntity getUserById(@RequestParam("userId") Long userId) throws Exception {
         User userById = userService.getUserById(userId);
         if (userById!=null){
@@ -81,7 +81,7 @@ public class UserController {
     }
 
     /*获取用户列表(admin)*/
-    @GetMapping("/userList")
+    @GetMapping("/filter/userList")
     public RespEntity getList() throws Exception {
         List<User> userList = userService.getUserList();
         if(userList.size()!=0){
@@ -97,7 +97,7 @@ public class UserController {
     }
 
     /*用户新增*/
-    @PostMapping("/userInsert")
+    @PostMapping("/filter/userInsert")
     public RespEntity userInsert(@RequestBody  ReqUser reqUser){
         User user1 = userService.userInsert(reqUser);
         if (user1!=null){
@@ -112,7 +112,7 @@ public class UserController {
     }
 
     /*更新用户信息*/
-    @PutMapping("/userUpdate")
+    @PutMapping("/filter/userUpdate")
     public RespEntity userUpdate(@RequestBody ReqUser user){
         System.err.println(user);
         User user1 = userService.userUpdate(user);
@@ -129,7 +129,7 @@ public class UserController {
     }
 
     /*更新用户密码*/
-    @PutMapping ("/updateUserpwd/{UserId}/{oldPwd}/{userPwd}")
+    @PutMapping ("/filter/updateUserpwd/{UserId}/{oldPwd}/{userPwd}")
     public RespEntity updateUserpwd(@PathVariable Long  UserId, @PathVariable String oldPwd, @PathVariable String userPwd){
         System.err.println(UserId+oldPwd+userPwd);
         User user = userService.updateUserpwd(UserId, oldPwd, userPwd);
@@ -145,14 +145,14 @@ public class UserController {
     }
 
     /*重置用户密码*/
-    @PostMapping ("/upsetUserpwd/{userId}/{userPwd}")
+    @PostMapping ("/filter/upsetUserpwd/{userId}/{userPwd}")
     public RespEntity upsetUserpwd(@PathVariable Long userId, @PathVariable String userPwd){
         User user1 = userService.upsetUserpwd(userId, userPwd);
         return new RespEntity(RespCode.SUCCESS,user1);
     }
 
     /*删除一个用户*/
-    @DeleteMapping("/delUserById")
+    @DeleteMapping("/filter/delUserById")
     public RespEntity deleteUserById(@RequestParam("userId") Long userId){
         userService.deleteById(userId);
         User user = userRepository.findByUserId(userId);
@@ -168,14 +168,14 @@ public class UserController {
     }
 
     /*删除多个用户*/
-    @DeleteMapping("/delUserList/{userIDs}")
+    @DeleteMapping("/filter/delUserList/{userIDs}")
     public RespEntity deleteUserlist(@PathVariable List<Long> userIDs){
         userService.deleteUserlist(userIDs);
         return new RespEntity(RespCode.SUCCESS);
     }
 
     /*根据srpId获取user列表*/
-    @GetMapping("/getUserBySrpId/{SRPID}")
+    @GetMapping("/filter/getUserBySrpId/{SRPID}")
     public RespEntity getUserBySrpId(@PathVariable Long SRPID){
         List<User> users = userService.getUserBySrpId(SRPID);
 
@@ -191,7 +191,7 @@ public class UserController {
     }
 
     /*判断当前手机号是否已存在（是否已有对应用户）*/
-    @GetMapping("/isPhoneRepet/{phone}")
+    @GetMapping("/filter/isPhoneRepet/{phone}")
     public RespEntity isPhoneRepet(@PathVariable Long phone){
         User user = userService.isPhoneRepet(phone);
         if (user==null){

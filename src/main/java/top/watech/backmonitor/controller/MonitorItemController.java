@@ -33,7 +33,7 @@ public class MonitorItemController {
 
 
     /*通过id获取监控项(监控项详细配置查看)*/
-    @GetMapping("/getMonitorById/{monitorId}")
+    @GetMapping("/filter/getMonitorById/{monitorId}")
     public RespEntity getMonitorById(@PathVariable("monitorId") Long monitorItemId) {
         MonitorItem monitorItem = monitorItemService.getMonitorItemListById(monitorItemId);
 
@@ -48,7 +48,7 @@ public class MonitorItemController {
     }
 
     /*根据srpId查所有监控项，并根据MonitorType排序(显示srp的监控项列表)*/
-    @GetMapping("/getMonitorsBySrpId")
+    @GetMapping("/filter/getMonitorsBySrpId")
     public RespEntity getMonitorsBySrpId(@RequestParam("srpId") Long srpId) {
         List<MonitorItem> monitTtemListBySrpId = monitorItemService.getMonitTtemListBySrpIdOrder(srpId);
 
@@ -63,7 +63,7 @@ public class MonitorItemController {
     }
 
     /*监控项新增(可能用不着，因为监控项不能在脱离SRP的情况下新增)*/
-    @PostMapping("/monitorItemInsert")
+    @PostMapping("/filter/monitorItemInsert")
     public RespEntity monitorItemInsert(@RequestBody MonitorItem monitorItem) {
 
         SRP monitorItem1 = monitorItemService.monitorItemInsert(monitorItem);
@@ -78,7 +78,7 @@ public class MonitorItemController {
     }
 
     /*更新监控项信息*/
-    @PutMapping("/monitorItemUpdate")
+    @PutMapping("/filter/monitorItemUpdate")
     public RespEntity monitorItemUpdate(@RequestBody MonitorItem monitorItem) {
         MonitorItem monitorItem1 = monitorItemService.monitorItemUpdate(monitorItem);
         if (monitorItem1 != null) {
@@ -92,7 +92,7 @@ public class MonitorItemController {
     }
 
     /*删除一个监控项（相当于给SRP减监控项那个接口）*/
-    @DeleteMapping("/deletemonitorItemById")
+    @DeleteMapping("/filter/deletemonitorItemById")
     public RespEntity deletemonitorItemById(@RequestParam("monitorItemId") Long monitorItemId) {
         monitorItemService.deleteById(monitorItemId);
         if (monitorItemRepository.findByMonitorId(monitorItemId) != null)
@@ -106,7 +106,7 @@ public class MonitorItemController {
     }
 
     /*删除多个监控项*/
-    @DeleteMapping("/delemonitorItemList/{monitorItemIds}")
+    @DeleteMapping("/filter/delemonitorItemList/{monitorItemIds}")
     public RespEntity deletemonitorItemlist(@PathVariable List<Long> monitorItemIds) {
         monitorItemService.deletemonitorItemlist(monitorItemIds);
         return new RespEntity(RespCode.SUCCESS);
