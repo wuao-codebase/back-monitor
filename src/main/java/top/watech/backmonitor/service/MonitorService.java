@@ -222,12 +222,16 @@ public class MonitorService {
     public void videoMonitor(MonitorItem monitorItem) {
         //1、测试视频相关所有接口
         //2、测试视频文件获取
-        System.err.println(monitorItem.getMonitorName() + ":" + "不知道");
-        System.err.println("*******************************************");
+        String domain =  monitorItem.getUrl();
+        JSONObject params = (JSONObject) JSONObject.parse( monitorItem.getRequestBody());
+        String ivsid= params.getString("ivsid");
+        String channel= params.getString("channel");
+        VideoMmonit videoMmonit = new VideoMmonit();
+        DetailReport monite = videoMmonit.monite(domain, ivsid, channel);
         sucCount = sucCount + 1;
-        errMsg = "";
-        msgBody = "视频的接口返回体";
-        code = true ;
+        errMsg = monite.getMessage();
+        msgBody =monite.getMessageBody();
+        code = monite.getCode() ;
     }
 
     //处理页面类型，最后结果是code，成功还是失败 throws RestClientException
@@ -351,7 +355,7 @@ public class MonitorService {
                     detailReportRepository.save(detailReport);
                 }
                 //SRP接口
-                else if (monitorItem.getClassify() == 4 && token != null) {
+                    else if (monitorItem.getClassify() == 4 && token != null) {
                     //视频类型的监控项
                     if (monitorItem.getMonitorType() == 2) {
                         videoMonitor(monitorItem);
