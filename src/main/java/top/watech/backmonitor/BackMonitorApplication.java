@@ -9,9 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import top.watech.backmonitor.util.JwtFilter;
 
-import javax.servlet.ServletException;
 import java.util.List;
-import java.util.regex.Pattern;
 
 @SpringBootApplication
 @EnableScheduling
