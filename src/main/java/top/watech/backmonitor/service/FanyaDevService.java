@@ -47,7 +47,7 @@ public class FanyaDevService {
     //生成token
     public void teToken() {
         MonitorItem fanyaLogin = monitorItemRepository.findByMonitorName("泛亚登录");
-        String url = "http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone";
+        String url = "https://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone";
         HttpHeaders requestHeaders = new HttpHeaders();
         Map<String, Object> requestBody = new HashMap<String, Object>();
         String requestBodyStr = fanyaLogin.getRequestBody();
@@ -67,7 +67,7 @@ public class FanyaDevService {
         /**
          * 取所有设备信息
          */
-        String url2 ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?userid=1";
+        String url2 ="https://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?userid=1";
         HttpHeaders requestHeaders2 = new HttpHeaders();
         requestHeaders2.add("Authorization","Bearer "+token);
         Map<String, Object> requestBody2 = new HashMap<String, Object>();
@@ -79,7 +79,7 @@ public class FanyaDevService {
         /**
          * 取逐个设备信息进行判断
          */
-        String url = "http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/group";
+        String url = "https://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/group";
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Authorization", "Bearer " + token);
 
@@ -101,7 +101,7 @@ public class FanyaDevService {
         //循环1/2/3组所有设备
         for (int i = 1; i <= 3; i++) {
             System.out.println("*************************第" + i + "组设备情况**********************");
-            String devUrl = "http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?groupid=" + i + "&userid=1";
+            String devUrl = "https://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?groupid=" + i + "&userid=1";
             HttpHeaders requestHeaders1 = new HttpHeaders();
             requestHeaders1.add("Authorization", "Bearer " + token);
             Map<String, Object> requestBody1 = new HashMap<String, Object>();

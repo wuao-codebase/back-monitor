@@ -77,4 +77,9 @@ public class JwtFilter extends GenericFilterBean {
             chain.doFilter(req, res);
         }
     }
+
+    @Override
+    protected void initFilterBean() throws ServletException {
+        super.initFilterBean();
+    }
 }

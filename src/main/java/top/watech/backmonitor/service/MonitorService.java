@@ -55,13 +55,13 @@ public class MonitorService {
     TotalReportRepository totalReportRepository;
 
     //tooken
-    public static String token;
+    public String token;
 
     //accessToken
-    public static String accessToken;
+    public String accessToken;
 
     //成功总数
-    public static int sucCount = 0;
+    public int sucCount = 0;
 
     //监控项结果
     boolean code = true;   //0为失败，1为成功

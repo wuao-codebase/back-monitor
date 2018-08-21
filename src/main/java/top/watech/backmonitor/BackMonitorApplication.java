@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import top.watech.backmonitor.util.JwtFilter;
 
+import javax.servlet.ServletException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @SpringBootApplication
 @EnableScheduling
@@ -26,9 +28,20 @@ public class BackMonitorApplication {
         registrationBean.setFilter(new JwtFilter());
         //添加需要拦截的url
         List<String> urlPatterns = Lists.newArrayList();
-        urlPatterns.add("/**");
-        urlPatterns.remove("/");
-        registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
+
+
+        urlPatterns.add("/*");
+        urlPatterns.add("/userList");
+//        urlPatterns.add("/");
+//        urlPatterns.remove("/");
+//        registrationBean.addUrlPatterns(urlPatterns.toArray(new String[urlPatterns.size()]));
+        registrationBean.setUrlPatterns(urlPatterns);
+        registrationBean.addInitParameter("exclusions", "/user/*");
+
+//        registrationBean.addInitParameter("login", "/");
+        System.err.println(registrationBean.getInitParameters());
+        System.err.println(registrationBean.getUrlPatterns());
         return registrationBean;
+
     }
 }

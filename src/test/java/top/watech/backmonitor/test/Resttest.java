@@ -42,7 +42,7 @@ public class Resttest {
 
     @Test
     public void testSSO(){
-        String url ="http://portal-sso.wise-paas.com.cn/v1.3/auth/native";
+        String url ="https://portal-sso.wise-paas.com.cn/v1.3/auth/native";
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> requestBody = new HashMap<String, Object>();
@@ -92,7 +92,7 @@ public class Resttest {
 //    }
 
     public String testFanYa(){
-        String url ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone";
+        String url ="https://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone";
         HttpHeaders requestHeaders = new HttpHeaders();
 //        requestHeaders.setContentType(MediaType.APPLICATION_JSON);
         Map<String, Object> requestBody = new HashMap<String, Object>();
@@ -110,7 +110,7 @@ public class Resttest {
 
     @Test
      public void testIndex(){
-        String url ="http://portal-pataciot-acniotsense.wise-paas.com.cn";
+        String url ="https://portal-pataciot-acniotsense.wise-paas.com.cn";
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Authorization","Bearer "+testFanYa());
         Map<String, Object> requestBody = new HashMap<String, Object>();
@@ -124,7 +124,7 @@ public class Resttest {
 
     @Test
     public void testSheBeiFenZu(){
-        String url ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/group";
+        String url ="https://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/group";
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Authorization","Bearer "+testFanYa());
         Map<String, Object> requestBody = new HashMap<String, Object>();
@@ -137,7 +137,7 @@ public class Resttest {
     }
     @Test
     public void testSheBeiXinxi(){
-        String url ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?groupid=3&userid=1";
+        String url ="https://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?groupid=3&userid=1";
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Authorization","Bearer "+testFanYa());
         Map<String, Object> requestBody = new HashMap<String, Object>();
@@ -151,7 +151,7 @@ public class Resttest {
 
     @Test
     public void devInfo(){
-        String url ="http://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?userid=1";//?groupid=3&userid=1
+        String url ="https://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/device/detail?userid=1";//?groupid=3&userid=1
         HttpHeaders requestHeaders = new HttpHeaders();
         requestHeaders.add("Authorization","Bearer "+testFanYa());
         Map<String, Object> requestBody = new HashMap<String, Object>();

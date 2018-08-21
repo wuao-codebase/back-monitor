@@ -27,7 +27,7 @@ public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
     private SrpRepository srpRepository;
 
     @Override
-    @Scheduled(cron = "0 */2 * * * ?")  //"0/50 * * * * ?"0 0 23:00 * * ?每天晚上11点调用这个方法来更新quartz中的任务
+    @Scheduled(cron = "0 */10 * * * ?")  //"0/50 * * * * ?"0 0 23:00 * * ?每天晚上11点调用这个方法来更新quartz中的任务
     @PostConstruct
     public void refreshTrigger() {
         try {
