@@ -1,6 +1,7 @@
 package top.watech.backmonitor.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.RespEntity;
@@ -37,7 +38,7 @@ public class SrpController {
     /*获取SRP列表*/
     @PostMapping ("/filter/srpList")
     public RespEntity getsrpList(@RequestBody User user) {
-        if (user.getRole()==1){
+            if (user.getRole()==1){
             List<SRP> srpList = srpService.getsrpList();
             if(srpList!=null){
                 return new RespEntity(RespCode.SUCCESS, srpList);
@@ -50,7 +51,7 @@ public class SrpController {
             }
         }
         else {
-            List<SRP> srpList = srpService.findByUserId(user.getUserId());
+            List<SRP> srpList = srpService.findSrpsByUserId(user.getUserId());
             if(srpList!=null){
                 return new RespEntity(RespCode.SUCCESS, srpList);
             }
@@ -63,6 +64,23 @@ public class SrpController {
         }
 
     }
+
+    @GetMapping ("/filter/srpList1")
+    public RespEntity getsrpList(){
+        List<SRP> srpList = srpService.getsrpList();
+
+//        srpRepository.findAll(Sort)
+        if(srpList!=null){
+            return new RespEntity(RespCode.SUCCESS, srpList);
+        }
+        else{
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("获取SRP列表失败");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
     /*根据srpId获取SRP*/
     @GetMapping("/filter/getSrpById")
     public RespEntity getUserById(@RequestParam("srpId") Long srpId) throws Exception {

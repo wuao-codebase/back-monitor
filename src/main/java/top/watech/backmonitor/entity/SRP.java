@@ -112,8 +112,8 @@ public class SRP {
         this.monitorItems = monitorItems;
     }
 
-    //fetch = FetchType.EAGER,
-    @OneToMany(mappedBy = "srp",cascade = CascadeType.REMOVE)
+    //fetch = FetchType.EAGER,,cascade = CascadeType.REMOVE
+    @OneToMany(mappedBy = "srp")
     public Set<TotalReport> getTotalReports() {
         return totalReports;
     }

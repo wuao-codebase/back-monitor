@@ -17,6 +17,7 @@ import top.watech.backmonitor.service.UserService;
 
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,11 +40,11 @@ public class SRPServiceImpl implements SRPService {
     SRPService srpService;
 
 
-
     /*获取SRP列表*/
     @Override
     public List<SRP> getsrpList() {
-        List<SRP> srpList = srpRepository.findBySrpIdGreaterThanOrderBySrpId(0L);
+//        List<SRP> srpList = srpRepository.findAllByOrderBySrpId();
+        List<SRP> srpList = srpRepository.findAllSrps();
         return srpList;
     }
 
@@ -61,6 +62,19 @@ public class SRPServiceImpl implements SRPService {
         return srpList;
     }
 
+    @Override
+    public List<SRP> findSrpsByUserId(Long userId) {
+        User user = userRepository.findByUserId(userId);
+        if (user != null) {
+            List<User> users = new ArrayList<User>(Arrays.asList(user));
+//            users.add(user);
+//            List<SRP> srpList = srpRepository.findByUsersInOrderBySrpId(users);
+            List<SRP> srpList = srpRepository.findSrpByUserId(userId);
+            return srpList;
+        }
+        return null;
+    }
+
     /*显示用户列表*/
     @Override
     public List<User> getUserList() {
@@ -69,9 +83,9 @@ public class SRPServiceImpl implements SRPService {
         for (Object[] objects : userlist) {
             User user = new User();
             user.setUserId(Long.valueOf(String.valueOf(objects[0])));
-            user.setRole((Integer)objects[2]);
+            user.setRole((Integer) objects[2]);
             user.setPhone((Long) objects[3]);
-            user.setUserPwd((String)objects[4]);
+            user.setUserPwd((String) objects[4]);
             user.setSrpnames(String.valueOf(objects[6]));
             user.setUserName(String.valueOf(objects[7]));
             users.add(user);
@@ -87,10 +101,10 @@ public class SRPServiceImpl implements SRPService {
 
     /*SRP新增*/
     @Transactional
-    public SRP srpInsert(SRP srp,List<Long> userIds){
+    public SRP srpInsert(SRP srp, List<Long> userIds) {
 
         SRP save = srpRepository.save(srp);
-        for (Long userId : userIds){
+        for (Long userId : userIds) {
             User user = userRepository.findByUserId(userId);
             srp.getUsers().add(user);
             user.getSrps().add(srp);
@@ -101,8 +115,8 @@ public class SRPServiceImpl implements SRPService {
 
     /*srp更新*/
     @Transactional
-    public SRP srpUpdate(SRP srp){
-        if(srp!=null){
+    public SRP srpUpdate(SRP srp) {
+        if (srp != null) {
             return srpRepository.saveAndFlush(srp);
         }
         return null;
@@ -114,9 +128,9 @@ public class SRPServiceImpl implements SRPService {
     public int userAdd(Long srpId, List<Long> userIds) {
         SRP srp = srpRepository.findBySrpIdOrderBySrpId(srpId);
         int oldsize = srp.getUsers().size();
-        for (Long userId : userIds){
+        for (Long userId : userIds) {
             User user = userRepository.findByUserId(userId);
-            if (!srp.getUsers().contains(user)){
+            if (!srp.getUsers().contains(user)) {
                 srp.getUsers().add(user);
                 user.getSrps().add(srp);
                 userRepository.save(user);
@@ -124,7 +138,7 @@ public class SRPServiceImpl implements SRPService {
             }
         }
         srpRepository.save(srp);
-        int addCount = srp.getUsers().size()-oldsize;
+        int addCount = srp.getUsers().size() - oldsize;
         return addCount;
     }
 
@@ -143,7 +157,7 @@ public class SRPServiceImpl implements SRPService {
         userRepository.saveAndFlush(user1);
         srpRepository.saveAndFlush(srp);
 
-        int addCount = srp.getUsers().size()-oldsize;
+        int addCount = srp.getUsers().size() - oldsize;
         return addCount;
     }
 
@@ -152,8 +166,8 @@ public class SRPServiceImpl implements SRPService {
     @Override
     public void deleteById(Long srpId) {
         SRP srp = srpRepository.findBySrpIdOrderBySrpId(srpId);
-        if (srp!=null) {
-            if (srp.getUsers()!=null) {
+        if (srp != null) {
+            if (srp.getUsers() != null) {
                 List<User> users = userService.getUserBySrpId(srpId);
                 for (User user : users) {
                     user.getSrps().remove(srp);
@@ -162,8 +176,7 @@ public class SRPServiceImpl implements SRPService {
                 srp.getUsers().clear();
                 srpRepository.save(srp);
                 srpRepository.deleteById(srpId);
-            }
-            else {
+            } else {
                 srpRepository.deleteById(srpId);
             }
         }
@@ -173,7 +186,7 @@ public class SRPServiceImpl implements SRPService {
     @Transactional
     @Override
     public void deleteSrplist(List<Long> srpIDs) {
-        for (Long srpId : srpIDs){
+        for (Long srpId : srpIDs) {
             deleteById(srpId);
         }
     }
@@ -199,14 +212,14 @@ public class SRPServiceImpl implements SRPService {
     @Transactional
     @Override
     public void monitorItemSub(Long monitorItemId) {
-        if (monitorItemRepository.findByMonitorId(monitorItemId)!=null)
+        if (monitorItemRepository.findByMonitorId(monitorItemId) != null)
             monitorItemRepository.deleteById(monitorItemId);
     }
 
     /*给SRP删除多个监控项*/
     @Override
     public void monitorItemListSub(List<Long> monitorItemIds) {
-        for (Long monitorId : monitorItemIds){
+        for (Long monitorId : monitorItemIds) {
             monitorItemSub(monitorId);
         }
     }

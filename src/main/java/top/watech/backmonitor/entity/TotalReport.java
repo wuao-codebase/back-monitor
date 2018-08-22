@@ -102,7 +102,7 @@ public class TotalReport {
 
     @JsonBackReference
     @JoinColumn(name = "srp_id")
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne//(fetch = FetchType.EAGER)
     public SRP getSrp() {
         return srp;
     }
@@ -111,8 +111,8 @@ public class TotalReport {
         this.srp = srp;
     }
 
-    //
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "totalReport",cascade = CascadeType.REMOVE)
+    //,cascade = CascadeType.REMOVE
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "totalReport")
     public List<DetailReport> getDetailReports() {
         return detailReports;
     }
