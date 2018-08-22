@@ -24,4 +24,6 @@ public interface DetailReportRepository extends JpaRepository<DetailReport,Monit
 
     // 根据monitorId和监控执行开始时间，找出所有的DetailReport
     List<DetailReport> findByMonitorIdAndCreateTime(Long monitorId, Time createTime);
+
+    List<DetailReport> findByUuidOrderByCreateTime(String uuid);
 }

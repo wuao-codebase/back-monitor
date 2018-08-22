@@ -251,9 +251,10 @@ public class MonitorService {
 
         errMsg = monite.getMessage();
         msgBody = monite.getMessageBody();
-        code = monite.getCode() ;
-        if (monite.getCode().equals("true")) {
-            sucCount = sucCount + 1;
+        if (monite.getCode()) {
+                    sucCount = sucCount + 1;
+        }else {
+            code=false;
         }
     }
 

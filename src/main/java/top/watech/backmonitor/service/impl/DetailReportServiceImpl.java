@@ -26,7 +26,7 @@ public class DetailReportServiceImpl implements DetailReportService {
 
     @Override
     public List<DetailReport> getDetailReportByUuid(String uuid) {
-        List<DetailReport> byUuid = detailReportRepository.findByUuid(uuid);
+        List<DetailReport> byUuid = detailReportRepository.findByUuidOrderByCreateTime(uuid);
         return byUuid;
     }
 

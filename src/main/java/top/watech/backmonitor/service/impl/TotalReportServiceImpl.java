@@ -3,6 +3,7 @@ package top.watech.backmonitor.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -44,6 +45,7 @@ public class TotalReportServiceImpl implements TotalReportService {
     //总监控列表（按所属用户显示）
     @Override
     public PageEntity getTOList(int pageNo, int role, TotalReport totalReport, Long userId) {
+        Sort sort = new Sort(Sort.Direction.DESC, "startTime");
         if (role == 1) {
             Page<TotalReport> pages = totalReportRepository.findAll(new Specification<TotalReport>() {
                 @Nullable
@@ -73,7 +75,7 @@ public class TotalReportServiceImpl implements TotalReportService {
                     Predicate[] pre = new Predicate[predicate.size()];
                     return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
                 }
-            }, PageRequest.of(pageNo - 1, 15));
+            }, PageRequest.of(pageNo - 1, 15,sort));
             for (TotalReport page : pages) {
                 if (page.getSrp().getSrpName() != null) {
                     page.setSrpName(page.getSrp().getSrpName());
@@ -123,7 +125,7 @@ public class TotalReportServiceImpl implements TotalReportService {
                         Predicate[] pre = new Predicate[predicate.size()];
                         return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
                     }
-                }, PageRequest.of(pageNo - 1, 15));
+                }, PageRequest.of(pageNo - 1, 15,sort));
                 for (TotalReport page : pages) {
                     if (page.getSrp().getSrpName() != null) {
                         page.setSrpName(page.getSrp().getSrpName());
