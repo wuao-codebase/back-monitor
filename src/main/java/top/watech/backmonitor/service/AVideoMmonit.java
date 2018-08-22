@@ -44,12 +44,14 @@ public class AVideoMmonit {
 
         } catch (Exception e) {
             msg.append("获取sessionID请求出错 \n");
-            System.out.println("e = " + e);
             jsonBody.put("Online接口", e.getMessage());
             return null;
         }
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
-        if (parse.getString("result").length()>0 &&  parse.getJSONObject("result").getString("SessionID").length()>0) {
+        if (parse.containsKey("result")&& parse.getString("result").length()>0
+                &&parse.getJSONObject("result").containsKey("SessionID")
+                && parse.getJSONObject("result").getString("SessionID").length()>0
+        ) {
             msg.append("获取sessionID成功\n");
             jsonBody.put("Online接口", parse);
             return  parse.getJSONObject("result").getString("SessionID");
@@ -80,7 +82,9 @@ public class AVideoMmonit {
             return null;
         }
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
-        if (parse.getString("result").length()>0 &&  parse.getJSONObject("result").getString("mpd").length()>0) {
+        if (parse.containsKey("result")&& parse.getString("result").length()>0
+                &&parse.getJSONObject("result").containsKey("mpd")
+                && parse.getJSONObject("result").getString("mpd").length()>0) {
             msg.append("获取实时MPD地址成功\n");
             jsonBody.put("LiveStream接口", parse);
             return  parse.getJSONObject("result").getString("mpd");
@@ -108,7 +112,6 @@ public class AVideoMmonit {
             jsonBody.put("获取mpd文件接口", String.valueOf(e.getMessage()));
             return null;
         }
-        //post
         String body = responseEntity.getBody();
         if (body != null) {
             String backtempurl = "";
@@ -189,7 +192,10 @@ public class AVideoMmonit {
             return null;
         }
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
-        if (parse.getString("result").length()>0 &&  parse.getJSONObject("result").getString("mpd").length()>0) {
+        if (parse.containsKey("result")&& parse.getString("result").length()>0
+                &&parse.getJSONObject("result").containsKey("mpd")
+                && parse.getJSONObject("result").getString("mpd").length()>0
+           ) {
             msg.append("获取历史MPD地址成功\n");
             jsonBody.put("backStream接口", parse);
             return  parse.getJSONObject("result").getString("mpd");
@@ -249,15 +255,19 @@ public class AVideoMmonit {
     }
 
     public DetailReport monite(String domain, String IVSID, String channel) {
-        System.out.println("monite");
         String sessionID = sessionID(domain, "admin", "1234");
         if (sessionID != null) {
             newtime(domain, sessionID, IVSID, channel);
-            blacktime(domain, sessionID, IVSID, channel);}
+            blacktime(domain, sessionID, IVSID, channel);}else {
+            code=false;
+        }
             detailReport.setCode(code);
-        detailReport.setMessage(new String(msg));
-        System.out.println(jsonBody);
+        String tempstring = new String(msg);
+        detailReport.setMessage(tempstring);
         detailReport.setMessageBody(String.valueOf(jsonBody));
+        msg.setLength(0);
+        code=true;
+        jsonBody=new JSONObject();
         return detailReport;
     }
 }

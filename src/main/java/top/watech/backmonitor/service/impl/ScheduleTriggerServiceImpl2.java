@@ -53,8 +53,8 @@ public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
                             SimpleScheduleBuilder simpleScheduleBuilder
                                     = SimpleScheduleBuilder
                                     .simpleSchedule()
-//                                    .withIntervalInMinutes(freq)
-                                    .withIntervalInSeconds(freq)
+                                    .withIntervalInMinutes(freq)
+//                                    .withIntervalInSeconds(freq)
                                     .repeatForever();
                             trigger = TriggerBuilder.newTrigger()
                                     .withIdentity(srpId)
@@ -79,8 +79,8 @@ public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
                                 SimpleScheduleBuilder simpleScheduleBuilder
                                         = SimpleScheduleBuilder
                                         .simpleSchedule()
-//                                        .withIntervalInMinutes(freq)
-                                        .withIntervalInSeconds(freq)
+                                       .withIntervalInMinutes(freq)
+//                                        .withIntervalInSeconds(freq)
                                         .repeatForever();
                                 trigger = trigger.getTriggerBuilder().withIdentity(triggerKey)
                                         .withSchedule(simpleScheduleBuilder).build();
