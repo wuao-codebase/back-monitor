@@ -31,4 +31,19 @@ public class BackMonitorApplication {
         return registrationBean;
 
     }
+
+//    @Configuration
+//    public class SpringWebMvcConfig extends WebMvcConfigurerAdapter {
+//        @Override
+//        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//            registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
+//            super.addResourceHandlers(registry);
+//        }
+//        @Override
+//        public void addViewControllers(ViewControllerRegistry registry) {
+//            registry.addViewController("/").setViewName("forward:/index.html");
+//            registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+//            super.addViewControllers(registry);
+//        }
+//    }
 }

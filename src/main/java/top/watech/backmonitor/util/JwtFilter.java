@@ -48,12 +48,7 @@ public class JwtFilter extends GenericFilterBean {
         final HttpServletResponse response = (HttpServletResponse) res;
         //等到请求头信息authorization信息
         final String authHeader = request.getHeader("Authentication-Token");
-        String currentURL = request.getRequestURI();
-        // 取得根目录所对应的绝对路径:
-        String targetURL = currentURL.substring(currentURL.indexOf("/", 1),
-                currentURL.length());
 
-        System.err.println(targetURL);
         if ("OPTIONS".equals(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             chain.doFilter(req, res);
