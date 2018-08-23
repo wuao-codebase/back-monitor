@@ -44,8 +44,18 @@ public class SRPServiceImpl implements SRPService {
     @Override
     public List<SRP> getsrpList() {
 //        List<SRP> srpList = srpRepository.findAllByOrderBySrpId();
-        List<SRP> srpList = srpRepository.findAllSrps();
-        return srpList;
+        List<SRP> srps = new ArrayList<>();
+        List<Object[]> srpList = srpRepository.findAllSrps();
+        for (Object[] o :srpList){
+            SRP srp = new SRP();
+            srp.setSrpId((Long) o[0]);
+            srp.setSrpName((String) o[1]);
+            srp.setDescription((String) o[2]);
+            srp.setFreq((Double) o[3]);
+            srp.setSwitchs((Boolean) o[4]);
+            srps.add(srp);
+        }
+        return srps;
     }
 
     //根据userId获取SRP列表, Sort sort

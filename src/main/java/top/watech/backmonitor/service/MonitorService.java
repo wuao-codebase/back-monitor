@@ -88,9 +88,11 @@ public class MonitorService {
         if (requestType == 1) {
             requestBody = (Map) JSON.parse(requestBodyStr);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+            String body = null;
             try {
                 responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
                 msgBody = responseEntity.getBody();//取返回体
+                body = responseEntity.getBody();
             } catch (Exception e) {
                 if (monitorItem.getClassify() == 1) {
                     String str = monitorItem.getMonitorName() + "接口，返回异常，返回信息：" + e.getMessage();
@@ -120,7 +122,7 @@ public class MonitorService {
                 }
             }
 
-            String body = responseEntity.getBody();
+
             if (body != null) {
                 JSONObject resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
                 if (asserts != null) {
