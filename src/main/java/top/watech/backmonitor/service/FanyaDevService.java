@@ -46,12 +46,12 @@ public class FanyaDevService {
 
     //生成token
     public void teToken() {
-        MonitorItem fanyaLogin = monitorItemRepository.findByMonitorName("泛亚登录登录");
         String url = "https://api-pataciot-acniotsense.wise-paas.com.cn/api/v1.0/authentication/login/phone";
         HttpHeaders requestHeaders = new HttpHeaders();
         Map<String, Object> requestBody = new HashMap<String, Object>();
-        String requestBodyStr = fanyaLogin.getRequestBody();
-        requestBody = (Map) JSON.parse(requestBodyStr);
+        requestBody.put("password", "123456");
+        requestBody.put("phone","13900000000");
+        requestBody.put("tokenTs", 20160);
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         String body = null;
         try {

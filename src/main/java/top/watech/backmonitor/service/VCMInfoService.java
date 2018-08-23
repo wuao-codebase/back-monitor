@@ -41,12 +41,11 @@ public class VCMInfoService {
 
     //生成accessToken
     public void getaccessToken() {
-        MonitorItem fanyaLogin = monitorItemRepository.findByMonitorName("SSO登录");
         String url = "https://portal-sso.wise-paas.com.cn/v1.3/auth/native";
         HttpHeaders requestHeaders = new HttpHeaders();
         Map<String, Object> requestBody = new HashMap<String, Object>();
-        String requestBodyStr = fanyaLogin.getRequestBody();
-        requestBody = (Map) JSON.parse(requestBodyStr);
+        requestBody.put("username","pataciot@aliyun.com");
+        requestBody.put("password", "P@ssw0rd");
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         String body = null;
         try {
