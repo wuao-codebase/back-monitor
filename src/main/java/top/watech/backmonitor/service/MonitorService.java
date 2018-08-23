@@ -176,8 +176,12 @@ public class MonitorService {
             }
 
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+            String body = null;
             try {
                 responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+                body = responseEntity.getBody();
+                msgBody = responseEntity.getBody();//取返回体
+
             } catch (Exception e) {
                 System.err.println("错误信息：" + e.getMessage());
                 errMsg = e.getMessage();
@@ -185,8 +189,8 @@ public class MonitorService {
                 code = false;
                 log.error("监控API类型接口异常，在MonitorService的apiMonitor方法中，异常信息：", e);
             }
-            msgBody = responseEntity.getBody();//取返回体
-            if (msgBody != null) {
+
+            if (body != null) {
                 JSONObject resJsonObject = JSON.parseObject(msgBody);//接口返回内容的json对象
                 if (asserts != null) {
                     JSONArray assertsArraysJsonObject = JSON.parseArray(asserts);//传来的断言的json对象数组

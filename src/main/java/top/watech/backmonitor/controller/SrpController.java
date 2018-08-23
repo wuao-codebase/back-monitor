@@ -51,7 +51,7 @@ public class SrpController {
             }
         }
         else {
-            List<SRP> srpList = srpService.findSrpsByUserId(user.getUserId());
+            List<SRP> srpList = srpService.findByUserId(user.getUserId());
             if(srpList!=null){
                 return new RespEntity(RespCode.SUCCESS, srpList);
             }
