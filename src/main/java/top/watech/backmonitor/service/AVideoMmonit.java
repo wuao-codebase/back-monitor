@@ -43,7 +43,7 @@ public class AVideoMmonit {
             responseEntity = restTemplate.exchange(sessionIDurl, HttpMethod.PUT, requestEntity, String.class);
 
         } catch (Exception e) {
-            msg.append("获取sessionID请求出错 \n");
+            msg.append("获取sessionID请求出错\n");
             jsonBody.put("Online接口", e.getMessage());
             return null;
         }
