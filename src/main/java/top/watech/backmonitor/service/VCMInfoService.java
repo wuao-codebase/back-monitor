@@ -11,7 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import top.watech.backmonitor.entity.MonitorItem;
 import top.watech.backmonitor.entity.VCMInfo;
 import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.VCMInfoRepository;
@@ -65,7 +64,7 @@ public class VCMInfoService {
     }
 
     public List<VCMInfo> getVCMInfos() throws Exception {
-        String url = "https://api-vcm-acniotsense-patac.wise-paas.com.cn/vcm/vcm?enterprise_id=3x";
+        String url = "https://api-vcm-acniotsense-patac.wise-paas.com.cn/vcm/vcm?enterprise_id=3";
         HttpHeaders requestHeaders = new HttpHeaders();
         getaccessToken();
         requestHeaders.add("Authorization", "Bearer " + accessToken);
@@ -81,8 +80,13 @@ public class VCMInfoService {
             log.error("VCM接口取信息异常，在VCMInfoService的getVCMInfos方法中，错误信息：" + e);
         }
         if (body != null){
-            JSONObject resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
-            System.err.println(resJsonObject);
+            JSONObject resJsonObject = null;
+            try {
+                resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
+                System.err.println(resJsonObject);
+            }catch (Exception e){
+                log.error("VCMInfoService的getVCMInfos()中json格式数据转换异常");
+            }
             /**
              * 这里取到的resJsonObject对象，先取dashinfo中的内容get("dashinfo")
              * 再将dashinfo转成json数组.然后循环这个数组中的所有json对象
@@ -90,40 +94,42 @@ public class VCMInfoService {
              * 还有vmsinfo,它也是转json数组,然后再循环数组，对每个json对象取vmsname，ivsid,vcmid
              * 最后全存入数据库
              */
-
-            //表清空
-            if (vcmInfoRepository.findAll() != null) {
-                vcmInfoRepository.deleteAll();
-            }
-
-            JSONArray dashinfo = (JSONArray) resJsonObject.get("dashinfo");//dashinfo的json数组
-            for (Object dashObj : dashinfo) {
-                JSONObject dashJsonObj = (JSONObject) dashObj;
-                String password = (String) dashJsonObj.get("password");
-                String domain = (String) dashJsonObj.get("domain");
-                String apiport = (String) dashJsonObj.get("apiport");
-                String username = (String) dashJsonObj.get("username");
-
-                JSONArray vmsinfo = (JSONArray) dashJsonObj.get("vmsinfo");//对象转json数组
-                String vmsname = "";
-                String ivsid = "";
-                String vcmid = "";
-                for (Object vmsObj : vmsinfo) {
-                    JSONObject vmsJsonObj = (JSONObject) vmsObj;
-                    vmsname = (String) vmsJsonObj.get("vmsname");
-                    ivsid = (String) vmsJsonObj.get("ivsid");
-                    vcmid = (String) vmsJsonObj.get("vcmid");
+            if (resJsonObject != null){
+                //表清空
+                if (vcmInfoRepository.findAll() != null) {
+                    vcmInfoRepository.deleteAll();
                 }
+                JSONArray dashinfo = (JSONArray) resJsonObject.get("dashinfo");//dashinfo的json数组
+                for (Object dashObj : dashinfo) {
+                    JSONObject dashJsonObj = (JSONObject) dashObj;
+                    String password = (String) dashJsonObj.get("password");
+                    String domain = (String) dashJsonObj.get("domain");
+                    String apiport = (String) dashJsonObj.get("apiport");
+                    String username = (String) dashJsonObj.get("username");
 
-                VCMInfo vcmInfo = new VCMInfo();
-                vcmInfo.setPassword(password);
-                vcmInfo.setDomain(domain);
-                vcmInfo.setApiport(apiport);
-                vcmInfo.setUsername(username);
-                vcmInfo.setVmsname(vmsname);
-                vcmInfo.setIvsid(ivsid);
-                vcmInfo.setVcmid(vcmid);
-                vcmInfoRepository.save(vcmInfo);
+                    JSONArray vmsinfo = (JSONArray) dashJsonObj.get("vmsinfo");//对象转json数组
+                    String vmsname = "";
+                    String ivsid = "";
+                    String vcmid = "";
+                    for (Object vmsObj : vmsinfo) {
+                        JSONObject vmsJsonObj = (JSONObject) vmsObj;
+                        vmsname = (String) vmsJsonObj.get("vmsname");
+                        ivsid = (String) vmsJsonObj.get("ivsid");
+                        vcmid = (String) vmsJsonObj.get("vcmid");
+                    }
+                    VCMInfo vcmInfo = new VCMInfo();
+                    vcmInfo.setPassword(password);
+                    vcmInfo.setDomain(domain);
+                    vcmInfo.setApiport(apiport);
+                    vcmInfo.setUsername(username);
+                    vcmInfo.setVmsname(vmsname);
+                    vcmInfo.setIvsid(ivsid);
+                    vcmInfo.setVcmid(vcmid);
+                    vcmInfoRepository.save(vcmInfo);
+                }
+            }
+            else {
+                log.error("接口返回数据非json格式");
             }
             return vcmInfoRepository.findAll();
         }
