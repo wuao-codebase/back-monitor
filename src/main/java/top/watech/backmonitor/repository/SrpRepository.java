@@ -15,29 +15,14 @@ import java.util.List;
  */
 public interface SrpRepository extends JpaRepository<SRP,Long> ,JpaSpecificationExecutor<SRP>{
 
-    //根据srpId和userName获取srp
-//    SRP findSRPBySrpIdAndUserName();
-
     //根据userId获取srp列表
-//    List<SRP> findSRPSByuserId(Long userId);
-    List<SRP> findByUsersInOrderBySrpId(List<User> users);
-
-    @Query(nativeQuery = true,value = "s.srp_id,s.srp_name,s.description,s.freq,s.switchs from srps s LEFT JOIN user_srp us ON s.srp_id=:?")// ORDER BY s.srp_id DESC
-    List<SRP> findSrpByUserId(Long userId);
+    @Query(value = "select srps.srp_id,srps.srp_name,srps.description,srps.freq,srps.switchs FROM srps left join user_srp on srps.srp_id = user_srp.srp_id order by srp_id", nativeQuery = true)
+    List<Object[]> findSrpByUserId(Long userId);
 
     //获取所有SRP，并根据id排序
-//    List<SRP> findSRPBySrpIdExistsOrderBySrpId();
-//    List<SRP> findBySrpIdGreaterThanOrderBySrpId(Long min);
-//    List<SRP> findAllByOrderBySrpId();
-
     @Query(value = "select srpId,srpName,description,freq,switchs from SRP order by srpId")
     List<Object[]> findAllSrps();
-
-//    @Query(nativeQuery = true, value = "select DISTINCT v.id,v.title,v.count,case when vu.user_id is null then 'false' else 'true' end as flag " +
-//            "from table1 v left join table2 vu on v.id = vu.vote_id and vu.user_id=:user order by v.id desc")
-
-
-//    findBySalaryGreaterThan(int min)
+//    List<SRP> findAllByOrderBySrpId();
 
     /*根据id获取srp*/
     SRP findBySrpIdOrderBySrpId(Long srpId);
@@ -47,9 +32,6 @@ public interface SrpRepository extends JpaRepository<SRP,Long> ,JpaSpecification
     @Modifying
     @Query(value = "delete from SRP s where s.srpId = :srpId ")
     int deleteBySrpId(Long srpId);
-
-
-//    void deleteById(Long aLong);
 
     @Override
     void delete(SRP srp);
@@ -62,4 +44,6 @@ public interface SrpRepository extends JpaRepository<SRP,Long> ,JpaSpecification
 //    @Query("UPDATE User u SET u.email = :email WHERE userId = :userId")
 //    void updateUserEmail(@Param("userId") Long id, @Param("email") String email);
 
+    //根据srpId和userName获取srp
+//    SRP findSRPBySrpIdAndUserName();
 }

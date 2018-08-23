@@ -34,11 +34,6 @@ public class SRPServiceImpl implements SRPService {
     UserRepository userRepository;
     @Autowired
     MonitorItemRepository monitorItemRepository;
-    @Autowired
-    MonitorItemService monitorItemService;
-    @Autowired
-    SRPService srpService;
-
 
     /*获取SRP列表*/
     @Override
@@ -46,7 +41,7 @@ public class SRPServiceImpl implements SRPService {
 //        List<SRP> srpList = srpRepository.findAllByOrderBySrpId();
         List<SRP> srps = new ArrayList<>();
         List<Object[]> srpList = srpRepository.findAllSrps();
-        for (Object[] o :srpList){
+        for (Object[] o : srpList) {
             SRP srp = new SRP();
             srp.setSrpId((Long) o[0]);
             srp.setSrpName((String) o[1]);
@@ -58,31 +53,32 @@ public class SRPServiceImpl implements SRPService {
         return srps;
     }
 
-    //根据userId获取SRP列表, Sort sort
+    //根据userId获取SRP列表
+    @Override
+    public List<SRP> findSrpsByUserId(Long userId) {
+        List<Object[]> srpList = srpRepository.findSrpByUserId(userId);
+        List<SRP> srpList1 = new ArrayList<>();
+        for (Object[] o : srpList) {
+            SRP srp = new SRP();
+            srp.setSrpId(Long.valueOf(String.valueOf(o[0])));
+            srp.setSrpName((String) o[1]);
+            srp.setDescription((String) o[2]);
+            srp.setFreq((Double) o[3]);
+            srp.setSwitchs((Boolean) o[4]);
+            srpList1.add(srp);
+        }
+        return srpList1;
+    }
+
     @Override
     public List<SRP> findByUserId(Long userId) {
         List<SRP> srpList = srpRepository.findAll(new Specification<SRP>() {
             public Predicate toPredicate(Root<SRP> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Join<SRP, User> userJoin = root.join("users", JoinType.LEFT);
-//                cb.gt(root.get("srpId").as(Long.class), srpId);
-//                query.orderBy(cb.desc(root.get("srpId").as(Long.class)));
                 return cb.equal(userJoin.get("userId"), userId);
             }
         });
         return srpList;
-    }
-
-    @Override
-    public List<SRP> findSrpsByUserId(Long userId) {
-        User user = userRepository.findByUserId(userId);
-        if (user != null) {
-            List<User> users = new ArrayList<User>(Arrays.asList(user));
-//            users.add(user);
-//            List<SRP> srpList = srpRepository.findByUsersInOrderBySrpId(users);
-            List<SRP> srpList = srpRepository.findSrpByUserId(userId);
-            return srpList;
-        }
-        return null;
     }
 
     /*显示用户列表*/
@@ -120,6 +116,7 @@ public class SRPServiceImpl implements SRPService {
             user.getSrps().add(srp);
             userRepository.saveAndFlush(user);
         }
+
         return save;
     }
 

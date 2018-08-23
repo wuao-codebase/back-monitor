@@ -2,6 +2,7 @@ package top.watech.backmonitor.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -25,6 +26,7 @@ import java.util.*;
  * 取每个设备的linked，全为false则接口挂了
  * 个别设备为false则导出出错信息
  */
+@Slf4j
 @Service
 public class WeixinSendService {
     @Autowired
@@ -50,12 +52,21 @@ public class WeixinSendService {
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
 
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
-        JSONObject parse = JSON.parseObject(responseEntity.getBody());
-        System.out.println("*************************************");
-        System.err.println(parse.get("access_token"));
-        System.out.println("*************************************");
-        token = parse.get("access_token").toString();
+        String body = null;
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+            body = responseEntity.getBody();
+        }
+        catch (Exception e){
+            log.error("请求微信接口取token出错，出错信息：",e);
+        }
+        if (body != null){
+            JSONObject parse = JSON.parseObject(body);
+            token = parse.get("access_token").toString();
+        }
+        else {
+            log.error("请求微信接口取token出错,返回体为空");
+        }
     }
 
     public void weixinSend(TotalReport totalReport) {
@@ -90,13 +101,14 @@ public class WeixinSendService {
             }
             if (!detailReport.getCode()){
                 String errMessage = detailReport.getMessage();
-                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType+",返回异常，返回结果：" + errMessage + "\n" ;
+                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType + ",返回异常，返回结果：" + errMessage + "\n" ;
                 if (!"设备信息获取".equals(monitorName)){
+
                     if (monitorItem.getClassify() == 1 || monitorItem.getClassify() == 3){
-                        errorNotice = errorNotice + "\n" + monitorName + "接口异常(注：其下所属全部监控项监控失败！)" ;
+                        errorNotice = errorNotice + "\n" + monitorName + monutorType + "异常(注：其下所属全部监控项监控失败！)" ;
                     }
                     else {
-                        errorNotice = errorNotice + "\n" + monitorName + "接口异常" ;
+                        errorNotice = errorNotice + "\n" + monitorName + monutorType + "异常" ;
                     }
                 }
                 else {
@@ -106,9 +118,7 @@ public class WeixinSendService {
                     for (String s : strings){
                         errorNotice = errorNotice + "\n[" + s + "]异常";
                     }
-
                 }
-
                 i++;
             }
             else {
@@ -149,7 +159,6 @@ public class WeixinSendService {
         s.deleteCharAt(s.length()-1);
         System.err.println(s);
 
-
         msg.put("content",str);
         JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(msg));
 //        requestBody.put("touser","111|WuAo");
@@ -158,17 +167,13 @@ public class WeixinSendService {
         requestBody.put("agentid",1000002);
         requestBody.put("text", itemJSONObj);
         requestBody.put("safe", 0);
-
-
-        //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-
-        ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST,requestEntity,String.class);
-        System.err.println("*************************************");
-        System.err.println(responseEntity);
-        System.err.println("*************************************");
-
-
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST,requestEntity,String.class);
+            log.info("微信消息推送接口返回体：",responseEntity.getBody());
+        }catch (Exception e){
+            log.error("请求微信接口推送消息出错，出错信息：",e);
+        }
     }
 
 

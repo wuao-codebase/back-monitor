@@ -16,10 +16,6 @@ import top.watech.backmonitor.service.SRPService;
 import top.watech.backmonitor.service.UserService;
 
 import java.util.List;
-
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-
 /**
  * Created by fhm on 2018/7/19.
  */
@@ -51,7 +47,7 @@ public class SrpController {
             }
         }
         else {
-            List<SRP> srpList = srpService.findByUserId(user.getUserId());
+            List<SRP> srpList = srpService.findSrpsByUserId(user.getUserId());
             if(srpList!=null){
                 return new RespEntity(RespCode.SUCCESS, srpList);
             }
@@ -63,22 +59,6 @@ public class SrpController {
             }
         }
 
-    }
-
-    @GetMapping ("/filter/srpList1")
-    public RespEntity getsrpList(){
-        List<SRP> srpList = srpService.getsrpList();
-
-//        srpRepository.findAll(Sort)
-        if(srpList!=null){
-            return new RespEntity(RespCode.SUCCESS, srpList);
-        }
-        else{
-            RespCode respCode = RespCode.WARN;
-            respCode.setMsg("获取SRP列表失败");
-            respCode.setCode(-1);
-            return new RespEntity(respCode);
-        }
     }
 
     /*根据srpId获取SRP*/
@@ -96,11 +76,10 @@ public class SrpController {
         }
     }
 
-    /*SRP新增*/
+    /*SRP新增(带用户)*/
     @PostMapping("/filter/srpInsert/{userIds}")
     public RespEntity srpInsert(@RequestBody SRP srp,@PathVariable List<Long> userIds){
         SRP srp1 = srpService.srpInsert(srp, userIds);
-
         if (srp1!=null){
             return new RespEntity(RespCode.SUCCESS,srp1);
         }

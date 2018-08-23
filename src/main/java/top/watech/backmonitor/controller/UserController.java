@@ -14,9 +14,6 @@ import top.watech.backmonitor.util.SecurityUtil;
 
 import java.util.List;
 
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-
 /**
  * Created by fhm on 2018/7/19.
  */
@@ -27,12 +24,11 @@ public class UserController {
     private UserService userService ;
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     private Audience audience;
 
     //登录
-    @PostMapping("/")
+    @PostMapping("/userlogin")
     public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
         User login = userService.Login(reqUser.getPhone());
 
