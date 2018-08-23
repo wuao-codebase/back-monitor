@@ -258,7 +258,7 @@ public class MonitorService {
         errMsg = monite.getMessage();
         msgBody = monite.getMessageBody();
         if (monite.getCode()) {
-                    sucCount = sucCount + 1;
+            sucCount = sucCount + 1;
         }else {
             code=false;
         }
