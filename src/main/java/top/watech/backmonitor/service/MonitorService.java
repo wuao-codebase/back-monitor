@@ -157,7 +157,7 @@ public class MonitorService {
                     }
                 }
             } else {
-                errMsg = monitorItem.getMonitorName() + "接口返回出错";
+                errMsg = monitorItem.getMonitorName() + "接口异常";
                 log.error("监控API类型接口异常，在MonitorService的apiMonitor方法中:post类型接口返回出错");
             }
         }
