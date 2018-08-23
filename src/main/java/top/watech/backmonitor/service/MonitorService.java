@@ -344,6 +344,7 @@ public class MonitorService {
                     detailReport.setMessageBody(msgBody);
                     detailReport.setMonitorId(monitorItem.getMonitorId());
                     detailReport.setMonitorName(monitorItem.getMonitorName());
+                    detailReport.setMonitorType(monitorItem.getMonitorType());
                     detailReport.setTotalReport(totalReport);
                     detailReportRepository.save(detailReport);
                 }
@@ -368,6 +369,7 @@ public class MonitorService {
                     detailReport.setMessageBody(msgBody);
                     detailReport.setMonitorId(monitorItem.getMonitorId());
                     detailReport.setMonitorName(monitorItem.getMonitorName());
+                    detailReport.setMonitorType(monitorItem.getMonitorType());
                     detailReport.setTotalReport(totalReport);
                     detailReportRepository.save(detailReport);
                 }
@@ -382,6 +384,7 @@ public class MonitorService {
                     detailReport.setMessageBody(msgBody);
                     detailReport.setMonitorId(monitorItem.getMonitorId());
                     detailReport.setMonitorName(monitorItem.getMonitorName());
+                    detailReport.setMonitorType(monitorItem.getMonitorType());
                     detailReport.setTotalReport(totalReport);
                     detailReportRepository.save(detailReport);
                 }
@@ -406,6 +409,7 @@ public class MonitorService {
                     detailReport.setMessageBody(msgBody);
                     detailReport.setMonitorId(monitorItem.getMonitorId());
                     detailReport.setMonitorName(monitorItem.getMonitorName());
+                    detailReport.setMonitorType(monitorItem.getMonitorType());
                     detailReport.setTotalReport(totalReport);
                     detailReportRepository.save(detailReport);
                 } else if (monitorItem.getClassify() == 5) {
@@ -425,6 +429,7 @@ public class MonitorService {
                 detailReport.setMessageBody(String.valueOf(FanyaDevService.msgBody));
                 detailReport.setMonitorId(42L);
                 detailReport.setMonitorName("设备信息获取");
+                detailReport.setMonitorType(1);
                 detailReport.setTotalReport(totalReport);
                 detailReportRepository.save(detailReport);
                 FanyaDevService.devMsg = "";

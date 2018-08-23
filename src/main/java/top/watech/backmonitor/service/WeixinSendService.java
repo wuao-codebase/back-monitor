@@ -1,7 +1,6 @@
 package top.watech.backmonitor.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import top.watech.backmonitor.entity.*;
 import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.UserRepository;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -83,9 +81,17 @@ public class WeixinSendService {
         for (DetailReport detailReport : detailReportList){
             MonitorItem monitorItem = monitorItemRepository.findByMonitorId(detailReport.getMonitorId());
             String monitorName = monitorItem.getMonitorName();
+            String monutorType="";
+            switch(            detailReport.getMonitorType()
+                    )
+            {
+                case 1:monutorType="接口";
+                case 2:monutorType="视频";
+                case 3:monutorType="页面";
+            }
             if (!detailReport.getCode()){
                 String errMessage = detailReport.getMessage();
-                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + "接口,返回异常，返回结果：" + errMessage + "\n" ;
+                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType+",返回异常，返回结果：" + errMessage + "\n" ;
                 if (!"设备信息获取".equals(monitorName)){
                     if (monitorItem.getClassify() == 1 || monitorItem.getClassify() == 3){
                         errorNotice = errorNotice + "\n" + monitorName + "接口异常(注：其下所属全部监控项监控失败！)" ;
@@ -107,7 +113,7 @@ public class WeixinSendService {
                 i++;
             }
             else {
-                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + "接口,返回正常；\n" ;
+                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType+",返回正常；\n" ;
                 i++;
             }
         }
