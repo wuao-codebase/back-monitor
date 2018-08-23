@@ -108,7 +108,7 @@ public class MonitorService {
                     code = false;
                     log.error("监控SRP登录接口异常，在MonitorService的apiMonitor方法中，异常信息：", e);
                     return Boolean.parseBoolean(null);
-                } else {//非登录Post类型接口
+                } else {
                     String str = monitorItem.getMonitorName() + "接口，返回异常，返回信息：" + e.getMessage();
                     System.err.println(str);
                     errMsg = e.getMessage();

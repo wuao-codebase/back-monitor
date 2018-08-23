@@ -52,7 +52,7 @@ public class AVideoMmonit {
                 &&parse.getJSONObject("result").containsKey("SessionID")
                 && parse.getJSONObject("result").getString("SessionID").length()>0
         ) {
-            msg.append("获取sessionID成功\n");
+//            msg.append("获取sessionID成功\n");
             jsonBody.put("Online接口", parse);
             return  parse.getJSONObject("result").getString("SessionID");
         }
@@ -85,7 +85,7 @@ public class AVideoMmonit {
         if (parse.containsKey("result")&& parse.getString("result").length()>0
                 &&parse.getJSONObject("result").containsKey("mpd")
                 && parse.getJSONObject("result").getString("mpd").length()>0) {
-            msg.append("获取实时MPD地址成功\n");
+//            msg.append("获取实时MPD地址成功\n");
             jsonBody.put("LiveStream接口", parse);
             return  parse.getJSONObject("result").getString("mpd");
         }
@@ -109,7 +109,7 @@ public class AVideoMmonit {
             System.err.println(e.getMessage());
             System.err.println(e);
 
-            jsonBody.put("获取mpd文件接口", String.valueOf(e.getMessage()));
+            jsonBody.put("获取"+timemsg+"mpd文件接口", String.valueOf(e.getMessage()));
             return null;
         }
         String body = responseEntity.getBody();
@@ -124,7 +124,7 @@ public class AVideoMmonit {
                 return null;
             }
             if(backtempurl.length()>0){
-                msg.append("解析"+timemsg+"视频地址成功 \n");
+//                msg.append("解析"+timemsg+"视频地址成功 \n");
                 jsonBody.put("获取"+timemsg+"mpd文件接口", body);
                 return backtempurl;
             }else {
@@ -147,7 +147,6 @@ public class AVideoMmonit {
         ResponseEntity<String> responseEntity = null;
         try {
             responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
-
         } catch (Exception e) {
             msg.append("获取"+timemsg+"视频接口请求出错 \n");
             jsonBody.put("获取"+timemsg+"视频文件接口", e.getMessage());
@@ -155,12 +154,12 @@ public class AVideoMmonit {
             return;
         }
         String body = responseEntity.getBody();
-        if (body != null && body.length() > 100) {
-            msg.append("获取"+timemsg+"视频文件成功 \n");
-            jsonBody.put("获取"+timemsg+"视频文件接口","成功");
+        if (body != null && body.length() > 600) {
+//            msg.append("获取"+timemsg+"视频文件成功 \n");
+            jsonBody.put(timemsg+"视频文件接口返回信息","成功");
         } else {
             msg.append("获取"+timemsg+"视频文件失败 \n");
-            jsonBody.put("获取"+timemsg+"视频文件接口",body);
+            jsonBody.put(timemsg+"视频文件接口返回信息","成功");
             codes=false;
         }
     }
@@ -196,7 +195,7 @@ public class AVideoMmonit {
                 &&parse.getJSONObject("result").containsKey("mpd")
                 && parse.getJSONObject("result").getString("mpd").length()>0
            ) {
-            msg.append("获取历史MPD地址成功\n");
+//            msg.append("获取历史MPD地址成功\n");
             jsonBody.put("backStream接口", parse);
             return  parse.getJSONObject("result").getString("mpd");
         }
@@ -264,7 +263,7 @@ public class AVideoMmonit {
             detailReport.setCode(codes);
         String tempstring="";
         if(!codes){
-             tempstring = new String(msg);
+             tempstring =  msg.substring(0,msg.length()-1);
         }
         detailReport.setMessage(tempstring);
         detailReport.setMessageBody(String.valueOf(jsonBody));

@@ -31,6 +31,17 @@ public class SRP_USERtest {
             System.out.println("hehe");
         }
     }
-
-
+@Test
+    public  void test() {
+        int count = 5;
+        try {
+            if (count==5){
+            throw new RuntimeException("测试异常1");}
+        }catch (Exception e) {
+            System.out.println(e.toString());
+            return;
+        }
+       System.out.println("12313");
+        return;
+    }
     }
