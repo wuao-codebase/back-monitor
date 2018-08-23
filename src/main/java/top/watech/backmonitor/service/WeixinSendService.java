@@ -82,12 +82,11 @@ public class WeixinSendService {
             MonitorItem monitorItem = monitorItemRepository.findByMonitorId(detailReport.getMonitorId());
             String monitorName = monitorItem.getMonitorName();
             String monutorType="";
-            switch(            detailReport.getMonitorType()
-                    )
+            switch(detailReport.getMonitorType())
             {
-                case 1:monutorType="接口";
-                case 2:monutorType="视频";
-                case 3:monutorType="页面";
+                case 1:monutorType="接口" ;break;
+                case 2:monutorType="视频";break;
+                case 3:monutorType="页面";break;
             }
             if (!detailReport.getCode()){
                 String errMessage = detailReport.getMessage();
