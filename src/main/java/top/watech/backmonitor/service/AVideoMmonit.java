@@ -25,7 +25,7 @@ public class AVideoMmonit {
     private DetailReport detailReport = new DetailReport();
     private JSONObject jsonBody= new JSONObject();
     private  StringBuffer msg =new StringBuffer();
-    private boolean code=true;
+    private boolean codes=true;
 
     public String sessionID(String domain, String username, String password) {
         String sessionIDurl = domain + "/AdvStreamingService/Authority/Online";
@@ -151,7 +151,7 @@ public class AVideoMmonit {
         } catch (Exception e) {
             msg.append("获取"+timemsg+"视频接口请求出错 \n");
             jsonBody.put("获取"+timemsg+"视频文件接口", e.getMessage());
-            code=false;
+            codes=false;
             return;
         }
         String body = responseEntity.getBody();
@@ -161,7 +161,7 @@ public class AVideoMmonit {
         } else {
             msg.append("获取"+timemsg+"视频文件失败 \n");
             jsonBody.put("获取"+timemsg+"视频文件接口",body);
-            code=false;
+            codes=false;
         }
     }
 
@@ -227,11 +227,11 @@ public class AVideoMmonit {
     //实时
     public void newtime(String domain, String sessionID, String IVSID, String channel) {
         String nowmpdurl = LiveStream(domain, sessionID, IVSID, channel);
-        if (nowmpdurl == null) {code=false; return;}
+        if (nowmpdurl == null) {codes=false; return;}
         nowmpdurl = nowmpdurl + "?_=" + System.currentTimeMillis();
         String video1 = StringUtils.substringBeforeLast(nowmpdurl, "/");
         String mpd = MPD(nowmpdurl, channel, "实时");
-        if (mpd == null) {code=false; return;}
+        if (mpd == null) {codes=false; return;}
         String[] split = mpd.split("&");
         String starturl = video1 + "/" + split[0];
         video(starturl, channel, "实时");
@@ -243,10 +243,10 @@ public class AVideoMmonit {
     public void blacktime(String domain, String sessionID, String IVSID, String channel) {
         //历史视频
         String backmpdurl = PlaybackStream(domain, sessionID, IVSID, channel);
-        if (backmpdurl == null) {code=false; return;}
+        if (backmpdurl == null) {codes=false; return;}
         String backvideo1 = StringUtils.substringBeforeLast(backmpdurl, "/");
         String backmpd = MPD(backmpdurl, channel, "历史");
-        if (backmpd == null) {code=false; return;}
+        if (backmpd == null) {codes=false; return;}
         String[] backsplit = backmpd.split("&");
         String backstarturl = backvideo1 + "/" + backsplit[0];
         video(backstarturl, channel, "历史");
@@ -259,14 +259,17 @@ public class AVideoMmonit {
         if (sessionID != null) {
             newtime(domain, sessionID, IVSID, channel);
             blacktime(domain, sessionID, IVSID, channel);}else {
-            code=false;
+            codes=false;
         }
-            detailReport.setCode(code);
-        String tempstring = new String(msg);
+            detailReport.setCode(codes);
+        String tempstring="";
+        if(!codes){
+             tempstring = new String(msg);
+        }
         detailReport.setMessage(tempstring);
         detailReport.setMessageBody(String.valueOf(jsonBody));
         msg.setLength(0);
-        code=true;
+        codes=true;
         jsonBody=new JSONObject();
         return detailReport;
     }

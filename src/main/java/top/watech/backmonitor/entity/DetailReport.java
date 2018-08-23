@@ -22,7 +22,7 @@ import java.util.Date;
 public class DetailReport {
     private Long monitorId; //复合主键
     private String monitorName;
-
+    private Integer monitorType;
     private Boolean code;   //成功、失败
     private String message; //报警信息
 
@@ -53,6 +53,15 @@ public class DetailReport {
 
     public void setMonitorName(String monitorName) {
         this.monitorName = monitorName;
+    }
+
+    @Column(name = "monitor_type")
+    public Integer getMonitorType() {
+        return monitorType;
+    }
+
+    public void setMonitorType(Integer monitorType) {
+        this.monitorType = monitorType;
     }
 
     @Id
