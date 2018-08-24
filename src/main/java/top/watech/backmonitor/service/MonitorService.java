@@ -36,6 +36,11 @@ import java.util.*;
  * 3、监控项结果写入数据库（详细监控报告 + 总监控报告）
  * 4、出现异常，微信推送
  */
+/**
+ * 1、取监控项
+ * 2、判断监控项类型，接口、页面、视频
+ *      ①接口：判断classify，
+ */
 @Service
 @Slf4j
 public class MonitorService {
