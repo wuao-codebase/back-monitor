@@ -96,7 +96,7 @@ public class WeixinSendService {
             switch(detailReport.getMonitorType())
             {
                 case 1:monutorType="接口" ;break;
-                case 2:monutorType="视频";break;
+                case 2:monutorType="实时历史、视频";break;
                 case 3:monutorType="页面";break;
             }
             if (!detailReport.getCode()){
