@@ -44,9 +44,9 @@ public class WeixinSendService {
     public static String errorNotice = "";
 
     //微信token
-    public void testToken(){
+    public void testToken() {
         //企业ID + 小程序的Secret
-        String url ="https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=ww12e8f8024d09e7e0&corpsecret=nvgY1oY07Xq-BHps0XSdCULaf36BYzIBEn5Rz58fB0I";
+        String url = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=ww12e8f8024d09e7e0&corpsecret=nvgY1oY07Xq-BHps0XSdCULaf36BYzIBEn5Rz58fB0I";
         HttpHeaders requestHeaders = new HttpHeaders();
         Map<String, Object> requestBody = new HashMap<String, Object>();
         //HttpEntity
@@ -54,30 +54,28 @@ public class WeixinSendService {
 
         String body = null;
         try {
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
             body = responseEntity.getBody();
+        } catch (Exception e) {
+            log.error("请求微信接口取token出错，出错信息：", e);
         }
-        catch (Exception e){
-            log.error("请求微信接口取token出错，出错信息：",e);
-        }
-        if (body != null){
+        if (body != null) {
             JSONObject parse = JSON.parseObject(body);
             token = parse.get("access_token").toString();
-        }
-        else {
+        } else {
             log.error("请求微信接口取token出错,返回体为空");
         }
     }
 
     public void weixinSend(TotalReport totalReport) {
         testToken();
-        String url ="https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token="+token;
+        String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + token;
         HttpHeaders requestHeaders = new HttpHeaders();
         Map<String, Object> requestBody = new HashMap<String, Object>();
         Map<String, Object> msg = new HashMap<String, Object>();
 
         SRP srp = totalReport.getSrp();
-        SimpleDateFormat str1 =new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat str1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         Integer monitorNum = totalReport.getMonitorNum();
         Integer errorCount = totalReport.getErrorCount();
@@ -88,59 +86,60 @@ public class WeixinSendService {
         String formatEndTime = str1.format(endTime);
 
         List<DetailReport> detailReportList = detailReportService.getDetailReportByUuid(totalReport.getUuid());
-        int i = 1 ;
-        for (DetailReport detailReport : detailReportList){
+        int i = 1;
+        for (DetailReport detailReport : detailReportList) {
             MonitorItem monitorItem = monitorItemRepository.findByMonitorId(detailReport.getMonitorId());
             String monitorName = monitorItem.getMonitorName();
-            String monutorType="";
-            switch(detailReport.getMonitorType())
-            {
-                case 1:monutorType="接口" ;break;
-                case 2:monutorType="实时历史、视频";break;
-                case 3:monutorType="页面";break;
+            String monutorType = "";
+            switch (detailReport.getMonitorType()) {
+                case 1:
+                    monutorType = "接口";
+                    break;
+                case 2:
+                    monutorType = "实时、历史视频";
+                    break;
+                case 3:
+                    monutorType = "页面";
+                    break;
             }
-            if (!detailReport.getCode()){
+            if (!detailReport.getCode()) {
                 String errMessage = detailReport.getMessage();
-                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType + ",返回异常，返回结果：" + errMessage + "\n" ;
-                if (!"设备信息获取".equals(monitorName)){
+                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType + ",返回异常，返回结果：" + errMessage + "\n";
+                if (!"设备信息获取".equals(monitorName)) {
 
-                    if (monitorItem.getClassify() == 1 || monitorItem.getClassify() == 3){
-                        errorNotice = errorNotice + "\n" + monitorName + monutorType + "异常(注：其下所属全部监控项监控失败！)" ;
+                    if (monitorItem.getClassify() == 1 || monitorItem.getClassify() == 3) {
+                        errorNotice = errorNotice + "\n" + monitorName + monutorType + "异常(注：其下所属全部监控项监控失败！)";
+                    } else {
+                        errorNotice = errorNotice + "\n" + monitorName + monutorType + "异常";
                     }
-                    else {
-                        errorNotice = errorNotice + "\n" + monitorName + monutorType + "异常" ;
-                    }
-                }
-                else {
+                } else {
                     String str = detailReport.getMessage();
                     String[] strings = StringUtils.substringsBetween(str, "[", "]");
 //                    errorNotice = errorNotice + detailReport.getMessage() ;
-                    for (String s : strings){
-                        errorNotice = errorNotice + "\n[" + s + "]设备异常";
+                    for (String s : strings) {
+                        errorNotice = errorNotice + "\n[" + s + "]设备状态异常";
                     }
                 }
                 i++;
-            }
-            else {
-                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType+",返回正常；\n" ;
+            } else {
+                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType + ",返回正常；\n";
                 i++;
             }
         }
 
-        String str ="【异常通知】" + errorNotice + "\n\n【监控日志】\n·SRP名称：" + srp.getSrpName() + "\n" +
+        String str = "【异常通知】" + errorNotice + "\n\n【监控日志】\n·SRP名称：" + srp.getSrpName() + "\n" +
                 "·总测试项：" + monitorNum + "| " + "成功：" + sucCount + "| " + "失败：" + errorCount + "\n" +
                 "·测试开始时间：" + formatStartTime + "\n" +
                 "·各监控项状态：" + "\n" +
                 weixinErrmsg +
                 "·测试结束时间：" + formatEndTime + "\n\n" +
-                "(详细监控信息请前往网页端查看)" + "\n"
-                ;
+                "(详细监控信息请前往网页端查看)" + "\n";
 
         //SRP所属用户全推送
         Set<User> users = srp.getUsers();
-        StringBuilder s = new StringBuilder("") ;
-        if (users != null){
-            for (User user : users){
+        StringBuilder s = new StringBuilder("");
+        if (users != null) {
+            for (User user : users) {
                 String s1 = String.valueOf(user.getUserId());
                 s.append(s1);
                 s.append("|");
@@ -150,31 +149,29 @@ public class WeixinSendService {
 
         //超级用户全推送
         List<User> userList = userRepository.findAll();
-        for (User user : userList){
+        for (User user : userList) {
             String s1 = String.valueOf(user.getUserId());
             s.append(s1);
             s.append("|");
         }
 
-        s.deleteCharAt(s.length()-1);
+        s.deleteCharAt(s.length() - 1);
         System.err.println(s);
 
-        msg.put("content",str);
+        msg.put("content", str);
         JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(msg));
 //        requestBody.put("touser","111|WuAo");
-        requestBody.put("touser",s);
+        requestBody.put("touser", s);
         requestBody.put("msgtype", "text");
-        requestBody.put("agentid",1000002);
+        requestBody.put("agentid", 1000002);
         requestBody.put("text", itemJSONObj);
         requestBody.put("safe", 0);
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         try {
-            ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST,requestEntity,String.class);
-            log.info("微信消息推送接口返回体：",responseEntity.getBody());
-        }catch (Exception e){
-            log.error("请求微信接口推送消息出错，出错信息：",e);
+            ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            log.info("微信消息推送接口返回体：", responseEntity.getBody());
+        } catch (Exception e) {
+            log.error("请求微信接口推送消息出错，出错信息：", e);
         }
     }
-
-
 }
