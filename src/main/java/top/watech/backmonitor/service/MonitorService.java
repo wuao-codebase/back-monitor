@@ -329,6 +329,8 @@ public class MonitorService {
     public void monitorLogic(Long srpId) {
 
         synchronized (this) {
+            token = null;
+            accessToken = null;
             //总的监控报告
             TotalReport totalReport = new TotalReport();
             totalReportRepository.save(totalReport);
@@ -438,7 +440,7 @@ public class MonitorService {
             System.err.println("监控项成功个数：" + sucCount);
             System.err.println("*******************************************");
 
-            if (srpId == 66L && token != null) {
+            if (srpId == 65L && token != null) {
                 fanyaDevService.testDev();
                 //详细监控报告
                 DetailReport detailReport = new DetailReport();
@@ -486,7 +488,9 @@ public class MonitorService {
                 WeixinSendService.errorNotice = "";
             }
             sucCount = 0;
+
         }
+
     }
 
 }

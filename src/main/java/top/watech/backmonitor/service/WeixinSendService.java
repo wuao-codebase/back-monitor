@@ -116,7 +116,7 @@ public class WeixinSendService {
                     String[] strings = StringUtils.substringsBetween(str, "[", "]");
 //                    errorNotice = errorNotice + detailReport.getMessage() ;
                     for (String s : strings){
-                        errorNotice = errorNotice + "\n[" + s + "]异常";
+                        errorNotice = errorNotice + "\n[" + s + "]设备异常";
                     }
                 }
                 i++;

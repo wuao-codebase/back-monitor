@@ -65,6 +65,7 @@ public class FanyaDevService {
 
     public void testDev() {
         teToken();  //取token
+
         /**
          * 取所有设备信息
          */
