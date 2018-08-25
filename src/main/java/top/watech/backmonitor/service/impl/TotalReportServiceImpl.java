@@ -126,6 +126,7 @@ public class TotalReportServiceImpl implements TotalReportService {
                         return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
                     }
                 }, PageRequest.of(pageNo - 1, 15,sort));
+            if(pages==null){return null;}
                 for (TotalReport page : pages) {
                     if (page.getSrp().getSrpName() != null) {
                         page.setSrpName(page.getSrp().getSrpName());
