@@ -22,20 +22,10 @@ import top.watech.backmonitor.repository.TotalReportRepository;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
-
-/**
- * Created by fhm on 2018/7/26.
- * 1、按classify取SRP所有监控项，getMonitTtemListBySrpId
- * 2、监控流程
- * ①SSO登录监控。POST，取参数，RestTemplete，判断连接，取状态码判断是否200，
- * 取tooken判断是否为null，是就往下继续走判断接口，否就返回
- * ②SSO下接口
- * ③SRP登录
- * ④SRP下接口登录
- * 3、监控项结果写入数据库（详细监控报告 + 总监控报告）
- * 4、出现异常，微信推送
- */
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  * 1、取监控项
  * 2、判断监控项类型，接口、页面、视频
@@ -48,7 +38,7 @@ import java.util.*;
  */
 @Service
 @Slf4j
-public class MonitorService {
+public class MonitorService2 {
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
@@ -333,7 +323,8 @@ public class MonitorService {
 
     /**
      * SRP监控流程
-     * 1、SSO登录。2、平台接口。3、SRP登录。4、SRP下接口。
+     * 1、API。2、页面。3、视频
+     * A、SSO登录。B、平台接口。C、SRP登录。D、SRP下接口。
      */
     @Transactional
     public void monitorLogic(Long srpId) {
@@ -362,145 +353,91 @@ public class MonitorService {
             List<MonitorItem> monitorItems = monitorItemService.getMonitTtemListBySrpId(srpId);
             System.err.println("start!");
             for (MonitorItem monitorItem : monitorItems) {
-                Integer classify = monitorItem.getClassify();
-                //平台登录
-                if (monitorItem.getClassify() == 1) {
-                    apiMonitor(monitorItem);
+                Integer monitorType = monitorItem.getMonitorType();
+                //接口
+                if (monitorType == 1) {
+                    if (monitorItem.getClassify() == 1 || monitorItem.getClassify() == 3) {
+                        loginPro();
+                    } else if (monitorItem.getClassify() == 2 || monitorItem.getClassify() == 4) {
+                        apiAndPagePro();
+                    }
+                }
+                //页面
+                else if (monitorType == 2) {
+                    apiAndPagePro();
+                }
+                //视频
+                else {
+                    videoPro();
+                }
 
+                System.err.println("监控项总个数：" + monitorItems.size());
+                System.err.println("监控项成功个数：" + sucCount);
+                System.err.println("*******************************************");
+
+                if (srpId == 65L && token != null) {
+                    fanyaDevService.testDev();
                     //详细监控报告
                     DetailReport detailReport = new DetailReport();
-                    detailReport.setCode(code);
-                    detailReport.setMessage(errMsg);
-                    detailReport.setMessageBody(msgBody);
-                    detailReport.setMonitorId(monitorItem.getMonitorId());
-                    detailReport.setMonitorName(monitorItem.getMonitorName());
-                    detailReport.setMonitorType(monitorItem.getMonitorType());
+                    detailReport.setCode(FanyaDevService.totalCode);
+                    detailReport.setMessage(FanyaDevService.devMsg);
+                    detailReport.setMessageBody(String.valueOf(FanyaDevService.msgBody));
+                    detailReport.setMonitorId(42L);
+                    detailReport.setMonitorName("设备信息获取");
+                    detailReport.setMonitorType(1);
                     detailReport.setTotalReport(totalReport);
                     detailReportRepository.save(detailReport);
-                }
-                //平台接口
-                else if (monitorItem.getClassify() == 2 && accessToken != null) {
-                    //视频类型的监控项
-                    if (monitorItem.getMonitorType() == 2) {
-                        videoMonitor(monitorItem);
+                    FanyaDevService.devMsg = "";
+                    if (FanyaDevService.totalCode) {
+                        sucCount = sucCount + 1;
                     }
-                    //接口类型
-                    else if (monitorItem.getMonitorType() == 1) {
-                        apiMonitor(monitorItem);
-                    }
-                    //页面监控
-                    else {
-                        pageMonitor(monitorItem);
-                    }
-                    //详细监控报告
-                    DetailReport detailReport = new DetailReport();
-                    detailReport.setCode(code);
-                    detailReport.setMessage(errMsg);
-                    detailReport.setMessageBody(msgBody);
-                    detailReport.setMonitorId(monitorItem.getMonitorId());
-                    detailReport.setMonitorName(monitorItem.getMonitorName());
-                    detailReport.setMonitorType(monitorItem.getMonitorType());
-                    detailReport.setTotalReport(totalReport);
-                    detailReportRepository.save(detailReport);
                 }
 
-                //SRP登录
-                if (monitorItem.getClassify() == 3) {
-                    apiMonitor(monitorItem);
-                    //详细监控报告
-                    DetailReport detailReport = new DetailReport();
-                    detailReport.setCode(code);
-                    detailReport.setMessage(errMsg);
-                    detailReport.setMessageBody(msgBody);
-                    detailReport.setMonitorId(monitorItem.getMonitorId());
-                    detailReport.setMonitorName(monitorItem.getMonitorName());
-                    detailReport.setMonitorType(monitorItem.getMonitorType());
-                    detailReport.setTotalReport(totalReport);
-                    detailReportRepository.save(detailReport);
+                //结束时间
+                Date end = new Date();
+                String endTime1 = str.format(end);
+                Date endTime = null;
+                try {
+                    endTime = str.parse(endTime1);
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                //SRP接口
-                else if (monitorItem.getClassify() == 4 && token != null) {
-                    //视频类型的监控项
-                    if (monitorItem.getMonitorType() == 2) {
-                        videoMonitor(monitorItem);
-                    }
-                    //接口类型
-                    else if (monitorItem.getMonitorType() == 1) {
-                        apiMonitor(monitorItem);
-                    }
-                    //页面监控
-                    else {
-                        pageMonitor(monitorItem);
-                    }
-                    //详细监控报告
-                    DetailReport detailReport = new DetailReport();
-                    detailReport.setCode(code);
-                    detailReport.setMessage(errMsg);
-                    detailReport.setMessageBody(msgBody);
-                    detailReport.setMonitorId(monitorItem.getMonitorId());
-                    detailReport.setMonitorName(monitorItem.getMonitorName());
-                    detailReport.setMonitorType(monitorItem.getMonitorType());
-                    detailReport.setTotalReport(totalReport);
-                    detailReportRepository.save(detailReport);
-                } else if (monitorItem.getClassify() == 5) {
-                    continue;
+                System.err.println("结束时间:" + endTime);
+
+                //总的监控报告
+                totalReport.setStartTime(startTime);
+                totalReport.setEndTime(endTime);
+                totalReport.setMonitorNum(monitorItems.size());
+                SRP srp = srpRepository.findBySrpId(srpId);
+                totalReport.setSrp(srp);
+                int errorCount = monitorItems.size() - sucCount;
+                totalReport.setErrorCount(errorCount);
+                totalReportRepository.saveAndFlush(totalReport);
+
+                /**
+                 * 微信推送，出错才推
+                 */
+                if (totalReport.getErrorCount() > 0) {
+                    weixinSendService.weixinSend(totalReport);
+                    WeixinSendService.weixinErrmsg = "";
+                    WeixinSendService.errorNotice = "";
                 }
+                sucCount = 0;
             }
-            System.err.println("监控项总个数：" + monitorItems.size());
-            System.err.println("监控项成功个数：" + sucCount);
-            System.err.println("*******************************************");
-
-            if (srpId == 65L && token != null) {
-                fanyaDevService.testDev();
-                //详细监控报告
-                DetailReport detailReport = new DetailReport();
-                detailReport.setCode(FanyaDevService.totalCode);
-                detailReport.setMessage(FanyaDevService.devMsg);
-                detailReport.setMessageBody(String.valueOf(FanyaDevService.msgBody));
-                detailReport.setMonitorId(42L);
-                detailReport.setMonitorName("设备信息获取");
-                detailReport.setMonitorType(1);
-                detailReport.setTotalReport(totalReport);
-                detailReportRepository.save(detailReport);
-                FanyaDevService.devMsg = "";
-                if (FanyaDevService.totalCode) {
-                    sucCount = sucCount + 1;
-                }
-            }
-
-            //结束时间
-            Date end = new Date();
-            String endTime1 = str.format(end);
-            Date endTime = null;
-            try {
-                endTime = str.parse(endTime1);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            System.err.println("结束时间:" + endTime);
-
-            //总的监控报告
-            totalReport.setStartTime(startTime);
-            totalReport.setEndTime(endTime);
-            totalReport.setMonitorNum(monitorItems.size());
-            SRP srp = srpRepository.findBySrpId(srpId);
-            totalReport.setSrp(srp);
-            int errorCount = monitorItems.size() - sucCount;
-            totalReport.setErrorCount(errorCount);
-            totalReportRepository.saveAndFlush(totalReport);
-
-            /**
-             * 微信推送，出错才推
-             */
-            if (totalReport.getErrorCount() > 0) {
-                weixinSendService.weixinSend(totalReport);
-                WeixinSendService.weixinErrmsg = "";
-                WeixinSendService.errorNotice = "";
-            }
-            sucCount = 0;
-
         }
+    }
+    //classify为1或3时(登录)
+    public String loginPro(){
+        return "";
+    }
+
+    //classify为2或4时(登录)、monitorType为2(页面)时
+    public void apiAndPagePro(){
 
     }
 
+    //monitorType为3(视频)时
+    public void videoPro(){
+
+    }
 }
