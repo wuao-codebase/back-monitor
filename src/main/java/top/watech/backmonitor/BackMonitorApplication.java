@@ -3,9 +3,7 @@ package top.watech.backmonitor;
 import org.assertj.core.util.Lists;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -18,14 +16,18 @@ import top.watech.backmonitor.util.JwtFilter;
 
 import java.util.List;
 
+//@SpringBootApplication
+//@EnableScheduling
+//@EnableJpaAuditing
+//public class BackMonitorApplication  extends SpringBootServletInitializer {
+//    @Override
+//    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+//        return builder.sources(BackMonitorApplication.class);
+//    }
 @SpringBootApplication
 @EnableScheduling
 @EnableJpaAuditing
-public class BackMonitorApplication  extends SpringBootServletInitializer {
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        return builder.sources(BackMonitorApplication.class);
-    }
+public class BackMonitorApplication    {
     public static void main(String[] args) {
         SpringApplication.run(BackMonitorApplication.class, args);
     }
