@@ -17,7 +17,7 @@ public class MyTask1 implements Job {
     SrpRepository srpRepository;
 //    private CScheduleTriggerRepository jobRepository;
     @Autowired
-    MonitorService monitorService;
+    MonitorService2 monitorService2;
 
     @Override
     public void execute(JobExecutionContext context)
@@ -33,7 +33,7 @@ public class MyTask1 implements Job {
 //            System.out.println("quart task-当前时间："+new Date());
             String jobName = context.getTrigger().getKey().getName();
             Long srpId = Long.valueOf(jobName);
-         monitorService.monitorLogic(srpId);
+         monitorService2.monitorLogic(srpId);
         }
         catch (Exception e){
             System.err.println(e.getMessage());

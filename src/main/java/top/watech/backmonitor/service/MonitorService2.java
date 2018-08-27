@@ -26,15 +26,16 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 /**
  * 1、取监控项
  * 2、判断监控项类型，接口、页面、视频
- *      ①接口：判断classify
- *          a)classify=1、3    断言、取token
- *          b)classify=2、4    取requestType，exchange()
- *      ②页面：
- *          取requestType，exchange()
- *      ③视频
+ * ①接口：判断classify
+ * a)classify=1、3    断言、取token
+ * b)classify=2、4    取requestType，exchange()
+ * ②页面：
+ * 取requestType，exchange()
+ * ③视频
  */
 @Service
 @Slf4j
@@ -69,257 +70,6 @@ public class MonitorService2 {
     boolean code = true;   //0为失败，1为成功
     String errMsg;  //工作正常  or  断言  (监控日志里用)
     String msgBody; //接口返回体  or  e.getMessage
-
-    //处理接口类型（RestTemplete）
-    //取结果与断言比对，最后结果为code，成功还是失败
-    public boolean apiMonitor(MonitorItem monitorItem) {
-        String url = monitorItem.getUrl();
-        Integer requestType = monitorItem.getRequestType();
-        String asserts = monitorItem.getAsserts();
-        code = true;   //0为失败，1为成功
-        HttpHeaders requestHeaders = new HttpHeaders();
-        String requestBodyStr = monitorItem.getRequestBody();
-        Map requestBody = new HashMap();
-        ResponseEntity<String> responseEntity = null;
-
-        //POST型，登录生成token
-        if (requestType == 1) {
-            requestBody = (Map) JSON.parse(requestBodyStr);
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-            String body = null;
-            try {
-                responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-                msgBody = responseEntity.getBody();//取返回体
-                body = responseEntity.getBody();
-            } catch (Exception e) {
-                if (monitorItem.getClassify() == 1) {
-                    String str = monitorItem.getMonitorName() + "接口，返回异常，返回信息：" + e.getMessage();
-                    System.err.println(str);
-                    errMsg = "接口请求异常";
-                    msgBody = e.getMessage();//返回信息
-                    code = false;
-                    log.error("监控SSO登录接口异常，在MonitorService的apiMonitor方法中，异常信息：", e);
-                    return Boolean.parseBoolean(null);
-                } else if (monitorItem.getClassify() == 3) {
-                    String s = "SRP登录出错！错误信息：" + e.getMessage();
-                    System.err.println(s);
-//                    errMsg = s + e.getMessage();
-                    errMsg = "接口请求异常";
-                    msgBody = e.getMessage();//返回信息
-                    code = false;
-                    log.error("监控SRP登录接口异常，在MonitorService的apiMonitor方法中，异常信息：", e);
-                    return Boolean.parseBoolean(null);
-                } else {
-                    String str = monitorItem.getMonitorName() + "接口，返回异常，返回信息：" + e.getMessage();
-                    System.err.println(str);
-                    errMsg = "接口请求异常";
-                    msgBody = e.getMessage();//返回信息
-                    code = false;
-                    log.error("监控post类型接口异常，在MonitorService的apiMonitor方法中，异常信息：", e);
-                }
-            }
-            if (body != null) {
-                JSONObject resJsonObject = null;
-                try {
-                    resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
-                } catch (Exception e) {
-                    errMsg = "接口请求异常";
-                    log.error("VCMInfoService的getVCMInfos()中json格式数据转换异常");
-                }
-                if (resJsonObject != null) {
-                    if (asserts != null) {
-                        JSONArray assertsArraysJsonObject = JSON.parseArray(asserts);//传来的断言的json对象数组
-
-                        //断言数组循环判断,与监控项返回的JSON对象比对
-                        for (Object assJsonObject : assertsArraysJsonObject) {
-                            JSONObject assJsonObject1 = (JSONObject) assJsonObject;
-
-                            //ststus为0是等号，为1是不等号
-                            if (assJsonObject1.get("ststus").equals("0")) {
-                                if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
-                                    code = (code & true);//成功
-                                } else {
-                                    code = (code & false);//失败
-                                    errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
-                                }
-                            } else {
-                                if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
-                                    code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
-                                else {
-                                    code &= false;
-                                    errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
-                                }
-                                if (monitorItem.getClassify() == 1) {
-                                    accessToken = (String) resJsonObject.get(assJsonObject1.get("akey"));
-                                } else if (monitorItem.getClassify() == 3) {
-                                    token = (String) resJsonObject.get(assJsonObject1.get("akey"));
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    code = false ;
-                    errMsg = "接口请求异常";
-                    log.error("接口返回数据非json格式");
-                }
-            } else {
-                code = false;
-                log.error("接口返回异常body为空");
-                errMsg = "接口请求异常";
-            }
-        }
-        //GET请求，携带token访问
-        else if (requestType == 2) {
-            if (monitorItem.getClassify() == 2) {
-                if (accessToken == null) {
-                    return Boolean.parseBoolean(null);
-                }
-                requestHeaders.add("Authorization", "Bearer " + accessToken);
-            } else if (monitorItem.getClassify() == 4) {
-                if (token == null) {
-                    return Boolean.parseBoolean(null);
-                }
-                requestHeaders.add("Authorization", "Bearer " + token);
-            }
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-            String body = null;
-            try {
-                responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
-                body = responseEntity.getBody();
-
-            } catch (Exception e) {
-                System.err.println("错误信息：" + e.getMessage());
-                errMsg = "接口请求异常";
-//                msgBody = e.getMessage();//返回信息
-                code = false;
-                log.error("监控API类型接口异常，在MonitorService的apiMonitor方法中，异常信息：", e);
-            }
-
-            if (body != null) {
-                msgBody = responseEntity.getBody();//取返回体
-                JSONObject resJsonObject = null;
-                try {
-                    resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
-                    System.err.println(resJsonObject);
-                } catch (Exception e) {
-                    log.error("VCMInfoService的getVCMInfos()中json格式数据转换异常");
-                    errMsg = "接口请求异常";
-                }
-                if (resJsonObject != null) {
-                    if (asserts != null) {
-                        JSONArray assertsArraysJsonObject = JSON.parseArray(asserts);//传来的断言的json对象数组
-                        //断言数组循环判断
-                        for (Object assJsonObject : assertsArraysJsonObject) {
-                            JSONObject assJsonObject1 = (JSONObject) assJsonObject;
-                            if (assJsonObject1.get("ststus").equals("0")) {
-                                //接口返回的对应asserts中value的值
-                                String revalue = resJsonObject.get(assJsonObject1.get("akey")).toString();
-                                if (revalue.equals(assJsonObject1.get("value")))
-                                    code = (code & true);//成功
-                                else {
-                                    code = (code & false);//失败
-                                    errMsg = assJsonObject1.get("akey") + " = " + revalue;//断言，e.g. connect=false
-                                }
-                            } else {
-                                if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
-                                    code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
-                                else {
-                                    code = (code & false);
-                                    errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
-                                }
-                            }
-                        }
-                    } else {
-                        errMsg = monitorItem.getMonitorName() + "接口返回出错";
-                        log.error("监控API类型接口异常，在MonitorService的apiMonitor方法中:get类型接口返回出错");
-                    }
-                } else {
-                    code = false;
-                    log.error("接口返回异常body为空");
-                    errMsg = "接口请求异常";
-                }
-            }
-        }
-        if (code == true) {
-            System.err.println(monitorItem.getMonitorName() + ":" + "工作正常");
-            System.err.println("*******************************************");
-            errMsg = "";
-            sucCount = sucCount + 1;
-        } else {
-            System.err.println(monitorItem.getMonitorName() + ":" + "工作异常");
-            log.error("监控API类型接口异常，在MonitorService的apiMonitor方法中");
-            System.err.println("*******************************************");
-        }
-        return code;
-    }
-
-    //处理视频类型，最后结果是code，成功还是失败
-    public void videoMonitor(MonitorItem monitorItem) {
-        code = true;   //0为失败，1为成功
-        //1、测试视频相关所有接口
-        //2、测试视频文件获取
-        String domain = monitorItem.getUrl();
-        JSONObject params = (JSONObject) JSONObject.parse(monitorItem.getRequestBody());
-        String ivsid = params.getString("ivsid");
-        String channel = params.getString("channel");
-        System.out.println("channel = " + channel);
-        System.out.println("ivsid = " + ivsid);
-        System.out.println("domain = " + domain);
-        DetailReport monite = aVideoMmonit.monite(domain, ivsid, channel);
-
-        errMsg = monite.getMessage();
-        msgBody = monite.getMessageBody();
-        if (monite.getCode()) {
-            sucCount = sucCount + 1;
-        } else {
-            code = false;
-        }
-    }
-
-    //处理页面类型，最后结果是code，成功还是失败 throws RestClientException
-    public void pageMonitor(MonitorItem monitorItem) {
-        code = true;   //0为失败，1为成功
-        if (monitorItem.getRequestType() == 2) {
-            String url = monitorItem.getUrl();
-            HttpHeaders requestHeaders = new HttpHeaders();
-            Map requestBody = new HashMap();
-            if (monitorItem.getClassify() == 2) {
-                requestHeaders.add("Authorization", "Bearer " + accessToken);
-            } else if (monitorItem.getClassify() == 4) {
-                requestHeaders.add("Authorization", "Bearer " + token);
-            }
-
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-
-            ResponseEntity<String> responseEntity = null;
-            try {
-                responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
-                code = true;//成功
-                System.err.println(monitorItem.getMonitorName() + ":" + "工作正常");
-                System.err.println("*******************************************");
-                errMsg = "";
-
-                msgBody = responseEntity.getBody();//取返回体
-
-                sucCount = sucCount + 1;
-            } catch (Exception e) {
-                code = false;//失败
-                System.err.println(monitorItem.getMonitorName() + ":" + "工作异常");
-                System.err.println("错误信息：" + e.getMessage());
-                errMsg = e.getMessage();
-
-                msgBody = e.getMessage();//返回信息
-                log.error("监控前端页面类型接口异常，在MonitorService的pageMonitor方法中，异常信息：", e);
-
-                System.err.println("*******************************************");
-            }
-        }
-        else {
-            code = false ;
-            errMsg = "请求类型出错";
-            log.error("监控前端页面类型接口异常，在MonitorService的pageMonitor方法中，请求类型出错");
-        }
-    }
 
     /**
      * SRP监控流程
@@ -357,19 +107,30 @@ public class MonitorService2 {
                 //接口
                 if (monitorType == 1) {
                     if (monitorItem.getClassify() == 1 || monitorItem.getClassify() == 3) {
-                        loginPro();
+                        loginPro(monitorItem);
                     } else if (monitorItem.getClassify() == 2 || monitorItem.getClassify() == 4) {
-                        apiAndPagePro();
+                        apiAndPagePro(monitorItem);
                     }
                 }
                 //页面
                 else if (monitorType == 2) {
-                    apiAndPagePro();
+                    apiAndPagePro(monitorItem);
                 }
                 //视频
                 else {
-                    videoPro();
+                    videoPro(monitorItem);
                 }
+
+                //详细监控报告
+                DetailReport detailReport = new DetailReport();
+                detailReport.setCode(code);
+                detailReport.setMessage(errMsg);
+                detailReport.setMessageBody(msgBody);
+                detailReport.setMonitorId(monitorItem.getMonitorId());
+                detailReport.setMonitorName(monitorItem.getMonitorName());
+                detailReport.setMonitorType(monitorItem.getMonitorType());
+                detailReport.setTotalReport(totalReport);
+                detailReportRepository.save(detailReport);
 
                 System.err.println("监控项总个数：" + monitorItems.size());
                 System.err.println("监控项成功个数：" + sucCount);
@@ -378,7 +139,7 @@ public class MonitorService2 {
                 if (srpId == 65L && token != null) {
                     fanyaDevService.testDev();
                     //详细监控报告
-                    DetailReport detailReport = new DetailReport();
+                    DetailReport drFyDev = new DetailReport();
                     detailReport.setCode(FanyaDevService.totalCode);
                     detailReport.setMessage(FanyaDevService.devMsg);
                     detailReport.setMessageBody(String.valueOf(FanyaDevService.msgBody));
@@ -386,7 +147,7 @@ public class MonitorService2 {
                     detailReport.setMonitorName("设备信息获取");
                     detailReport.setMonitorType(1);
                     detailReport.setTotalReport(totalReport);
-                    detailReportRepository.save(detailReport);
+                    detailReportRepository.save(drFyDev);
                     FanyaDevService.devMsg = "";
                     if (FanyaDevService.totalCode) {
                         sucCount = sucCount + 1;
@@ -426,18 +187,169 @@ public class MonitorService2 {
             }
         }
     }
-    //classify为1或3时(登录)
-    public String loginPro(){
-        return "";
+
+    //classify为1或3时(登录)生成token
+    public Boolean loginPro(MonitorItem monitorItem) {
+        String url = monitorItem.getUrl();
+        String asserts = monitorItem.getAsserts();
+        code = true;   //0为失败，1为成功
+        HttpHeaders requestHeaders = new HttpHeaders();
+        Map requestBody = new HashMap();
+        ResponseEntity<String> responseEntity = null;
+        requestBody = (Map) JSON.parse(monitorItem.getRequestBody());
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        String body = null;
+        try {
+            responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+            msgBody = responseEntity.getBody();//取返回体
+            body = responseEntity.getBody();
+        } catch (Exception e) {
+            errMsg = "接口请求异常";
+            msgBody = e.getMessage();//返回信息
+            code = false;
+            log.error("监控登录接口异常，在MonitorService的loginPro方法中，异常信息：", e);
+            return Boolean.parseBoolean(null);
+        }
+        if (body != null) {
+            JSONObject resJsonObject = null;
+            try {
+                resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
+            } catch (Exception e) {
+                errMsg = "接口请求异常";
+                log.error("VCMInfoService的getVCMInfos()中json格式数据转换异常");
+            }
+            if (resJsonObject != null) {
+                if (asserts != null) {
+                    //断言数组循环判断,与监控项返回的JSON对象比对
+                    for (Object assJsonObject : JSON.parseArray(asserts)) {
+                        JSONObject assJsonObject1 = (JSONObject) assJsonObject;
+                        //ststus为0是等号，为1是不等号
+                        if (assJsonObject1.get("ststus").equals("0")) {
+                            if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+                                code = (code & true);//成功
+                            } else {
+                                code = (code & false);//失败
+                                errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
+                            }
+                        } else {
+                            if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
+                                code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
+                            else {
+                                code &= false;
+                                errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
+                            }
+                            //取token
+                            if (monitorItem.getClassify() == 1) {
+                                accessToken = (String) resJsonObject.get(assJsonObject1.get("akey"));
+                            } else if (monitorItem.getClassify() == 3) {
+                                token = (String) resJsonObject.get(assJsonObject1.get("akey"));
+                            }
+                        }
+                    }
+                }
+            } else {
+                return Boolean.parseBoolean(null);
+            }
+        } else {
+            return Boolean.parseBoolean(null);
+        }
+        return code;
     }
 
-    //classify为2或4时(登录)、monitorType为2(页面)时
-    public void apiAndPagePro(){
+    //classify为2或4时、monitorType为2(页面)时
+    public void apiAndPagePro(MonitorItem monitorItem) {
+        String url = monitorItem.getUrl();
+        String asserts = monitorItem.getAsserts();
+        code = true;   //0为失败，1为成功
+        HttpHeaders requestHeaders = new HttpHeaders();
+        Map requestBody = new HashMap();
+        ResponseEntity<String> responseEntity = null;
+        requestBody = (Map) JSON.parse(monitorItem.getRequestBody());
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        String body = null;
+        Integer monitorType = monitorItem.getMonitorType();
 
+        try {
+            switch (monitorType){
+                case 1:
+                    responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+                    break;
+                case 2:
+                    responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
+                    break;
+                case 3:
+                    responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
+                    break;
+                case 4:
+                    responseEntity = restTemplate.exchange(url, HttpMethod.DELETE, requestEntity, String.class);
+                    break;
+                case 5:
+                    responseEntity = restTemplate.exchange(url, HttpMethod.PATCH, requestEntity, String.class);
+                    break;
+            }
+            msgBody = responseEntity.getBody();//取返回体
+            body = responseEntity.getBody();
+        } catch (Exception e) {
+            errMsg = "接口请求异常";
+            msgBody = e.getMessage();//返回信息
+            code = false;
+            log.error("接口请求数据异常，在MonitorService的apiAndPagePro方法中，异常信息：", e);
+            return ;
+        }
+        if (body != null) {
+            JSONObject resJsonObject = null;
+            try {
+                resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
+            } catch (Exception e) {
+                errMsg = "接口请求异常";
+                log.error("MonitorService的apiAndPagePro()中json格式数据转换异常");
+            }
+            if (resJsonObject != null) {
+                if (asserts != null) {
+                    for (Object assJsonObject : JSON.parseArray(asserts)) {
+                        JSONObject assJsonObject1 = (JSONObject) assJsonObject;
+                        if (assJsonObject1.get("ststus").equals("0")) {
+                            if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+                                code = (code & true);
+                            } else {
+                                code = (code & false);
+                                errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
+                            }
+                        } else {
+                            if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
+                                code = (code & true);
+                            else {
+                                code &= false;
+                                errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
+                            }
+                        }
+                    }
+                }
+            } else {
+                return ;
+            }
+        } else {
+            return ;
+        }
     }
 
     //monitorType为3(视频)时
-    public void videoPro(){
+    public void videoPro(MonitorItem monitorItem) {
+        code = true;
+        //1、测试视频相关所有接口
+        //2、测试视频文件获取
+        String domain = monitorItem.getUrl();
+        JSONObject params = (JSONObject) JSONObject.parse(monitorItem.getRequestBody());
+        String ivsid = params.getString("ivsid");
+        String channel = params.getString("channel");
+        DetailReport monite = aVideoMmonit.monite(domain, ivsid, channel);
 
+        errMsg = monite.getMessage();
+        msgBody = monite.getMessageBody();
+        if (monite.getCode()) {
+            sucCount = sucCount + 1;
+        } else {
+            code = false;
+        }
     }
 }
