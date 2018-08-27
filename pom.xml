@@ -7,7 +7,9 @@
     <groupId>top.watech</groupId>
     <artifactId>back-monitor</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
+
+    <!--<packaging>war</packaging>-->
 
     <name>back-monitor</name>
     <description>Demo project for Spring Boot</description>
@@ -98,11 +100,11 @@
             <version>1.6.1</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.boot</groupId>-->
+            <!--<artifactId>spring-boot-starter-tomcat</artifactId>-->
+            <!--<scope>provided</scope>-->
+        <!--</dependency>-->
 
         <!--security-->
         <!--<dependency>-->
@@ -112,7 +114,7 @@
     </dependencies>
 
     <build>
-        <finalName>SRPM</finalName>
+        <!--<finalName>SRPM</finalName>-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
