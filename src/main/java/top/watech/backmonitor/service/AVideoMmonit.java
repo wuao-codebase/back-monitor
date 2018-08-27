@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.dom4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.DetailReport;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 @Service
 public class AVideoMmonit {
-    @Autowired
+    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
     private  RestTemplate restTemplate;
 
     private DetailReport detailReport = new DetailReport();
@@ -268,7 +269,17 @@ public class AVideoMmonit {
         video(backurl1, channel, "历史");
     }
 
-    public DetailReport monite(String domain, String IVSID, String channel) {
+    public DetailReport monite(String domain, String IVSID, String channel, Integer connTimeout, Integer readTimeout) {
+
+        //超时设置
+        if (connTimeout != null){
+            simpleClientHttpRequestFactory.setConnectTimeout(connTimeout*1000);
+        }
+        if (connTimeout != null){
+            simpleClientHttpRequestFactory.setReadTimeout(readTimeout*1000);
+        }
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
+
         String sessionID = sessionID(domain, "admin", "1234");
         if (sessionID != null) {
             newtime(domain, sessionID, IVSID, channel);

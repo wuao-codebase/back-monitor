@@ -405,9 +405,9 @@ public class testVideo {
         return initurl;
     }
 
-    @Test
-    public void  testes(){
-        AVideoMmonit aVideoMmonit = new AVideoMmonit();
-        aVideoMmonit.monite("http://i201230b25.51mypc.cn:12791","IVS-C4-00-AD-03-65-E4",String.valueOf(1));
-    }
+//    @Test
+//    public void  testes(){
+//        AVideoMmonit aVideoMmonit = new AVideoMmonit();
+//        aVideoMmonit.monite("http://i201230b25.51mypc.cn:12791","IVS-C4-00-AD-03-65-E4",String.valueOf(1));
+//    }
 }

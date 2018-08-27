@@ -64,6 +64,15 @@ public class TestSrp {
 
     }
 
+    //根据srpId获取SRP
+    @Test
+    public void testFindSrps2() {
+        SRP srp = srpRepository.findBySrpId(65L);
+
+        System.err.println(srp);
+
+    }
+
     //获取所有SRP列表
     @Test
     public void testAllSrps() {

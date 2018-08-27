@@ -16,7 +16,7 @@ import java.util.List;
 public interface SrpRepository extends JpaRepository<SRP,Long> ,JpaSpecificationExecutor<SRP>{
 
     //根据userId获取srp列表
-    @Query(value = "select srps.srp_id,srps.srp_name,srps.description,srps.freq,srps.switchs FROM srps left join user_srp on srps.srp_id = user_srp.srp_id order by srp_id", nativeQuery = true)
+    @Query(value = "select srps.srp_id,srps.srp_name,srps.description,srps.freq,srps.switchs FROM srps left join user_srp on srps.srp_id = user_srp.srp_id where user_srp.user_id=? order by srp_id", nativeQuery = true)
     List<Object[]> findSrpByUserId(Long userId);
 
     //获取所有SRP，并根据id排序

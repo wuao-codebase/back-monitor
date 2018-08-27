@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.*;
@@ -30,13 +31,14 @@ import java.util.*;
 @Service
 public class WeixinSendService {
     @Autowired
-    private RestTemplate restTemplate;
-    @Autowired
     DetailReportService detailReportService;
     @Autowired
     MonitorItemRepository monitorItemRepository;
     @Autowired
     UserRepository userRepository;
+
+    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+    private  RestTemplate restTemplate;
 
     //tooken
     public static String token;
@@ -51,7 +53,7 @@ public class WeixinSendService {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         String body = null;
         try {
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
@@ -167,6 +169,7 @@ public class WeixinSendService {
         requestBody.put("text", itemJSONObj);
         requestBody.put("safe", 0);
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         try {
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
             log.info("微信消息推送接口返回体：", responseEntity.getBody());

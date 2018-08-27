@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.VCMInfo;
@@ -26,14 +27,17 @@ import java.util.Map;
 @Slf4j
 @Service
 public class VCMInfoService {
-    @Autowired
-    private RestTemplate restTemplate;
+//    @Autowired
+//    private RestTemplate restTemplate;
     @Autowired
     MonitorItemRepository monitorItemRepository;
     @Autowired
     VCMInfoRepository vcmInfoRepository;
     @Autowired
-    MonitorService monitorService;
+    MonitorService2 monitorService;
+
+    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+    private  RestTemplate restTemplate;
 
     //accessToken
     public static String accessToken;
@@ -47,6 +51,12 @@ public class VCMInfoService {
         requestBody.put("password", "P@ssw0rd");
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         String body = null;
+
+        //超时设置
+        simpleClientHttpRequestFactory.setConnectTimeout(3000);
+        simpleClientHttpRequestFactory.setReadTimeout(5000);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
+
         try {
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
             body = responseEntity.getBody();
@@ -59,7 +69,7 @@ public class VCMInfoService {
             accessToken = resJsonObject.get("accessToken").toString();
         }
         else {
-            accessToken = new MonitorService().accessToken;
+            accessToken = new MonitorService2().accessToken;
         }
     }
 
@@ -72,6 +82,12 @@ public class VCMInfoService {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         String body = null;
+
+        //超时设置
+        simpleClientHttpRequestFactory.setConnectTimeout(3000);
+        simpleClientHttpRequestFactory.setReadTimeout(5000);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
+
         try {
             ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
             body = responseEntity.getBody();

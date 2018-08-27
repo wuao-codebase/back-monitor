@@ -24,6 +24,9 @@ public class MonitorItem {
 
     private Long srpId;
 
+    private Integer connTimeout ;   //连接超时
+    private Integer readTimeout ;   //读取超时
+
     private SRP srp;             //外键
 
     @Id
@@ -120,6 +123,24 @@ public class MonitorItem {
     @ManyToOne//(fetch = FetchType.EAGER)
     public SRP getSrp() {
         return srp;
+    }
+
+    @Column(name = "conn_timeout")
+    public Integer getConnTimeout() {
+        return connTimeout;
+    }
+
+    public void setConnTimeout(Integer connTimeout) {
+        this.connTimeout = connTimeout;
+    }
+
+    @Column(name = "read_timeout")
+    public Integer getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(Integer readTimeout) {
+        this.readTimeout = readTimeout;
     }
 
     public void setSrp(SRP srp) {

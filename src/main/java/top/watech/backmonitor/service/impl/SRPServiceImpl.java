@@ -19,6 +19,7 @@ import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by fhm on 2018/7/27.
@@ -79,6 +80,14 @@ public class SRPServiceImpl implements SRPService {
             }
         });
         return srpList;
+    }
+
+    @Override
+    public List<SRP> findByUserId2(Long userId) {
+        User byUserId = userRepository.findByUserId(userId);
+        Set<SRP> srps = byUserId.getSrps();
+        ArrayList<SRP> srps1 = new ArrayList<>(srps);
+        return srps1;
     }
 
     /*显示用户列表*/

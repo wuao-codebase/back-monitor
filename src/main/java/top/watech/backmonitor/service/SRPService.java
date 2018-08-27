@@ -17,6 +17,8 @@ public interface SRPService {
 
     List<SRP> findSrpsByUserId(Long userId);
 
+    List<SRP> findByUserId2(Long userId);
+
     /*根据srpId获取SRP*/
     SRP getSrpById(Long srpId);
 

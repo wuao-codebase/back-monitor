@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -40,8 +41,8 @@ import java.util.Map;
 @Service
 @Slf4j
 public class MonitorService2 {
-    @Autowired
-    private RestTemplate restTemplate;
+//    @Autowired
+//    private RestTemplate restTemplate;
     @Autowired
     MonitorItemService monitorItemService;
     @Autowired
@@ -56,6 +57,9 @@ public class MonitorService2 {
     DetailReportRepository detailReportRepository;
     @Autowired
     TotalReportRepository totalReportRepository;
+
+//    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+//    RestTemplate restTemplate = null ;
 
     //tooken
     public String token;
@@ -84,6 +88,7 @@ public class MonitorService2 {
             accessToken = null;
             //总的监控报告
             TotalReport totalReport = new TotalReport();
+            totalReport.setSrp(srpRepository.findBySrpId(srpId));
             totalReportRepository.save(totalReport);
 
             //格式化时间
@@ -111,9 +116,12 @@ public class MonitorService2 {
                     } else if (monitorItem.getClassify() == 2 || monitorItem.getClassify() == 4) {
                         apiAndPagePro(monitorItem);
                     }
+                    else {
+                        continue;
+                    }
                 }
                 //页面
-                else if (monitorType == 2) {
+                else if (monitorType == 3) {
                     apiAndPagePro(monitorItem);
                 }
                 //视频
@@ -131,60 +139,62 @@ public class MonitorService2 {
                 detailReport.setMonitorType(monitorItem.getMonitorType());
                 detailReport.setTotalReport(totalReport);
                 detailReportRepository.save(detailReport);
-
-                System.err.println("监控项总个数：" + monitorItems.size());
-                System.err.println("监控项成功个数：" + sucCount);
-                System.err.println("*******************************************");
-
-                if (srpId == 65L && token != null) {
-                    fanyaDevService.testDev();
-                    //详细监控报告
-                    DetailReport drFyDev = new DetailReport();
-                    detailReport.setCode(FanyaDevService.totalCode);
-                    detailReport.setMessage(FanyaDevService.devMsg);
-                    detailReport.setMessageBody(String.valueOf(FanyaDevService.msgBody));
-                    detailReport.setMonitorId(42L);
-                    detailReport.setMonitorName("设备信息获取");
-                    detailReport.setMonitorType(1);
-                    detailReport.setTotalReport(totalReport);
-                    detailReportRepository.save(drFyDev);
-                    FanyaDevService.devMsg = "";
-                    if (FanyaDevService.totalCode) {
-                        sucCount = sucCount + 1;
-                    }
+                if (code == true){
+                    sucCount = sucCount + 1 ;
                 }
-
-                //结束时间
-                Date end = new Date();
-                String endTime1 = str.format(end);
-                Date endTime = null;
-                try {
-                    endTime = str.parse(endTime1);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                System.err.println("结束时间:" + endTime);
-
-                //总的监控报告
-                totalReport.setStartTime(startTime);
-                totalReport.setEndTime(endTime);
-                totalReport.setMonitorNum(monitorItems.size());
-                SRP srp = srpRepository.findBySrpId(srpId);
-                totalReport.setSrp(srp);
-                int errorCount = monitorItems.size() - sucCount;
-                totalReport.setErrorCount(errorCount);
-                totalReportRepository.saveAndFlush(totalReport);
-
-                /**
-                 * 微信推送，出错才推
-                 */
-                if (totalReport.getErrorCount() > 0) {
-                    weixinSendService.weixinSend(totalReport);
-                    WeixinSendService.weixinErrmsg = "";
-                    WeixinSendService.errorNotice = "";
-                }
-                sucCount = 0;
             }
+
+            if (srpId == 65L && token != null) {
+                fanyaDevService.testDev();
+                //详细监控报告
+                DetailReport drFyDev = new DetailReport();
+                drFyDev.setCode(FanyaDevService.totalCode);
+                drFyDev.setMessage(FanyaDevService.devMsg);
+                drFyDev.setMessageBody(String.valueOf(FanyaDevService.msgBody));
+                drFyDev.setMonitorId(42L);
+                drFyDev.setMonitorName("设备信息获取");
+                drFyDev.setMonitorType(1);
+                drFyDev.setTotalReport(totalReport);
+                detailReportRepository.save(drFyDev);
+                FanyaDevService.devMsg = "";
+                if (FanyaDevService.totalCode) {
+                    sucCount = sucCount + 1;
+                }
+            }
+            System.err.println("监控项总个数：" + monitorItems.size());
+            System.err.println("监控项成功个数：" + sucCount);
+            System.err.println("*******************************************");
+            //结束时间
+            Date end = new Date();
+            String endTime1 = str.format(end);
+            Date endTime = null;
+            try {
+                endTime = str.parse(endTime1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            System.err.println("结束时间:" + endTime);
+
+            //总的监控报告
+            totalReport.setStartTime(startTime);
+            totalReport.setEndTime(endTime);
+            totalReport.setMonitorNum(monitorItems.size());
+            totalReport.setSrpId(srpId);
+//            SRP srp = srpRepository.findBySrpId(65L);
+//            totalReport.setSrp(srpRepository.findBySrpId(65L));
+            int errorCount = monitorItems.size() - sucCount;
+            totalReport.setErrorCount(errorCount);
+            totalReportRepository.saveAndFlush(totalReport);
+
+            /**
+             * 微信推送，出错才推
+             */
+            if (totalReport.getErrorCount() > 0) {
+                weixinSendService.weixinSend(totalReport);
+                WeixinSendService.weixinErrmsg = "";
+                WeixinSendService.errorNotice = "";
+            }
+            sucCount = 0;
         }
     }
 
@@ -199,6 +209,15 @@ public class MonitorService2 {
         requestBody = (Map) JSON.parse(monitorItem.getRequestBody());
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         String body = null;
+
+        RestTemplate restTemplate;
+        //超时设置
+        SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+        if (monitorItem.getConnTimeout() != null){
+            simpleClientHttpRequestFactory.setConnectTimeout(monitorItem.getConnTimeout()*1000);
+        }
+        restTemplate= new RestTemplate(simpleClientHttpRequestFactory);
+
         try {
             responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
             msgBody = responseEntity.getBody();//取返回体
@@ -263,14 +282,27 @@ public class MonitorService2 {
         code = true;   //0为失败，1为成功
         HttpHeaders requestHeaders = new HttpHeaders();
         Map requestBody = new HashMap();
+        if (monitorItem.getClassify() == 2) {
+            requestHeaders.add("Authorization", "Bearer " + accessToken);
+        } else if (monitorItem.getClassify() == 4) {
+            requestHeaders.add("Authorization", "Bearer " + token);
+        }
         ResponseEntity<String> responseEntity = null;
         requestBody = (Map) JSON.parse(monitorItem.getRequestBody());
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         String body = null;
-        Integer monitorType = monitorItem.getMonitorType();
+
+        //超时设置
+        SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+        simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+        if (monitorItem.getConnTimeout() != null){
+            simpleClientHttpRequestFactory.setConnectTimeout(monitorItem.getConnTimeout()*1000);
+        }
+        RestTemplate restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
+        Integer requestType = monitorItem.getRequestType();
 
         try {
-            switch (monitorType){
+            switch (requestType){
                 case 1:
                     responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
                     break;
@@ -311,13 +343,16 @@ public class MonitorService2 {
                         if (assJsonObject1.get("ststus").equals("0")) {
                             if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
                                 code = (code & true);
+                                errMsg = "";
                             } else {
                                 code = (code & false);
                                 errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
                             }
                         } else {
-                            if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
+                            if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))){
                                 code = (code & true);
+                                errMsg = "";
+                            }
                             else {
                                 code &= false;
                                 errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
@@ -342,7 +377,9 @@ public class MonitorService2 {
         JSONObject params = (JSONObject) JSONObject.parse(monitorItem.getRequestBody());
         String ivsid = params.getString("ivsid");
         String channel = params.getString("channel");
-        DetailReport monite = aVideoMmonit.monite(domain, ivsid, channel);
+        Integer connTimeout = monitorItem.getConnTimeout();
+        Integer readTimeout = monitorItem.getReadTimeout();
+        DetailReport monite = aVideoMmonit.monite(domain, ivsid, channel,connTimeout,readTimeout);
 
         errMsg = monite.getMessage();
         msgBody = monite.getMessageBody();
