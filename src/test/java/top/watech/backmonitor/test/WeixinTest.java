@@ -11,6 +11,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.SRP;
@@ -25,8 +26,8 @@ import java.util.Map;
 @EnableAutoConfiguration
 public class WeixinTest {
 
-    @Autowired
-    private RestTemplate restTemplate;
+    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+    private  RestTemplate restTemplate;
     @Autowired
     SrpRepository srpRepository;
 
@@ -36,7 +37,7 @@ public class WeixinTest {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
         System.out.println("*************************************");
@@ -52,7 +53,7 @@ public class WeixinTest {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
         System.out.println("*************************************");
@@ -88,7 +89,7 @@ public class WeixinTest {
 
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
-
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST,requestEntity,String.class);
         System.err.println("*************************************");
         System.err.println(responseEntity);

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.service.AVideoMmonit;
@@ -28,9 +29,9 @@ import java.util.*;
 @EnableAutoConfiguration
 public class testVideo {
 
-    @Autowired
-    private RestTemplate restTemplate;
 
+    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+    private  RestTemplate restTemplate;
     private Map<String,String> map = new HashMap<String,String>();
 
     @Test
@@ -64,6 +65,7 @@ public class testVideo {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         //post
         ResponseEntity<String> responseEntity=null;
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         try {
         responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
         } catch (Exception e) {
@@ -88,6 +90,7 @@ public class testVideo {
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         ResponseEntity<String> responseEntity=null;
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         try {
             responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
 
@@ -115,6 +118,7 @@ public class testVideo {
         requestBody.put("tokenTs", 20160);
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST,requestEntity,String.class);
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
         return parse.get("token").toString();
@@ -127,6 +131,7 @@ public class testVideo {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
         System.out.println(responseEntity);
         JSONObject parse = JSON.parseObject(responseEntity.getBody());
@@ -152,6 +157,7 @@ public class testVideo {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         //post
         ResponseEntity<String> responseEntity=null;
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         try {
             responseEntity =  restTemplate.exchange(sessionIDurl, HttpMethod.PUT, requestEntity, String.class);
 
@@ -186,6 +192,7 @@ public class testVideo {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
 
         ResponseEntity<String> responseEntity=null;
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         try {
             responseEntity =  restTemplate.exchange(LiveStreamurl, HttpMethod.PUT, requestEntity, String.class);
 
@@ -217,6 +224,7 @@ public class testVideo {
         //post
 
         ResponseEntity<String> responseEntity=null;
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         try {
             responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
 
@@ -243,6 +251,7 @@ public class testVideo {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(null, requestHeaders);
         //post
         ResponseEntity<String> responseEntity=null;
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         try {
             responseEntity = restTemplate.exchange(url, HttpMethod.GET, requestEntity, String.class);
 
@@ -280,6 +289,7 @@ public class testVideo {
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         //post
         ResponseEntity<String> responseEntity=null;
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         try {
            responseEntity = restTemplate.exchange(LiveStreamurl, HttpMethod.PUT, requestEntity, String.class);
 
