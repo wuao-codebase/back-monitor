@@ -1,7 +1,6 @@
 package top.watech.backmonitor.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.DetailReport;
 import top.watech.backmonitor.entity.MonitorItem;
-import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.TotalReport;
 import top.watech.backmonitor.repository.DetailReportRepository;
 import top.watech.backmonitor.repository.SrpRepository;
@@ -348,7 +346,7 @@ public class MonitorService2 {
                                 code = (code & false);
                                 errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
                             }
-                        } else {
+                        } else if(assJsonObject1.get("ststus").equals("1")){
                             if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))){
                                 code = (code & true);
                                 errMsg = "";
@@ -356,6 +354,15 @@ public class MonitorService2 {
                             else {
                                 code &= false;
                                 errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
+                            }
+                        }else {
+                            if (resJsonObject.getString(assJsonObject1.getString("akey")).contains(assJsonObject1.getString("value"))){
+                                code = (code & true);
+                                errMsg = "";
+                            }
+                            else {
+                                code &= false;
+                                errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));
                             }
                         }
                     }
