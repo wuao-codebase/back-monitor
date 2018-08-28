@@ -248,7 +248,7 @@ public class MonitorService2 {
                                 code = (code & false);//失败
                                 errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
                             }
-                        } else {
+                        } else if (assJsonObject1.get("ststus").equals("1")){
                             if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
                                 code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
                             else {
@@ -260,6 +260,15 @@ public class MonitorService2 {
                                 accessToken = (String) resJsonObject.get(assJsonObject1.get("akey"));
                             } else if (monitorItem.getClassify() == 3) {
                                 token = (String) resJsonObject.get(assJsonObject1.get("akey"));
+                            }
+                        }else {
+                            if (resJsonObject.getString(assJsonObject1.getString("akey")).contains(assJsonObject1.getString("value"))){
+                                code = (code & true);
+                                errMsg = "";
+                            }
+                            else {
+                                code &= false;
+                                errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));
                             }
                         }
                     }
@@ -390,10 +399,6 @@ public class MonitorService2 {
 
         errMsg = monite.getMessage();
         msgBody = monite.getMessageBody();
-        if (monite.getCode()) {
-            sucCount = sucCount + 1;
-        } else {
-            code = false;
-        }
+        code = monite.getCode();
     }
 }
