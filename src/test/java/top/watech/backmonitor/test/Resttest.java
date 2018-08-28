@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,19 +22,21 @@ import java.util.Map;
 @SpringBootTest
 @EnableAutoConfiguration
 public class Resttest {
+    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
+    private  RestTemplate restTemplate;
 
-        @Autowired
-        private RestTemplate restTemplate;
 
         //无参get请求
       @Test public void get(){
             String url="https://www.baidu.com/";
+          restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
             System.out.println( restTemplate.getForEntity(url, String.class).getBody());
             System.out.println( restTemplate.getForEntity(url, String.class).getStatusCode());
 
         }
     @Test
     public void getparms() throws Exception {
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         Map<String,String> multiValueMap = new HashMap<>();
         multiValueMap.put("username","lake");//传值，但要在url上配置相应的参数
         restTemplate.getForObject("/test/get?username={username}",String.class,multiValueMap);
@@ -50,6 +53,7 @@ public class Resttest {
         requestBody.put("password", "P@ssw0rd");
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         //post
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST, requestEntity, String.class);
         System.out.println(responseEntity.getBody());
@@ -101,6 +105,7 @@ public class Resttest {
         requestBody.put("tokenTs", 20160);
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.POST,requestEntity,String.class);
         System.out.println("*************************************");
         System.out.println(responseEntity);
@@ -116,6 +121,7 @@ public class Resttest {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
         System.out.println("*************************************");
         System.out.println(responseEntity);
@@ -130,6 +136,7 @@ public class Resttest {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
         System.out.println("*************************************");
         System.out.println(responseEntity);
@@ -143,6 +150,7 @@ public class Resttest {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
         System.out.println("*************************************");
         System.out.println(responseEntity);
@@ -157,6 +165,7 @@ public class Resttest {
         Map<String, Object> requestBody = new HashMap<String, Object>();
         //HttpEntity
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         ResponseEntity<String> responseEntity = restTemplate.exchange(url,HttpMethod.GET,requestEntity,String.class);
         System.out.println("*************************************");
         System.out.println(responseEntity);
