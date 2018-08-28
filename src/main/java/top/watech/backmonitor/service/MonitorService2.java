@@ -188,11 +188,11 @@ public class MonitorService2 {
             /**
              * 微信推送，出错才推
              */
-            if (totalReport.getErrorCount() > 0) {
-                weixinSendService.weixinSend(totalReport);
-                WeixinSendService.weixinErrmsg = "";
-                WeixinSendService.errorNotice = "";
-            }
+//            if (totalReport.getErrorCount() > 0) {
+//                weixinSendService.weixinSend(totalReport);
+//                WeixinSendService.weixinErrmsg = "";
+//                WeixinSendService.errorNotice = "";
+//            }
             sucCount = 0;
         }
     }
