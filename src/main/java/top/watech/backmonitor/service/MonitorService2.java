@@ -39,7 +39,7 @@ import java.util.Map;
 @Service
 @Slf4j
 public class MonitorService2 {
-//    @Autowired
+    //    @Autowired
 //    private RestTemplate restTemplate;
     @Autowired
     MonitorItemService monitorItemService;
@@ -82,6 +82,8 @@ public class MonitorService2 {
     public void monitorLogic(Long srpId) {
 
         synchronized (this) {
+            System.err.println("start!");
+            System.err.println(srpId);
             token = null;
             accessToken = null;
             //总的监控报告
@@ -104,7 +106,7 @@ public class MonitorService2 {
 
             //SRP的所有监控项（sort by classify）
             List<MonitorItem> monitorItems = monitorItemService.getMonitTtemListBySrpId(srpId);
-            System.err.println("start!");
+
             for (MonitorItem monitorItem : monitorItems) {
                 Integer monitorType = monitorItem.getMonitorType();
                 //接口
@@ -113,8 +115,7 @@ public class MonitorService2 {
                         loginPro(monitorItem);
                     } else if (monitorItem.getClassify() == 2 || monitorItem.getClassify() == 4) {
                         apiAndPagePro(monitorItem);
-                    }
-                    else {
+                    } else {
                         continue;
                     }
                 }
@@ -137,8 +138,8 @@ public class MonitorService2 {
                 detailReport.setMonitorType(monitorItem.getMonitorType());
                 detailReport.setTotalReport(totalReport);
                 detailReportRepository.save(detailReport);
-                if (code == true){
-                    sucCount = sucCount + 1 ;
+                if (code == true) {
+                    sucCount = sucCount + 1;
                 }
             }
 
@@ -207,19 +208,19 @@ public class MonitorService2 {
         requestBody = (Map) JSON.parse(monitorItem.getRequestBody());
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<Map<String, Object>>(requestBody, requestHeaders);
         String body = null;
-
+        int statusCodeValue;
         RestTemplate restTemplate;
         //超时设置
         SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
-        if (monitorItem.getConnTimeout() != null){
-            simpleClientHttpRequestFactory.setConnectTimeout(monitorItem.getConnTimeout()*1000);
+        if (monitorItem.getConnTimeout() != null) {
+            simpleClientHttpRequestFactory.setConnectTimeout(monitorItem.getConnTimeout() * 1000);
         }
-        restTemplate= new RestTemplate(simpleClientHttpRequestFactory);
-
+        restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         try {
             responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
             msgBody = responseEntity.getBody();//取返回体
             body = responseEntity.getBody();
+            statusCodeValue = responseEntity.getStatusCodeValue();
         } catch (Exception e) {
             errMsg = "接口请求异常";
             msgBody = e.getMessage();//返回信息
@@ -227,57 +228,68 @@ public class MonitorService2 {
             log.error("监控登录接口异常，在MonitorService的loginPro方法中，异常信息：", e);
             return Boolean.parseBoolean(null);
         }
-        if (body != null) {
-            JSONObject resJsonObject = null;
-            try {
-                resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
-            } catch (Exception e) {
-                errMsg = "接口请求异常";
-                log.error("VCMInfoService的getVCMInfos()中json格式数据转换异常");
-            }
-            if (resJsonObject != null) {
-                if (asserts != null) {
-                    //断言数组循环判断,与监控项返回的JSON对象比对
-                    for (Object assJsonObject : JSON.parseArray(asserts)) {
-                        JSONObject assJsonObject1 = (JSONObject) assJsonObject;
-                        //ststus为0是等号，为1是不等号
-                        if (assJsonObject1.get("ststus").equals("0")) {
-                            if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
-                                code = (code & true);//成功
+        if (statusCodeValue != 200) {
+            errMsg = "接口请求异常";
+            code = false;
+            return null;
+        } else {
+            if (body != null) {
+                JSONObject resJsonObject = null;
+                try {
+                    resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
+                } catch (Exception e) {
+                    if (monitorItem.getMonitorType() == 3) {
+                        errMsg = "";
+                    } else {
+                        errMsg = "接口请求异常";
+                    }
+                    log.error("VCMInfoService的getVCMInfos()中json格式数据转换异常");
+                }
+                if (resJsonObject != null) {
+                    if (asserts != null) {
+                        //断言数组循环判断,与监控项返回的JSON对象比对
+                        for (Object assJsonObject : JSON.parseArray(asserts)) {
+                            JSONObject assJsonObject1 = (JSONObject) assJsonObject;
+                            //ststus为0是等号，为1是不等号
+                            if (assJsonObject1.get("ststus").equals("0")) {
+                                if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+                                    code = (code & true);//成功
+                                    errMsg = "";
+                                } else {
+                                    code = (code & false);//失败
+                                    errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
+                                }
+                            } else if (assJsonObject1.get("ststus").equals("1")) {
+                                if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+                                    code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
+                                    errMsg = "";
+                                } else {
+                                    code &= false;
+                                    errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
+                                }
+                                //取token
+                                if (monitorItem.getClassify() == 1) {
+                                    accessToken = (String) resJsonObject.get(assJsonObject1.get("akey"));
+                                } else if (monitorItem.getClassify() == 3) {
+                                    token = (String) resJsonObject.get(assJsonObject1.get("akey"));
+                                }
                             } else {
-                                code = (code & false);//失败
-                                errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
-                            }
-                        } else if (assJsonObject1.get("ststus").equals("1")){
-                            if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value")))
-                                code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
-                            else {
-                                code &= false;
-                                errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
-                            }
-                            //取token
-                            if (monitorItem.getClassify() == 1) {
-                                accessToken = (String) resJsonObject.get(assJsonObject1.get("akey"));
-                            } else if (monitorItem.getClassify() == 3) {
-                                token = (String) resJsonObject.get(assJsonObject1.get("akey"));
-                            }
-                        }else {
-                            if (resJsonObject.getString(assJsonObject1.getString("akey")).contains(assJsonObject1.getString("value"))){
-                                code = (code & true);
-                                errMsg = "";
-                            }
-                            else {
-                                code &= false;
-                                errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));
+                                if (resJsonObject.getString(assJsonObject1.getString("akey")).contains(assJsonObject1.getString("value"))) {
+                                    code = (code & true);
+                                    errMsg = "";
+                                } else {
+                                    code &= false;
+                                    errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));
+                                }
                             }
                         }
                     }
+                } else {
+                    return Boolean.parseBoolean(null);
                 }
             } else {
                 return Boolean.parseBoolean(null);
             }
-        } else {
-            return Boolean.parseBoolean(null);
         }
         return code;
     }
@@ -302,14 +314,14 @@ public class MonitorService2 {
         //超时设置
         SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
         simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
-        if (monitorItem.getConnTimeout() != null){
-            simpleClientHttpRequestFactory.setConnectTimeout(monitorItem.getConnTimeout()*1000);
+        if (monitorItem.getConnTimeout() != null) {
+            simpleClientHttpRequestFactory.setConnectTimeout(monitorItem.getConnTimeout() * 1000);
         }
         RestTemplate restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
         Integer requestType = monitorItem.getRequestType();
-
+        int statusCodeValue;
         try {
-            switch (requestType){
+            switch (requestType) {
                 case 1:
                     responseEntity = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
                     break;
@@ -328,59 +340,68 @@ public class MonitorService2 {
             }
             msgBody = responseEntity.getBody();//取返回体
             body = responseEntity.getBody();
+            statusCodeValue = responseEntity.getStatusCodeValue();
         } catch (Exception e) {
             errMsg = "接口请求异常";
             msgBody = e.getMessage();//返回信息
             code = false;
             log.error("接口请求数据异常，在MonitorService的apiAndPagePro方法中，异常信息：", e);
-            return ;
+            return;
         }
-        if (body != null) {
-            JSONObject resJsonObject = null;
-            try {
-                resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
-            } catch (Exception e) {
-                errMsg = "接口请求异常";
-                log.error("MonitorService的apiAndPagePro()中json格式数据转换异常");
-            }
-            if (resJsonObject != null) {
-                if (asserts != null) {
-                    for (Object assJsonObject : JSON.parseArray(asserts)) {
-                        JSONObject assJsonObject1 = (JSONObject) assJsonObject;
-                        if (assJsonObject1.get("ststus").equals("0")) {
-                            if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
-                                code = (code & true);
-                                errMsg = "";
+        if (statusCodeValue != 200) {
+            errMsg = "接口请求异常";
+            code = false;
+            return;
+        } else {
+            if (body != null) {
+                JSONObject resJsonObject = null;
+                try {
+                    resJsonObject = JSON.parseObject(body);//接口返回内容的json对象
+                } catch (Exception e) {
+                    if (monitorItem.getMonitorType() == 3) {
+                        errMsg = "";
+                    } else {
+                        errMsg = "接口请求异常";
+                    }
+                    log.error("MonitorService的apiAndPagePro()中json格式数据转换异常");
+                }
+                if (resJsonObject != null) {
+                    if (asserts != null) {
+                        for (Object assJsonObject : JSON.parseArray(asserts)) {
+                            JSONObject assJsonObject1 = (JSONObject) assJsonObject;
+                            if (assJsonObject1.get("ststus").equals("0")) {
+                                if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+                                    code = (code & true);
+                                    errMsg = "";
+                                } else {
+                                    code = (code & false);
+                                    errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
+                                }
+                            } else if (assJsonObject1.get("ststus").equals("1")) {
+                                if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+                                    code = (code & true);
+                                    errMsg = "";
+                                } else {
+                                    code &= false;
+                                    errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
+                                }
                             } else {
-                                code = (code & false);
-                                errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
-                            }
-                        } else if(assJsonObject1.get("ststus").equals("1")){
-                            if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))){
-                                code = (code & true);
-                                errMsg = "";
-                            }
-                            else {
-                                code &= false;
-                                errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
-                            }
-                        }else {
-                            if (resJsonObject.getString(assJsonObject1.getString("akey")).contains(assJsonObject1.getString("value"))){
-                                code = (code & true);
-                                errMsg = "";
-                            }
-                            else {
-                                code &= false;
-                                errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));
+                                if (resJsonObject.getString(assJsonObject1.getString("akey")).contains(assJsonObject1.getString("value"))) {
+                                    code = (code & true);
+                                    errMsg = "";
+                                } else {
+                                    code &= false;
+                                    errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));
+                                }
                             }
                         }
                     }
+                } else {
+                    return;
                 }
             } else {
-                return ;
+                return;
             }
-        } else {
-            return ;
         }
     }
 
@@ -395,7 +416,7 @@ public class MonitorService2 {
         String channel = params.getString("channel");
         Integer connTimeout = monitorItem.getConnTimeout();
         Integer readTimeout = monitorItem.getReadTimeout();
-        DetailReport monite = aVideoMmonit.monite(domain, ivsid, channel,connTimeout,readTimeout);
+        DetailReport monite = aVideoMmonit.monite(domain, ivsid, channel, connTimeout, readTimeout);
 
         errMsg = monite.getMessage();
         msgBody = monite.getMessageBody();
