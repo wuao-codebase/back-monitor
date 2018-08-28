@@ -106,7 +106,7 @@ public class WeixinSendService {
             }
             if (!detailReport.getCode()) {
                 String errMessage = detailReport.getMessage();
-                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType + ",返回异常，返回结果：" + errMessage + "\n";
+                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType + "异常，返回结果：" + errMessage + "\n";
                 if (!"设备信息获取".equals(monitorName)) {
 
                     if (monitorItem.getClassify() == 1 || monitorItem.getClassify() == 3) {
@@ -124,19 +124,27 @@ public class WeixinSendService {
                 }
                 i++;
             } else {
-                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType + ",返回正常；\n";
+                weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType + "正常；\n";
                 i++;
             }
         }
 
-        String str = "【异常通知】" + errorNotice + "\n\n【监控日志】\n·SRP名称：" + srp.getSrpName() + "\n" +
+//        String str = "【异常通知】" + errorNotice + "\n\n【监控日志】\n·SRP名称：" + srp.getSrpName() + "\n" +
+//                "·总测试项：" + monitorNum + "| " + "成功：" + sucCount + "| " + "失败：" + errorCount + "\n" +
+//                "·测试开始时间：" + formatStartTime + "\n" +
+//                "·各监控项状态：" + "\n" +
+//                weixinErrmsg +
+//                "·测试结束时间：" + formatEndTime + "\n\n" +
+//                "(详细监控信息请前往网页端查看)" + "\n";
+
+        String str = "【异常通知】\n·SRP名称：" + srp.getSrpName() + "\n" +
                 "·总测试项：" + monitorNum + "| " + "成功：" + sucCount + "| " + "失败：" + errorCount + "\n" +
+                "\n【异常项目】" + errorNotice + "\n\n【监控日志】\n" +
                 "·测试开始时间：" + formatStartTime + "\n" +
                 "·各监控项状态：" + "\n" +
                 weixinErrmsg +
                 "·测试结束时间：" + formatEndTime + "\n\n" +
-                "(详细监控信息请前往网页端查看)" + "\n";
-
+                "(详细监控信息请前往网页端查看:<a href=\"http://172.21.84.200:8080/#/login\">SRP状态监控系统</a>)" + "\n";
         //SRP所属用户全推送
         Set<User> users = srp.getUsers();
         StringBuilder s = new StringBuilder("");
