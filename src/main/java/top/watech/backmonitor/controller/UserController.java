@@ -124,6 +124,22 @@ public class UserController {
         }
     }
 
+    /*id不是？且手机号是？的用户*/
+    @GetMapping("/filter/getRepetUser/{userId}/{phone}")
+    public RespEntity getRepetUser(@PathVariable Long userId,@PathVariable Long phone) throws Exception {
+//        public RespEntity getRepetUser(@RequestParam("userId") Long userId,@RequestParam("phone") Long phone) throws Exception {
+        User repetUser = userService.getRepetUser(userId, phone);
+        if (repetUser!=null){
+            return new RespEntity(RespCode.SUCCESS,repetUser);
+        }
+        else {
+            RespCode respCode = RespCode.WARN;
+            respCode.setMsg("没有重复用户");
+            respCode.setCode(-1);
+            return new RespEntity(respCode);
+        }
+    }
+
     /*更新用户密码*/
     @PutMapping ("/filter/updateUserpwd/{UserId}/{oldPwd}/{userPwd}")
     public RespEntity updateUserpwd(@PathVariable Long  UserId, @PathVariable String oldPwd, @PathVariable String userPwd){

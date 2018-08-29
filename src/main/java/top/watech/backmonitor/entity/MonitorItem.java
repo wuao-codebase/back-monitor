@@ -27,6 +27,8 @@ public class MonitorItem {
     private Integer connTimeout ;   //连接超时
     private Integer readTimeout ;   //读取超时
 
+    private Boolean isOld;
+
     private SRP srp;             //外键
 
     @Id
@@ -141,6 +143,15 @@ public class MonitorItem {
 
     public void setReadTimeout(Integer readTimeout) {
         this.readTimeout = readTimeout;
+    }
+
+    @Column(name = "is_old")
+    public Boolean getOld() {
+        return isOld;
+    }
+
+    public void setOld(Boolean old) {
+        isOld = old;
     }
 
     public void setSrp(SRP srp) {

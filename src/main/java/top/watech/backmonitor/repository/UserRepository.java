@@ -29,6 +29,8 @@ public interface UserRepository extends JpaRepository<User,Long> ,JpaSpecificati
     @Query(value = "select users.user_id,users.email,users.role,users.phone,users.user_pwd,users.remark, string_agg(srps.srp_name,'，') as srpnames,users.user_name from users left join user_srp on users.user_id = user_srp.user_id left join srps on user_srp.srp_id = srps.srp_id group by users.user_id order by user_id", nativeQuery = true)
     List<Object[]> getuserlist();
 
+    //id不是？且手机号是？的用户
+    User findByUserIdIsNotAndPhoneIs(Long userId,Long phone);
 
 //    //查询用户名称包含username字符串的用户对象
 //    List<User> findByUsernameContaining(String username);

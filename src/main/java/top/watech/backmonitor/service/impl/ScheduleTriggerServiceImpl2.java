@@ -27,7 +27,7 @@ public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
     private SrpRepository srpRepository;
 
     @Override
-    @Scheduled(cron = "0 */10 * * * ?")  //"0/50 * * * * ?"0 0 23:00 * * ?每天晚上11点调用这个方法来更新quartz中的任务
+    @Scheduled(cron = "0 */4 * * * ?")  //"0/50 * * * * ?"0 0 23:00 * * ?每天晚上11点调用这个方法来更新quartz中的任务
     @PostConstruct
     public void refreshTrigger() {
         try {
@@ -35,7 +35,6 @@ public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
             List<SRP> srpList = srpRepository.findAll();
             if (srpList != null) {
                 for (SRP srp : srpList) {
-//                    synchronized (srp) {
                         boolean switchs = srp.isSwitchs();//该任务触发器目前的状态
                         String srpId = String.valueOf(srp.getSrpId());
                         TriggerKey triggerKey = TriggerKey.triggerKey(srpId);
@@ -90,7 +89,6 @@ public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
                         }
                     }
                 }
-//            }
         } catch (Exception e) {
             logger.error("定时任务每日刷新触发器任务异常，在ScheduleTriggerServiceImpl的方法refreshTrigger中，异常信息：", e);
         }

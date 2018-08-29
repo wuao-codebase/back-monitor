@@ -129,14 +129,6 @@ public class WeixinSendService {
             }
         }
 
-//        String str = "【异常通知】" + errorNotice + "\n\n【监控日志】\n·SRP名称：" + srp.getSrpName() + "\n" +
-//                "·总测试项：" + monitorNum + "| " + "成功：" + sucCount + "| " + "失败：" + errorCount + "\n" +
-//                "·测试开始时间：" + formatStartTime + "\n" +
-//                "·各监控项状态：" + "\n" +
-//                weixinErrmsg +
-//                "·测试结束时间：" + formatEndTime + "\n\n" +
-//                "(详细监控信息请前往网页端查看)" + "\n";
-
         String str = "【异常通知】\n·SRP名称：" + srp.getSrpName() + "\n" +
                 "·总测试项：" + monitorNum + "| " + "成功：" + sucCount + "| " + "失败：" + errorCount + "\n" +
                 "\n【异常项目】" + errorNotice + "\n\n【监控日志】\n" +

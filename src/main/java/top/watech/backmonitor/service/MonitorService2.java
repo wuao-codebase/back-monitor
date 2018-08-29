@@ -14,8 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.DetailReport;
 import top.watech.backmonitor.entity.MonitorItem;
+import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.TotalReport;
 import top.watech.backmonitor.repository.DetailReportRepository;
+import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.SrpRepository;
 import top.watech.backmonitor.repository.TotalReportRepository;
 
@@ -55,6 +57,8 @@ public class MonitorService2 {
     DetailReportRepository detailReportRepository;
     @Autowired
     TotalReportRepository totalReportRepository;
+    @Autowired
+    MonitorItemRepository monitorItemRepository;
 
 //    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
 //    RestTemplate restTemplate = null ;
@@ -88,8 +92,8 @@ public class MonitorService2 {
             accessToken = null;
             //总的监控报告
             TotalReport totalReport = new TotalReport();
-            totalReport.setSrp(srpRepository.findBySrpId(srpId));
-            totalReportRepository.save(totalReport);
+//            totalReport.setSrp(srpRepository.findBySrpId(srpId));
+//            totalReportRepository.save(totalReport);
 
             //格式化时间
             SimpleDateFormat str = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -106,7 +110,7 @@ public class MonitorService2 {
 
             //SRP的所有监控项（sort by classify）
             List<MonitorItem> monitorItems = monitorItemService.getMonitTtemListBySrpId(srpId);
-
+            int size = monitorItems.size();
             for (MonitorItem monitorItem : monitorItems) {
                 Integer monitorType = monitorItem.getMonitorType();
                 //接口
@@ -160,7 +164,7 @@ public class MonitorService2 {
                     sucCount = sucCount + 1;
                 }
             }
-            System.err.println("监控项总个数：" + monitorItems.size());
+            System.err.println("监控项总个数：" + size);
             System.err.println("监控项成功个数：" + sucCount);
             System.err.println("*******************************************");
             //结束时间
@@ -177,11 +181,11 @@ public class MonitorService2 {
             //总的监控报告
             totalReport.setStartTime(startTime);
             totalReport.setEndTime(endTime);
-            totalReport.setMonitorNum(monitorItems.size());
+            totalReport.setMonitorNum(size);
             totalReport.setSrpId(srpId);
 //            SRP srp = srpRepository.findBySrpId(65L);
 //            totalReport.setSrp(srpRepository.findBySrpId(65L));
-            int errorCount = monitorItems.size() - sucCount;
+            int errorCount = size - sucCount;
             totalReport.setErrorCount(errorCount);
             totalReportRepository.saveAndFlush(totalReport);
 

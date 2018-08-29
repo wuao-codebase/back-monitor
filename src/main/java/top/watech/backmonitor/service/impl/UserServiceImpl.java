@@ -170,6 +170,13 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    /*id不是？且手机号是？的用户*/
+    @Override
+    public User getRepetUser(Long userId, Long phone) {
+        User user = userRepository.findByUserIdIsNotAndPhoneIs(userId, phone);
+        return user;
+    }
+
     //保存所有用户
     @Transactional
     public void saveUsers(List< User> users){

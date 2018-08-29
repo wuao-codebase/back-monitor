@@ -44,6 +44,9 @@ public interface UserService {
     /*判断当前手机号是否已存在（是否已有对应用户）*/
     User isPhoneRepet(Long phone);
 
+    /*id不是？且手机号是？的用户*/
+    User getRepetUser(Long userId,Long phone);
+
     void saveUsers(List<User> users) throws Exception;
 
     User getUserByName(String userName);
