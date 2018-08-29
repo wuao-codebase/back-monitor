@@ -5,6 +5,13 @@ spring:
     password: wuao1992
     dbcp2:
       driver-class-name: org.postgresql.Driver
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://127.0.0.1:5432/monitor_db
+#    username: postgres
+#    password: postgres
+#    dbcp2:
+#      driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: update

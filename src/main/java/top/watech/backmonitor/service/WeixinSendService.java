@@ -136,7 +136,7 @@ public class WeixinSendService {
                 "·各监控项状态：" + "\n" +
                 weixinErrmsg +
                 "·测试结束时间：" + formatEndTime + "\n\n" +
-                "(详细监控信息请前往网页端查看:<a href=\"http://172.21.84.200:8080/#/login\">SRP状态监控系统</a>)" + "\n";
+                "(详细监控信息请前往网页端查看:<a href=\"http://172.21.84.200:8080/SRPM/#\">SRP状态监控系统</a>)" + "\n";
         //SRP所属用户全推送
         Set<User> users = srp.getUsers();
         StringBuilder s = new StringBuilder("");
