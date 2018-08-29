@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.DetailReport;
 import top.watech.backmonitor.entity.MonitorItem;
-import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.entity.TotalReport;
 import top.watech.backmonitor.repository.DetailReportRepository;
 import top.watech.backmonitor.repository.MonitorItemRepository;
@@ -60,9 +59,6 @@ public class MonitorService2 {
     @Autowired
     MonitorItemRepository monitorItemRepository;
 
-//    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
-//    RestTemplate restTemplate = null ;
-
     //tooken
     public String token;
 
@@ -92,8 +88,8 @@ public class MonitorService2 {
             accessToken = null;
             //总的监控报告
             TotalReport totalReport = new TotalReport();
-//            totalReport.setSrp(srpRepository.findBySrpId(srpId));
-//            totalReportRepository.save(totalReport);
+            totalReport.setSrp(srpRepository.findBySrpId(srpId));
+            totalReportRepository.save(totalReport);
 
             //格式化时间
             SimpleDateFormat str = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -188,6 +184,8 @@ public class MonitorService2 {
             int errorCount = size - sucCount;
             totalReport.setErrorCount(errorCount);
             totalReportRepository.saveAndFlush(totalReport);
+            System.err.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+            System.err.println(totalReport);
 
             /**
              * 微信推送，出错才推
@@ -256,7 +254,7 @@ public class MonitorService2 {
                             JSONObject assJsonObject1 = (JSONObject) assJsonObject;
                             //ststus为0是等号，为1是不等号
                             if (assJsonObject1.get("ststus").equals("0")) {
-                                if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+                                if (String.valueOf(resJsonObject.get(assJsonObject1.get("akey"))).equals(assJsonObject1.get("value"))) {
                                     code = (code & true);//成功
                                     errMsg = "";
                                 } else {
@@ -264,7 +262,7 @@ public class MonitorService2 {
                                     errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
                                 }
                             } else if (assJsonObject1.get("ststus").equals("1")) {
-                                if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+                                if (!String.valueOf(resJsonObject.get(assJsonObject1.get("akey"))).equals(assJsonObject1.get("value"))) {
                                     code = (code & true);    //所有断言判断都成功这个监控项才算成功，有一个失败就算失败
                                     errMsg = "";
                                 } else {
@@ -374,7 +372,8 @@ public class MonitorService2 {
                         for (Object assJsonObject : JSON.parseArray(asserts)) {
                             JSONObject assJsonObject1 = (JSONObject) assJsonObject;
                             if (assJsonObject1.get("ststus").equals("0")) {
-                                if (resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+
+                                if (String.valueOf(resJsonObject.get(assJsonObject1.get("akey"))).equals(assJsonObject1.get("value"))) {
                                     code = (code & true);
                                     errMsg = "";
                                 } else {
@@ -382,7 +381,7 @@ public class MonitorService2 {
                                     errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
                                 }
                             } else if (assJsonObject1.get("ststus").equals("1")) {
-                                if (!resJsonObject.get(assJsonObject1.get("akey")).equals(assJsonObject1.get("value"))) {
+                                if (!String.valueOf(resJsonObject.get(assJsonObject1.get("akey"))).equals(assJsonObject1.get("value"))) {
                                     code = (code & true);
                                     errMsg = "";
                                 } else {
