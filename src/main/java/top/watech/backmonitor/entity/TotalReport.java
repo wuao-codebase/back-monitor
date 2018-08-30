@@ -100,7 +100,7 @@ public class TotalReport {
         this.srpName = srpName;
     }
 
-    @JsonBackReference
+    @JsonBackReference(value = "srp-profiles")
     @JoinColumn(name = "srp_id")
     @ManyToOne//(fetch = FetchType.EAGER)
     public SRP getSrp() {
@@ -112,6 +112,7 @@ public class TotalReport {
     }
 
     //
+    @JsonBackReference(value = "detailReports-profiles")
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "totalReport",cascade = CascadeType.REMOVE)
     public List<DetailReport> getDetailReports() {
         return detailReports;

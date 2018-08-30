@@ -75,7 +75,7 @@ public class TotalReportServiceImpl implements TotalReportService {
                     Predicate[] pre = new Predicate[predicate.size()];
                     return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
                 }
-            }, PageRequest.of(pageNo - 1, 15,sort));
+            }, PageRequest.of(pageNo - 1, 15, sort));
             for (TotalReport page : pages) {
                 if (page.getSrp().getSrpName() != null) {
                     page.setSrpName(page.getSrp().getSrpName());
@@ -86,6 +86,8 @@ public class TotalReportServiceImpl implements TotalReportService {
             pageEntity.setData(pages.getContent());
             return pageEntity;
         } else {
+            List<SRP> srpList = srpService.findByUserId(userId);//62L
+            if (srpList.size() != 0) {
                 Page<TotalReport> pages = totalReportRepository.findAll(new Specification<TotalReport>() {
                     @Nullable
                     @Override
@@ -99,8 +101,9 @@ public class TotalReportServiceImpl implements TotalReportService {
                         if (totalReport.getSrpId() != null) {
                             predicate.add(criteriaBuilder.equal(srpId, totalReport.getSrpId()));
 
-                        }else {
-                            List<SRP> srpList = srpService.findByUserId(userId);//62L
+                        } else {
+
+
                             List<Long> srpIds = new ArrayList<>();
                             for (SRP srp : srpList) {
                                 Long srpId1 = srp.getSrpId();
@@ -109,6 +112,7 @@ public class TotalReportServiceImpl implements TotalReportService {
                             System.err.println(srpIds);
 
                             predicate.add(root.get("srpId").in(srpIds));
+
                         }
                         if (totalReport.getErrorCount() != null && totalReport.getErrorCount() == 1) {
                             predicate.add(criteriaBuilder.equal(errorCount, 0));
@@ -125,8 +129,11 @@ public class TotalReportServiceImpl implements TotalReportService {
                         Predicate[] pre = new Predicate[predicate.size()];
                         return criteriaQuery.where(predicate.toArray(pre)).getRestriction();
                     }
-                }, PageRequest.of(pageNo - 1, 15,sort));
-            if(pages==null){return null;}
+                }, PageRequest.of(pageNo - 1, 15, sort));
+
+                if (pages == null) {
+                    return null;
+                }
                 for (TotalReport page : pages) {
                     if (page.getSrp().getSrpName() != null) {
                         page.setSrpName(page.getSrp().getSrpName());
@@ -137,7 +144,14 @@ public class TotalReportServiceImpl implements TotalReportService {
                 pageEntity.setData(pages.getContent());
                 return pageEntity;
             }
+            else {
+                PageEntity pageEntity = new PageEntity();
+
+                return pageEntity;
+            }
+
         }
+    }
 
 
 //    }

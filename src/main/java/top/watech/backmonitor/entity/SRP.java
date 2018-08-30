@@ -113,6 +113,7 @@ public class SRP {
     }
 
     //fetch = FetchType.EAGER
+    @JsonBackReference(value = "totalReports-profiles")
     @OneToMany(mappedBy = "srp",cascade = CascadeType.REMOVE)
     public Set<TotalReport> getTotalReports() {
         return totalReports;
