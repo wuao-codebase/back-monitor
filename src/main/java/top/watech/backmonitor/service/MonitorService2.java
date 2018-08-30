@@ -184,8 +184,6 @@ public class MonitorService2 {
             int errorCount = size - sucCount;
             totalReport.setErrorCount(errorCount);
             totalReportRepository.saveAndFlush(totalReport);
-            System.err.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-            System.err.println(totalReport);
 
             /**
              * 微信推送，出错才推
@@ -259,7 +257,7 @@ public class MonitorService2 {
                                     errMsg = "";
                                 } else {
                                     code = (code & false);//失败
-                                    errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
+                                    errMsg = errMsg + (assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey")) + ";");//断言，e.g. connect=false
                                 }
                             } else if (assJsonObject1.get("ststus").equals("1")) {
                                 if (!String.valueOf(resJsonObject.get(assJsonObject1.get("akey"))).equals(assJsonObject1.get("value"))) {
@@ -267,7 +265,7 @@ public class MonitorService2 {
                                     errMsg = "";
                                 } else {
                                     code &= false;
-                                    errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
+                                    errMsg = errMsg + (assJsonObject1.get("akey") + " = null;");//断言，e.g. token=null
                                 }
                                 //取token
                                 if (monitorItem.getClassify() == 1) {
@@ -281,7 +279,7 @@ public class MonitorService2 {
                                     errMsg = "";
                                 } else {
                                     code &= false;
-                                    errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));
+                                    errMsg = errMsg + (assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey")) + ";");
                                 }
                             }
                         }
@@ -378,7 +376,7 @@ public class MonitorService2 {
                                     errMsg = "";
                                 } else {
                                     code = (code & false);
-                                    errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));//断言，e.g. connect=false
+                                    errMsg = errMsg + (assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey")) + ";");//断言，e.g. connect=false
                                 }
                             } else if (assJsonObject1.get("ststus").equals("1")) {
                                 if (!String.valueOf(resJsonObject.get(assJsonObject1.get("akey"))).equals(assJsonObject1.get("value"))) {
@@ -386,7 +384,7 @@ public class MonitorService2 {
                                     errMsg = "";
                                 } else {
                                     code &= false;
-                                    errMsg = assJsonObject1.get("akey") + " = null";//断言，e.g. token=null
+                                    errMsg = errMsg + (assJsonObject1.get("akey") + " = null;");//断言，e.g. token=null
                                 }
                             } else {
                                 if (resJsonObject.getString(assJsonObject1.getString("akey")).contains(assJsonObject1.getString("value"))) {
@@ -394,7 +392,7 @@ public class MonitorService2 {
                                     errMsg = "";
                                 } else {
                                     code &= false;
-                                    errMsg = assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey"));
+                                    errMsg = errMsg + (assJsonObject1.get("akey") + " = " + resJsonObject.get(assJsonObject1.get("akey")) + ";");
                                 }
                             }
                         }

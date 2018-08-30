@@ -143,7 +143,7 @@ public class User {
     }
 
 //    @JsonBackReferencecascade=CascadeType.ALL,(fetch = FetchType.EAGER)
-    @JsonBackReference
+    @JsonBackReference(value = "srps-profiles")
     @ManyToMany
     @JoinTable(name = "user_srp",
             joinColumns = {@JoinColumn(name = "user_id",referencedColumnName = "userId")},
