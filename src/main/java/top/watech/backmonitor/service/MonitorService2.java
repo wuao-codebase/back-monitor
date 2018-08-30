@@ -92,8 +92,8 @@ public class MonitorService2 {
             accessToken = null;
             //总的监控报告
             TotalReport totalReport = new TotalReport();
-//            totalReport.setSrp(srpRepository.findBySrpId(srpId));
-//            totalReportRepository.save(totalReport);
+            totalReport.setSrp(srpRepository.findBySrpId(srpId));
+            totalReportRepository.save(totalReport);
 
             //格式化时间
             SimpleDateFormat str = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
