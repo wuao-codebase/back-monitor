@@ -11,14 +11,26 @@ import java.util.List;
  * Created by fhm on 2018/7/24.
  */
 public interface TotalReportRepository extends JpaRepository<TotalReport,String>,JpaSpecificationExecutor<TotalReport>{
-    // 根据srpId,找出所有监控报告
+
+    /**
+     * 根据srpId,找出所有监控报告
+     * @param srpId
+     * @return
+     */
     List<TotalReport> findBySrpId(Long srpId);
 
-    // 根据监控执行时间,找出所有监控报告,按时间倒叙
+    /**
+     * 根据监控执行时间,找出所有监控报告,按时间倒叙
+     * @param startTime
+     * @return
+     */
     List<TotalReport> findByStartTimeOrderByStartTimeDesc(Time startTime);
 
-    // 根据SRP的id和监控执行开始时间，找出所有的TotalReport
+    /**
+     * 根据SRP的id和监控执行开始时间，找出所有的TotalReport
+     * @param srpId
+     * @param startTime
+     * @return
+     */
     List<TotalReport> findBySrpIdAndStartTime(Long srpId,Time startTime);
-
-
 }

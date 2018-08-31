@@ -12,5 +12,14 @@ import java.util.List;
 
 public interface TotalReportService {
     List<TotalReport> getTotalReportList(Time createTime);
+
+    /**
+     * 监控报告列表
+     * @param pageNo
+     * @param role
+     * @param totalReport
+     * @param userId
+     * @return
+     */
     PageEntity getTOList(int pageNo,int role,TotalReport totalReport,Long userId);
 }

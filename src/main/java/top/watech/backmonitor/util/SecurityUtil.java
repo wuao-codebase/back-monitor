@@ -5,8 +5,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * 安全工具类，可以进行数据的加密和解密，并且可以完成对象的加密和解密
- * @author KongHao
+ * 安全工具类
+ * 进行数据和对象的加密和解密
  *
  */
 @SuppressWarnings("rawtypes")

@@ -1,6 +1,8 @@
 package top.watech.backmonitor.entity;
 
-
+/**
+ * DetailReport实体类
+ */
 public class PageEntity {
     private int Total;
     private int PageNo;

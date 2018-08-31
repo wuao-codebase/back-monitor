@@ -30,7 +30,6 @@ public class UserServiceImpl implements UserService {
     public User Login(Long phone) throws Exception {
 
         return userRepository.findByPhone(phone);
-//        return userRepository.getByUserIdIsAndAndUserPwdIs(id,SecurityUtil.md5(userPwd));
     }
 
     /*根据userId获取用户*/
@@ -182,42 +181,4 @@ public class UserServiceImpl implements UserService {
     public void saveUsers(List< User> users){
         userRepository.saveAll(users);
     }
-
-    //根据用户名获取用户
-    @Override
-    public User getUserByName(String userName) {
-        return userRepository.findByUserName(userName);
-    }
-
-//    @Transactional
-//    public void updateUsers(Long userId,String username){
-//        userRepository.updateUserUsername(userId,username);
-//    }
-
-    //后端分页
-//    @Override
-//    public PageEntity getUserList(int pageNo,int pageSize) {
-//        int page = (pageNo < 0) ? 0 : pageNo;
-//        int size = (pageSize<=0)?25:pageSize;
-//        Pageable pageable = PageRequest.of(page, size);
-//        Page<User>  pages = userRepository.findAll(pageable);
-//        PageEntity pageEntity = new PageEntity();
-//        pageEntity.setTotal(pages.getTotalPages());
-//        pageEntity.setData(pages.getContent());
-//        pageEntity.setPageNo(pages.getNumber() + 1);
-//        return pageEntity;
-//    }
-
-//        @Override
-//    public List<User> getUserList() {
-//            return userRepository.findAll();
-//    }
-
-    //更新密码原版
-//        if (user1!=null){
-//            user1.setUserId(user1.getUserId());
-//            user1.setUserPwd(userPwd);
-//        }
-//        User user = userRepository.saveAndFlush(user1);
-//        return user;
 }

@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 /**
  * Created by fhm on 2018/7/30.
- * 对跨域的处理
+ * @Description:对跨域的处理(JWT)
  */
 @Configuration
 public class CorsConfig {

@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 /**
  * Created by fhm on 2018/8/17.
+ * DetailReport实体类
  */
 
 @Entity

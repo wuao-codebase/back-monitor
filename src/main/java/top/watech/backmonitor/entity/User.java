@@ -13,6 +13,8 @@ import java.util.Set;
 
 /**
  * Created by fhm on 2018/7/19.
+ * User实体类
+ * 对应users表
  */
 @Entity
 @ToString

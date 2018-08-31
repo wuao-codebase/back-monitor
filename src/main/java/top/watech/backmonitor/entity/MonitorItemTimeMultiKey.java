@@ -6,6 +6,7 @@ import java.util.Date;
 
 /**
  * Created by fhm on 2018/7/24.
+ *
  */
 public class MonitorItemTimeMultiKey implements Serializable{
     private Long monitorId;

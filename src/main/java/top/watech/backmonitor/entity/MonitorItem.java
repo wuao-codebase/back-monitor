@@ -6,6 +6,8 @@ import javax.persistence.*;
 
 /**
  * Created by fhm on 2018/7/24.
+ * MonitorItem实体类
+ * 对应monitoritems表
  */
 @Entity
 @Table(name = "monitoritems")

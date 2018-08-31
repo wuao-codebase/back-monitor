@@ -14,6 +14,7 @@ import java.util.List;
 
 /**
  * Created by wuao.tp on 2018/8/9.
+ * @Description:监控报告相关的crud接口
  */
 @RestController
 public class ReportController {
@@ -22,15 +23,17 @@ public class ReportController {
     @Autowired
     private DetailReportService detailReportService;
 
-    /*取监控列表*/
+    /**
+     * 取总的监控报告列表
+     * @param totalReport
+     * @param pageNo
+     * @param role
+     * @param userId
+     * @return
+     */
     @PostMapping("/filter/toatalList/{pageNo}/{role}/{userId}")
     public RespEntity gettotalList(@RequestBody TotalReport totalReport, @PathVariable int pageNo , @PathVariable int role, @PathVariable Long userId) {
-        System.err.println(totalReport);
-        System.err.println(pageNo);
-        System.err.println(role);  System.err.println(userId);
-
       PageEntity toList = totalReportService.getTOList( pageNo, role, totalReport,userId);
-
         if(toList==null )
         {
             RespCode respCode = RespCode.WARN;
@@ -42,12 +45,15 @@ public class ReportController {
         }
     }
 
-    /*取详细监控报告列表*/
+    /**
+     * 取详细监控报告列表
+     * @param uuid
+     * @return
+     */
     @GetMapping("/filter/detailList/{uuid}")
     public RespEntity getdetailList(@PathVariable String uuid) {
         System.err.println("uuid = " + uuid);
         List<DetailReport> detailReportByUuid = detailReportService.getDetailReportByUuid(uuid);
-
         if(detailReportByUuid==null )
         {
             RespCode respCode = RespCode.WARN;
@@ -58,5 +64,4 @@ public class ReportController {
             return new RespEntity(RespCode.SUCCESS,detailReportByUuid);
         }
     }
-
 }

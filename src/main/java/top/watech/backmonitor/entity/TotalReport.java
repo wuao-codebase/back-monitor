@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * Created by fhm on 2018/7/24.
+ * TotalReport实体类
+ * 对应total_report表
  */
 @Entity
 @ToString
@@ -44,7 +46,6 @@ public class TotalReport {
         this.uuid = uuid;
     }
 
-    //    @Id
     @Column(name = "srp_id",insertable=false,updatable=false)
     public Long getSrpId() {
         return srpId;
@@ -54,7 +55,6 @@ public class TotalReport {
         this.srpId = srpId;
     }
 
-//    @Id
     @Column(name = "start_time")
     public Date getStartTime() {
         return startTime;
@@ -111,7 +111,6 @@ public class TotalReport {
         this.srp = srp;
     }
 
-    //
     @JsonBackReference(value = "detailReports-profiles")
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "totalReport",cascade = CascadeType.REMOVE)
     public List<DetailReport> getDetailReports() {

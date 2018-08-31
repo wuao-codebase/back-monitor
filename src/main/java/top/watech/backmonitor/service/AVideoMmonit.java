@@ -17,17 +17,24 @@ import java.util.Map;
 
 /**
  * Created by wuao.tp on 2018/8/21.
+ * 视频监控
  */
 @Service
 public class AVideoMmonit {
     SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
     private  RestTemplate restTemplate;
-
     private DetailReport detailReport = new DetailReport();
     private JSONObject jsonBody= new JSONObject(true);
     private  StringBuffer msg =new StringBuffer();
     private boolean codes=true;
 
+    /**
+     *
+     * @param domain
+     * @param username
+     * @param password
+     * @return
+     */
     public String sessionID(String domain, String username, String password) {
         String sessionIDurl = domain + "/AdvStreamingService/Authority/Online";
         HttpHeaders requestHeaders = new HttpHeaders();

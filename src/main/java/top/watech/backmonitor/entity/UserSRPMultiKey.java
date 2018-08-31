@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 /**
  * Created by fhm on 2018/7/24.
+ * 用于生成users和srps的关系表的联合主键
  */
 public class UserSRPMultiKey implements Serializable{
     private Long userId;

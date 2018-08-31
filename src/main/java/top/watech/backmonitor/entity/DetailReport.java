@@ -11,6 +11,8 @@ import java.util.Date;
 
 /**
  * Created by fhm on 2018/7/24.
+ * DetailReport实体类
+ * 对应detail_report表
  */
 
 

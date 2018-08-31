@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Created by fhm on 2018/7/19.
+ * @Description:监控项相关的crud接口
  */
 @RestController
 public class UserController {
@@ -27,7 +28,12 @@ public class UserController {
     @Autowired
     private Audience audience;
 
-    //登录
+    /**
+     * 登录
+     * @param reqUser
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/userlogin")
     public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
         User login = userService.Login(reqUser.getPhone());
@@ -61,7 +67,12 @@ public class UserController {
         }
     }
 
-    /*根据id取用户*/
+    /**
+     * 根据id取用户
+     * @param userId
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/filter/getUserById")
     public RespEntity getUserById(@RequestParam("userId") Long userId) throws Exception {
         User userById = userService.getUserById(userId);
@@ -76,7 +87,11 @@ public class UserController {
         }
     }
 
-    /*获取用户列表(admin)*/
+    /**
+     * 获取用户列表(admin)
+     * @return 用户列表
+     * @throws Exception
+     */
     @GetMapping("/filter/userList")
     public RespEntity getList() throws Exception {
         List<User> userList = userService.getUserList();
@@ -92,7 +107,11 @@ public class UserController {
         }
     }
 
-    /*用户新增*/
+    /**
+     * 用户新增
+     * @param reqUser
+     * @return
+     */
     @PostMapping("/filter/userInsert")
     public RespEntity userInsert(@RequestBody  ReqUser reqUser){
         User user1 = userService.userInsert(reqUser);
@@ -107,7 +126,11 @@ public class UserController {
         }
     }
 
-    /*更新用户信息*/
+    /**
+     * 更新用户信息
+     * @param user
+     * @return
+     */
     @PutMapping("/filter/userUpdate")
     public RespEntity userUpdate(@RequestBody ReqUser user){
         System.err.println(user);
@@ -124,7 +147,13 @@ public class UserController {
         }
     }
 
-    /*id不是？且手机号是？的用户*/
+    /**
+     * id不是？且手机号是？的用户
+     * @param userId
+     * @param phone
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/filter/getRepetUser/{userId}/{phone}")
     public RespEntity getRepetUser(@PathVariable Long userId,@PathVariable Long phone) throws Exception {
 //        public RespEntity getRepetUser(@RequestParam("userId") Long userId,@RequestParam("phone") Long phone) throws Exception {
@@ -140,7 +169,13 @@ public class UserController {
         }
     }
 
-    /*更新用户密码*/
+    /**
+     * 更新用户密码
+     * @param UserId
+     * @param oldPwd
+     * @param userPwd
+     * @return
+     */
     @PutMapping ("/filter/updateUserpwd/{UserId}/{oldPwd}/{userPwd}")
     public RespEntity updateUserpwd(@PathVariable Long  UserId, @PathVariable String oldPwd, @PathVariable String userPwd){
         System.err.println(UserId+oldPwd+userPwd);
@@ -156,14 +191,23 @@ public class UserController {
         }
     }
 
-    /*重置用户密码*/
+    /**
+     * 重置用户密码
+     * @param userId
+     * @param userPwd
+     * @return
+     */
     @PostMapping ("/filter/upsetUserpwd/{userId}/{userPwd}")
     public RespEntity upsetUserpwd(@PathVariable Long userId, @PathVariable String userPwd){
         User user1 = userService.upsetUserpwd(userId, userPwd);
         return new RespEntity(RespCode.SUCCESS,user1);
     }
 
-    /*删除一个用户*/
+    /**
+     * 删除一个用户
+     * @param userId
+     * @return
+     */
     @DeleteMapping("/filter/delUserById")
     public RespEntity deleteUserById(@RequestParam("userId") Long userId){
         userService.deleteById(userId);
@@ -179,14 +223,22 @@ public class UserController {
         }
     }
 
-    /*删除多个用户*/
+    /**
+     * 删除多个用户
+     * @param userIDs
+     * @return
+     */
     @DeleteMapping("/filter/delUserList/{userIDs}")
     public RespEntity deleteUserlist(@PathVariable List<Long> userIDs){
         userService.deleteUserlist(userIDs);
         return new RespEntity(RespCode.SUCCESS);
     }
 
-    /*根据srpId获取user列表*/
+    /**
+     * 根据srpId获取user列表
+     * @param SRPID
+     * @return
+     */
     @GetMapping("/filter/getUserBySrpId/{SRPID}")
     public RespEntity getUserBySrpId(@PathVariable Long SRPID){
         List<User> users = userService.getUserBySrpId(SRPID);
@@ -202,7 +254,11 @@ public class UserController {
         }
     }
 
-    /*判断当前手机号是否已存在（是否已有对应用户）*/
+    /**
+     * 判断当前手机号是否已存在（是否已有对应用户）
+     * @param phone
+     * @return
+     */
     @GetMapping("/filter/isPhoneRepet/{phone}")
     public RespEntity isPhoneRepet(@PathVariable Long phone){
         User user = userService.isPhoneRepet(phone);
@@ -217,52 +273,3 @@ public class UserController {
         }
     }
 }
-
-
-
-//    @PostMapping("/user/userlist")
-//    public RespEntity login(@RequestBody ReqUser reqUser) throws Exception {
-//
-//        User login = userService.Login(reqUser.getUserId(), reqUser.getUserPwd());
-//        if (login != null) {
-//            return new RespEntity(RespCode.SUCCESS, login);
-//        } else {
-//            RespCode respCode = RespCode.WARN;
-//            respCode.setMsg("用户或密码错误");
-//            respCode.setCode(-1);
-//            return new RespEntity(respCode);
-//        }
-//    }
-
-//    @PostMapping("/login")
-//    public ResultVo login(@RequestParam(value = "userName", required = true) String userName,
-//                          @RequestParam(value = "userPwd", required = true) String userPwd,
-//                          HttpServletRequest request) {
-//
-//        User query_user = userService.getUserByName(userName);
-//        if (query_user == null) {
-//            return ResultVOUtil.error("400", "用户名错误");
-//        }
-//        //验证密码
-//        PasswordEncoder encoder = new BCryptPasswordEncoder();
-//        boolean is_password = encoder.matches(userPwd, query_user.getUserPwd());
-//        if (!is_password) {
-//            //密码错误，返回提示
-//            return ResultVOUtil.error("400", "密码错误");
-//        }
-//
-//        String jwtToken = JwtHelper.createJWT(query_user.getUserName(),
-//                query_user.getUserId(),
-//                query_user.getRole().toString(),
-//                audience.getClientId(),
-//                audience.getName(),
-//                audience.getExpiresSecond()*1000,
-//                audience.getBase64Secret());
-//
-//        String result_str = "bearer;" + jwtToken;
-//
-//        System.out.println("************************************");
-//        System.out.println(result_str);
-//
-//        return ResultVOUtil.success(result_str);
-//    }

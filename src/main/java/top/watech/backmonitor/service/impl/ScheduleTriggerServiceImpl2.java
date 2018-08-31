@@ -16,7 +16,6 @@ import java.util.List;
 
 
 @Service
-
 public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleTriggerServiceImpl2.class);

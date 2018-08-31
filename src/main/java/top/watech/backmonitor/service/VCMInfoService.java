@@ -27,22 +27,16 @@ import java.util.Map;
 @Slf4j
 @Service
 public class VCMInfoService {
-//    @Autowired
-//    private RestTemplate restTemplate;
-    @Autowired
-    MonitorItemRepository monitorItemRepository;
     @Autowired
     VCMInfoRepository vcmInfoRepository;
-    @Autowired
-    MonitorService2 monitorService;
 
     SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
     private  RestTemplate restTemplate;
-
-    //accessToken
     public static String accessToken;
 
-    //生成accessToken
+    /**
+     * 生成accessToken
+     */
     public void getaccessToken() {
         String url = "https://portal-sso.wise-paas.com.cn/v1.3/auth/native";
         HttpHeaders requestHeaders = new HttpHeaders();
@@ -53,8 +47,8 @@ public class VCMInfoService {
         String body = null;
 
         //超时设置
-        simpleClientHttpRequestFactory.setConnectTimeout(3000);
-        simpleClientHttpRequestFactory.setReadTimeout(5000);
+        simpleClientHttpRequestFactory.setConnectTimeout(20000);
+        simpleClientHttpRequestFactory.setReadTimeout(20000);
         restTemplate = new RestTemplate(simpleClientHttpRequestFactory);
 
         try {
@@ -69,7 +63,7 @@ public class VCMInfoService {
             accessToken = resJsonObject.get("accessToken").toString();
         }
         else {
-            accessToken = new MonitorService2().accessToken;
+            accessToken = new MonitorService().accessToken;
         }
     }
 

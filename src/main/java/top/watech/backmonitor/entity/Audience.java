@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Created by fhm on 2018/7/30.
+ * 生成token要用的项
  * 与配置文件中的JWT的配置对应
  */
 @Data

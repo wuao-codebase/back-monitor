@@ -69,6 +69,10 @@ public class WeixinSendService {
         }
     }
 
+    /**
+     * 微信推送逻辑
+     * @param totalReport
+     */
     public void weixinSend(TotalReport totalReport) {
         testToken();
         String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=" + token;
@@ -110,12 +114,6 @@ public class WeixinSendService {
                 if (!"设备信息获取".equals(monitorName)) {
                     errorNotice = errorNotice + "\n" + "·" + monitorName + monutorType + "异常;\n";
                 } else {
-                    String str = detailReport.getMessage();
-//                    String[] strings = StringUtils.substringsBetween(str, "[", "]");
-////                    errorNotice = errorNotice + detailReport.getMessage() ;
-//                    for (String s : strings) {
-//                        errorNotice = errorNotice + "\n[" + s + "]设备状态异常";
-//                    }
                     errorNotice = errorNotice + "·" + monitorName + monutorType + "异常，返回结果：" + errMessage + "\n";
                 }
                 i++;
@@ -144,7 +142,6 @@ public class WeixinSendService {
                 char c = s.charAt(s.length() - 1);
             }
         }
-
         //超级用户全推送
         List<User> userList = userRepository.findAll();
         for (User user : userList) {
@@ -158,7 +155,6 @@ public class WeixinSendService {
 
         msg.put("content", str);
         JSONObject itemJSONObj = JSONObject.parseObject(JSON.toJSONString(msg));
-//        requestBody.put("touser","111|WuAo");
         requestBody.put("touser", s);
         requestBody.put("msgtype", "text");
         requestBody.put("agentid", 1000002);

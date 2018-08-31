@@ -13,41 +13,47 @@ import java.util.List;
  */
 public interface UserRepository extends JpaRepository<User,Long> ,JpaSpecificationExecutor<User>{
 
-    //获得单个用户对象，根据username和pwd的字段匹配
+    /**
+     * 获得单个用户对象，根据username和pwd的字段匹配
+     * @param userid
+     * @param userpwd
+     * @return
+     */
     User getByUserIdIsAndAndUserPwdIs(Long userid, String userpwd);
 
-    //根据用户名获取用户
+    /**
+     * 根据用户名获取用户
+     * @param userName
+     * @return
+     */
     User findByUserName(String userName);
 
-    //根据手机号获取用户
+    /**
+     * 根据手机号获取用户
+     * @param phone
+     * @return
+     */
     User findByPhone(Long phone);
 
-    //根据userId获取用户
+    /**
+     * 根据userId获取用户
+     * @param userId
+     * @return
+     */
     User findByUserId(Long userId);
 
-    //获取用户列表，包括用户基本信息和srpName
+    /**
+     * 获取用户列表，包括用户基本信息和srpName
+     * @return
+     */
     @Query(value = "select users.user_id,users.email,users.role,users.phone,users.user_pwd,users.remark, string_agg(srps.srp_name,'，') as srpnames,users.user_name from users left join user_srp on users.user_id = user_srp.user_id left join srps on user_srp.srp_id = srps.srp_id group by users.user_id order by user_id", nativeQuery = true)
     List<Object[]> getuserlist();
 
-    //id不是？且手机号是？的用户
+    /**
+     * id不是？且手机号是？的用户
+     * @param userId
+     * @param phone
+     * @return
+     */
     User findByUserIdIsNotAndPhoneIs(Long userId,Long phone);
-
-//    //查询用户名称包含username字符串的用户对象
-//    List<User> findByUsernameContaining(String username);
-//
-//    //获得单个用户对象，根据username和pwd的字段匹配
-//    User getByUsernameIsAndUserpwdIs(String username, String userpwd);
-//
-    //精确匹配username的用户对象
-//    User getByUsernameIs(String username);
-//
-//    @Modifying
-//    @Query("update User u set u.username = :username where u.userId= :userId")
-//    void updateUserUsername(@Param("userId") Long userid, @Param("username") String username);
-
-//    //没用到
-//    /*更新用户密码*/
-//    @Modifying
-//    @Query("UPDATE User u SET u.userPwd = :userPwd WHERE userId = :userId")
-//    void updateUserPwd(@Param("userId") Long id, @Param("userPwd") String userPwd);
 }

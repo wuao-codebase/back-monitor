@@ -12,11 +12,15 @@ import java.io.IOException;
 
 /**
  * Created by wuao.tp on 2018/7/20.
- * 设置RestTemplete请求超时时间
+ * RestTemplete配置类
  */
 @Configuration
 public class RestTemplateConfigurations {
-
+    /**
+      * @Description:   RestTemplete工厂类，生成RestTemplete对象
+      * @param:   * @param null
+      * @return:
+     */
     @Bean("restTemplate")
     public RestTemplate restTemplate(ClientHttpRequestFactory factory){
         RestTemplate restTemplate = new RestTemplate(factory);
@@ -36,6 +40,11 @@ public class RestTemplateConfigurations {
 
     @Bean
     public ClientHttpRequestFactory simpleClientHttpRequestFactory(){
+        /**
+          * @Description:   设置RestTemplete默认的请求超时时间
+          * @param:   * @param
+          * @return:
+         */
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         // 连接超时,单位为ms
         factory.setReadTimeout(20000);

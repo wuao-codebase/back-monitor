@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * Created by fhm on 2018/8/17.
+ * @Description:视频监控项配置的时候，下拉列表显示要调的接口
  */
 @RestController
 public class VCMInfoController {
@@ -19,7 +20,11 @@ public class VCMInfoController {
     @Autowired
     VCMInfoService vcmInfoService;
 
-    /*取VCM信息列表*/
+    /**
+     * 取VCM信息列表
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/filter/VCMInfoList")
     public RespEntity VCMInfoList() throws Exception {
         List<VCMInfo> vcmInfoList = vcmInfoService.getVCMInfos();

@@ -10,6 +10,8 @@ import java.util.Set;
 
 /**
  * Created by fhm on 2018/7/24.
+ * SRP实体类
+ * 对应srps表
  */
 @Component
 @Entity
@@ -102,7 +104,6 @@ public class SRP {
         this.users = users;
     }
 
-    //fetch = FetchType.EAGER,
     @OneToMany(mappedBy = "srp",cascade = CascadeType.REMOVE)
     public Set<MonitorItem> getMonitorItems() {
         return monitorItems;
@@ -112,7 +113,6 @@ public class SRP {
         this.monitorItems = monitorItems;
     }
 
-    //fetch = FetchType.EAGER
     @JsonBackReference(value = "totalReports-profiles")
     @OneToMany(mappedBy = "srp",cascade = CascadeType.REMOVE)
     public Set<TotalReport> getTotalReports() {
