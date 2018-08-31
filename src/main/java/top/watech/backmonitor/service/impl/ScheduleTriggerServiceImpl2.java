@@ -1,32 +1,36 @@
 package top.watech.backmonitor.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.repository.SrpRepository;
-import top.watech.backmonitor.service.MyTask1;
+import top.watech.backmonitor.service.ScheduleTask;
 import top.watech.backmonitor.service.ScheduleTriggerService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-
+/**
+ * 扫描类
+ * 定时触发定时任务
+ */
+@Slf4j
 @Service
 public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ScheduleTriggerServiceImpl2.class);
-
     @Autowired
     private Scheduler scheduler;
     @Autowired
     private SrpRepository srpRepository;
 
+    /**
+     * 定时触发定时任务
+     * 每隔10分钟调用这个方法来更新quartz中的任务
+     */
     @Override
-    @Scheduled(cron = "0 */10 * * * ?")  //"0/50 * * * * ?"0 0 23:00 * * ?每天晚上11点调用这个方法来更新quartz中的任务
+    @Scheduled(cron = "0 */10 * * * ?")
     @PostConstruct
     public void refreshTrigger() {
         try {
@@ -44,7 +48,7 @@ public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
                                 continue;
                             }
                             JobDetail jobDetail = null;
-                            jobDetail = JobBuilder.newJob((Class<? extends Job>) MyTask1.class)
+                            jobDetail = JobBuilder.newJob((Class<? extends Job>) ScheduleTask.class)
                                     .withIdentity(srpId).build();
                             //执行频率
                             int freq = (int) srp.getFreq();
@@ -69,7 +73,6 @@ public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
                                 scheduler.deleteJob(jobKey);
                                 continue;
                             }
-
                             double currentFreq = trigger.getRepeatInterval();
                             int freq = (int) srp.getFreq(); //获取数据库的
                             if (freq != currentFreq) {  //说明该任务有变化，需要更新quartz中的对应的记录
@@ -89,7 +92,7 @@ public class ScheduleTriggerServiceImpl2 implements ScheduleTriggerService {
                     }
                 }
         } catch (Exception e) {
-            logger.error("定时任务每日刷新触发器任务异常，在ScheduleTriggerServiceImpl的方法refreshTrigger中，异常信息：", e);
+            log.error("定时任务每日刷新触发器任务异常，在ScheduleTriggerServiceImpl的方法refreshTrigger中，异常信息：",e);
         }
     }
 }

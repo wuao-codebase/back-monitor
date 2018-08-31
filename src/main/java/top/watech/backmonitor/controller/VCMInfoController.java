@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.watech.backmonitor.entity.RespEntity;
 import top.watech.backmonitor.entity.VCMInfo;
 import top.watech.backmonitor.enums.RespCode;
-import top.watech.backmonitor.service.VCMInfoService;
+import top.watech.backmonitor.service.VCMInfomation;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ import java.util.List;
 public class VCMInfoController {
 
     @Autowired
-    VCMInfoService vcmInfoService;
+    VCMInfomation vcmInfomation;
 
     /**
      * 取VCM信息列表
@@ -27,7 +27,7 @@ public class VCMInfoController {
      */
     @GetMapping("/filter/VCMInfoList")
     public RespEntity VCMInfoList() throws Exception {
-        List<VCMInfo> vcmInfoList = vcmInfoService.getVCMInfos();
+        List<VCMInfo> vcmInfoList = vcmInfomation.getVCMInfos();
         if (vcmInfoList != null) {
             return new RespEntity(RespCode.SUCCESS, vcmInfoList);
         } else {

@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * SRPService接口实现类
  * Created by fhm on 2018/7/27.
  */
-
 @Service
 public class SRPServiceImpl implements SRPService {
     @Autowired
@@ -81,14 +81,6 @@ public class SRPServiceImpl implements SRPService {
         });
         return srpList;
     }
-
-//    @Override
-//    public List<SRP> findByUserId2(Long userId) {
-//        User byUserId = userRepository.findByUserId(userId);
-//        Set<SRP> srps = byUserId.getSrps();
-//        ArrayList<SRP> srps1 = new ArrayList<>(srps);
-//        return srps1;
-//    }
 
     /*显示用户列表*/
     @Override

@@ -10,6 +10,7 @@ import java.sql.Time;
 import java.util.List;
 
 /**
+ * DetailReportService接口实现类
  * Created by fhm on 2018/7/27.
  */
 
@@ -29,9 +30,4 @@ public class DetailReportServiceImpl implements DetailReportService {
         List<DetailReport> byUuid = detailReportRepository.findByUuidOrderByCreateTime(uuid);
         return byUuid;
     }
-
-//    @Transactional
-//    public void updateUsers(Long userId,String username){
-//        userRepository.updateUserUsername(userId,username);
-//    }
 }

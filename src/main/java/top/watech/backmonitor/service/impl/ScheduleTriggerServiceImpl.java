@@ -2,20 +2,17 @@ package top.watech.backmonitor.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import top.watech.backmonitor.entity.SRP;
 import top.watech.backmonitor.repository.SrpRepository;
-import top.watech.backmonitor.service.MyTask1;
+import top.watech.backmonitor.service.ScheduleTask;
 import top.watech.backmonitor.service.ScheduleTriggerService;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 /**
+ * 这个没用，以后可能会用
  * 定点触发定时任务（即更新cron表达式而不是更新频率值）
  */
 
@@ -23,7 +20,6 @@ import java.util.List;
 @Slf4j
 public class ScheduleTriggerServiceImpl implements ScheduleTriggerService {
 
-//    private static final Logger logger = LoggerFactory.getLogger(ScheduleTriggerServiceImpl.class);
     @Autowired
     private Scheduler scheduler;
     @Autowired
@@ -47,7 +43,7 @@ public class ScheduleTriggerServiceImpl implements ScheduleTriggerService {
                             continue;
                         }
                         JobDetail jobDetail = null;
-                            jobDetail = JobBuilder.newJob((Class<? extends Job>) MyTask1.class)
+                            jobDetail = JobBuilder.newJob((Class<? extends Job>) ScheduleTask.class)
                                     .withIdentity(srpId).build();
                             //表达式调度构建器
                             CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(srp.getCron());
@@ -77,7 +73,6 @@ public class ScheduleTriggerServiceImpl implements ScheduleTriggerService {
                 }
             }
         } catch (Exception e) {
-//            logger.error("定时任务每日刷新触发器任务异常，在ScheduleTriggerServiceImpl的方法refreshTrigger中，异常信息：", e);
             log.error("定时任务每日刷新触发器任务异常，在ScheduleTriggerServiceImpl的方法refreshTrigger中，异常信息：",e);
         }
     }

@@ -13,7 +13,6 @@ import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import top.watech.backmonitor.entity.VCMInfo;
-import top.watech.backmonitor.repository.MonitorItemRepository;
 import top.watech.backmonitor.repository.VCMInfoRepository;
 
 import java.util.HashMap;
@@ -26,7 +25,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class VCMInfoService {
+public class VCMInfomation {
     @Autowired
     VCMInfoRepository vcmInfoRepository;
 

@@ -23,7 +23,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class FanyaDevService {
+public class FanyaDevMonitor {
     @Autowired
     private RestTemplate restTemplate;
 

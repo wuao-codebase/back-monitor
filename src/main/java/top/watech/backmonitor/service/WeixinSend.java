@@ -21,6 +21,8 @@ import java.util.*;
 
 /**
  * Created by fhm on 2018/8/7.
+ * 微信推送
+ *
  * 先通过接口 /device/group 取得设备分组信息
  * 再遍历组id，将组id拼接到接口 /device/detail 上
  * 就取到了每个组里的所有设备
@@ -29,7 +31,7 @@ import java.util.*;
  */
 @Slf4j
 @Service
-public class WeixinSendService {
+public class WeixinSend {
     @Autowired
     DetailReportService detailReportService;
     @Autowired

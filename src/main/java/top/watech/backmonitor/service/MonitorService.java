@@ -43,11 +43,11 @@ public class MonitorService {
     @Autowired
     MonitorItemService monitorItemService;
     @Autowired
-    FanyaDevService fanyaDevService;
+    FanyaDevMonitor fanyaDevMonitor;
     @Autowired
     AVideoMmonit aVideoMmonit;
     @Autowired
-    WeixinSendService weixinSendService;
+    WeixinSend weixinSend;
     @Autowired
     SrpRepository srpRepository;
     @Autowired
@@ -142,19 +142,19 @@ public class MonitorService {
             }
 
             if (srpId == 65L && token != null) {
-                fanyaDevService.testDev();
+                fanyaDevMonitor.testDev();
                 //详细监控报告
                 DetailReport drFyDev = new DetailReport();
-                drFyDev.setCode(FanyaDevService.totalCode);
-                drFyDev.setMessage(FanyaDevService.devMsg);
-                drFyDev.setMessageBody(String.valueOf(FanyaDevService.msgBody));
+                drFyDev.setCode(FanyaDevMonitor.totalCode);
+                drFyDev.setMessage(FanyaDevMonitor.devMsg);
+                drFyDev.setMessageBody(String.valueOf(FanyaDevMonitor.msgBody));
                 drFyDev.setMonitorId(42L);
                 drFyDev.setMonitorName("设备信息获取");
                 drFyDev.setMonitorType(1);
                 drFyDev.setTotalReport(totalReport);
                 detailReportRepository.save(drFyDev);
-                FanyaDevService.devMsg = "";
-                if (FanyaDevService.totalCode) {
+                FanyaDevMonitor.devMsg = "";
+                if (FanyaDevMonitor.totalCode) {
                     sucCount = sucCount + 1;
                 }
             }
@@ -185,9 +185,9 @@ public class MonitorService {
              * 微信推送，出错才推
              */
             if (totalReport.getErrorCount() > 0) {
-                weixinSendService.weixinSend(totalReport);
-                WeixinSendService.weixinErrmsg = "";
-                WeixinSendService.errorNotice = "";
+                weixinSend.weixinSend(totalReport);
+                WeixinSend.weixinErrmsg = "";
+                WeixinSend.errorNotice = "";
             }
             sucCount = 0;
         }
