@@ -1,3 +1,5 @@
+
+#阿里云地址
 spring:
   datasource:
     url: jdbc:postgresql://47.95.204.81:5432/monitor_db
@@ -5,6 +7,10 @@ spring:
     password: wuao1992
     dbcp2:
       driver-class-name: org.postgresql.Driver
+
+
+#部署机地址
+
 #spring:
 #  datasource:
 #    url: jdbc:postgresql://127.0.0.1:5432/monitor_db

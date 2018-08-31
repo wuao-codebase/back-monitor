@@ -106,24 +106,17 @@
             <!--<scope>provided</scope>-->
         <!--</dependency>-->
 
-        <!--security-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-security</artifactId>-->
-        <!--</dependency>-->
+
     </dependencies>
 
     <build>
+        <!--项目名称-->
         <!--<finalName>SRPM</finalName>-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-
-
         </plugins>
     </build>
-
-
 </project>

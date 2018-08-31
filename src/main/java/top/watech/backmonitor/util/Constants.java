@@ -2,7 +2,6 @@ package top.watech.backmonitor.util;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -39,9 +38,5 @@ public class Constants {
     }
 
 
-
-    public static void main(String[] args) {
-        Arrays.asList( "a", "b", "d" ).sort( ( e1, e2 ) -> e1.compareTo( e2 ) );
-    }
 
 }
