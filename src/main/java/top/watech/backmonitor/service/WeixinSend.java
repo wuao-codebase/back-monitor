@@ -124,7 +124,6 @@ public class WeixinSend {
                 i++;
             }
         }
-
         String str = "【异常通知】\n·SRP名称：" + srp.getSrpName() + "\n" +
                 "·总测试项：" + monitorNum + "| " + "成功：" + sucCount + "| " + "失败：" + errorCount + "\n" +
                 "\n【异常项目】" + errorNotice + "\n\n【监控日志】\n" +
