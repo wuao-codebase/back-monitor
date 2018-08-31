@@ -2,7 +2,6 @@ package top.watech.backmonitor.util;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -37,4 +36,7 @@ public class Constants {
         String timeInMillis = String.valueOf(System.currentTimeMillis()).substring(6);
         return date + timeInMillis;
     }
+
+
+
 }
