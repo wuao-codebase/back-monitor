@@ -14,8 +14,6 @@ import java.util.Date;
  * DetailReport实体类
  * 对应detail_report表
  */
-
-
 @EntityListeners(AuditingEntityListener.class)
 @Entity
 @ToString

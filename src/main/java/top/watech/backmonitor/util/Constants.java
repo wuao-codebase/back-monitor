@@ -37,11 +37,4 @@ public class Constants {
         String timeInMillis = String.valueOf(System.currentTimeMillis()).substring(6);
         return date + timeInMillis;
     }
-
-
-
-    public static void main(String[] args) {
-        Arrays.asList( "a", "b", "d" ).sort( ( e1, e2 ) -> e1.compareTo( e2 ) );
-    }
-
 }

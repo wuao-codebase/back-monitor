@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * SRP監控主逻辑
+ *
+ * 流程：
  * 1、取监控项
  * 2、判断监控项类型，接口、页面、视频
  * ①接口：判断classify
@@ -54,9 +57,6 @@ public class MonitorService {
     DetailReportRepository detailReportRepository;
     @Autowired
     TotalReportRepository totalReportRepository;
-    @Autowired
-    MonitorItemRepository monitorItemRepository;
-
     //tooken
     public String token;
 
@@ -73,8 +73,7 @@ public class MonitorService {
 
     /**
      * SRP监控流程
-     * 1、API。2、页面。3、视频
-     * A、SSO登录。B、平台接口。C、SRP登录。D、SRP下接口。
+     * @param srpId
      */
     @Transactional
     public void monitorLogic(Long srpId) {
@@ -193,7 +192,11 @@ public class MonitorService {
         }
     }
 
-    //classify为1或3时(登录)生成token
+    /**
+     * 監控項的classify为1或3时(登录)時的處理過程
+     * @param monitorItem
+     * @return
+     */
     public Boolean loginPro(MonitorItem monitorItem) {
         String url = monitorItem.getUrl();
         String asserts = monitorItem.getAsserts();
@@ -290,7 +293,10 @@ public class MonitorService {
         return code;
     }
 
-    //classify为2或4时、monitorType为2(页面)时
+    /**
+     * classify为2或4时、monitorType为2(页面)时的監控過程
+     * @param monitorItem
+     */
     public void apiAndPagePro(MonitorItem monitorItem) {
         String url = monitorItem.getUrl();
         String asserts = monitorItem.getAsserts();
@@ -402,7 +408,10 @@ public class MonitorService {
         }
     }
 
-    //monitorType为3(视频)时
+    /**
+     * monitorType为3(视频)时的處理
+     * @param monitorItem
+     */
     public void videoPro(MonitorItem monitorItem) {
         code = true;
         //1、测试视频相关所有接口

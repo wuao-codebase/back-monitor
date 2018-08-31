@@ -85,7 +85,6 @@ public class MonitorItemController {
      * @param monitorItem
      * @return
      */
-    /*更新监控项信息*/
     @PutMapping("/filter/monitorItemUpdate")
     public RespEntity monitorItemUpdate(@RequestBody MonitorItem monitorItem) {
         MonitorItem monitorItem1 = monitorItemService.monitorItemUpdate(monitorItem);

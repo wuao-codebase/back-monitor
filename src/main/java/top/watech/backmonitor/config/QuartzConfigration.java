@@ -21,7 +21,7 @@ public class QuartzConfigration {
     public SchedulerFactoryBean schedulerFactoryBean() {
         /**
           * @Description:  获取工厂bean
-          * @param:   * @param
+          * @param:
           * @return:
          */
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
@@ -33,7 +33,7 @@ public class QuartzConfigration {
     public Scheduler scheduler() {
         /**
           * @Description:  创建schedule
-          * @param:   * @param
+          * @param:
           * @return:
          */
         return schedulerFactoryBean().getScheduler();

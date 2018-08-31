@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 /**
  * 安全工具类
- * 进行数据和对象的加密和解密
+ * md5进行数据和对象的加密和解密
  *
  */
 @SuppressWarnings("rawtypes")
