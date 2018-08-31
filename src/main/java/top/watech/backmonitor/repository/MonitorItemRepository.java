@@ -16,6 +16,12 @@ public interface MonitorItemRepository extends JpaRepository<MonitorItem,Long> {
 //    List<MonitorItem> findAll();
 
     /*根据srpId查所有监控项，并根据classify排序(srp的监控逻辑)*/
+
+    /**
+     *
+     * @param srpId
+     * @return
+     */
     List<MonitorItem> findBySrpIdOrderByClassify(Long srpId);
 
     /*根据srpId查所有监控项，并根据MonitorType排序(显示srp的监控项列表)*/

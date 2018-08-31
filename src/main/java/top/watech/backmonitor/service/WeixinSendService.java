@@ -38,7 +38,7 @@ public class WeixinSendService {
     UserRepository userRepository;
 
     SimpleClientHttpRequestFactory simpleClientHttpRequestFactory = new SimpleClientHttpRequestFactory();
-    private  RestTemplate restTemplate;
+    private RestTemplate restTemplate;
 
     //tooken
     public static String token;
@@ -108,19 +108,15 @@ public class WeixinSendService {
                 String errMessage = detailReport.getMessage();
                 weixinErrmsg = weixinErrmsg + "  (" + i + ")" + monitorName + monutorType + "异常，返回结果：" + errMessage + "\n";
                 if (!"设备信息获取".equals(monitorName)) {
-
-                    if (monitorItem.getClassify() == 1 || monitorItem.getClassify() == 3) {
-                        errorNotice = errorNotice + "\n" + monitorName + monutorType + "异常(注：其下所属全部监控项监控失败！)";
-                    } else {
-                        errorNotice = errorNotice + "\n" + monitorName + monutorType + "异常";
-                    }
+                    errorNotice = errorNotice + "\n" + "·" + monitorName + monutorType + "异常;\n";
                 } else {
                     String str = detailReport.getMessage();
-                    String[] strings = StringUtils.substringsBetween(str, "[", "]");
-//                    errorNotice = errorNotice + detailReport.getMessage() ;
-                    for (String s : strings) {
-                        errorNotice = errorNotice + "\n[" + s + "]设备状态异常";
-                    }
+//                    String[] strings = StringUtils.substringsBetween(str, "[", "]");
+////                    errorNotice = errorNotice + detailReport.getMessage() ;
+//                    for (String s : strings) {
+//                        errorNotice = errorNotice + "\n[" + s + "]设备状态异常";
+//                    }
+                    errorNotice = errorNotice + "·" + monitorName + monutorType + "异常，返回结果：" + errMessage + "\n";
                 }
                 i++;
             } else {

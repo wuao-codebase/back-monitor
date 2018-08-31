@@ -40,8 +40,6 @@ import java.util.Map;
 @Service
 @Slf4j
 public class MonitorService2 {
-    //    @Autowired
-//    private RestTemplate restTemplate;
     @Autowired
     MonitorItemService monitorItemService;
     @Autowired
@@ -179,8 +177,6 @@ public class MonitorService2 {
             totalReport.setEndTime(endTime);
             totalReport.setMonitorNum(size);
             totalReport.setSrpId(srpId);
-//            SRP srp = srpRepository.findBySrpId(65L);
-//            totalReport.setSrp(srpRepository.findBySrpId(65L));
             int errorCount = size - sucCount;
             totalReport.setErrorCount(errorCount);
             totalReportRepository.saveAndFlush(totalReport);
@@ -188,11 +184,11 @@ public class MonitorService2 {
             /**
              * 微信推送，出错才推
              */
-//            if (totalReport.getErrorCount() > 0) {
-//                weixinSendService.weixinSend(totalReport);
-//                WeixinSendService.weixinErrmsg = "";
-//                WeixinSendService.errorNotice = "";
-//            }
+            if (totalReport.getErrorCount() > 0) {
+                weixinSendService.weixinSend(totalReport);
+                WeixinSendService.weixinErrmsg = "";
+                WeixinSendService.errorNotice = "";
+            }
             sucCount = 0;
         }
     }
